@@ -1,181 +1,428 @@
+// .theme-btn {
+// 	background: transparent;
+// 	color: $white;
+// 	display: inline-block;
+// 	font-weight: 600;
+// 	padding: 19px 45px;
+// 	text-transform: capitalize;
+// 	z-index: 1;
+// 	position: relative;
+// 	border-radius: 25px;
+// 	font-family: $base-font;
+// 	font-size: 20px;
+// 	border: 1px solid $white;
+// 	overflow: hidden;
+
+// 	&:after {
+// 		position: absolute;
+// 		top: 0;
+// 		left: -75%;
+// 		z-index: 2;
+// 		display: block;
+// 		content: "";
+// 		width: 50%;
+// 		height: 100%;
+// 		background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+// 		transform: skewX(-25deg);
+// 	}
+
+// 	&:hover,
+// 	&:focus,
+// 	&:active {
+// 		color: $white;
+// 	}
+
+// 	&:hover {
+// 		&::after {
+// 			animation: shine 0.75s;
+// 		}
+// 	}
+
+// 	@include media-query(991px) {
+// 		font-size: 18px;
+// 	}
+
+// 	@include media-query(767px) {
+// 		padding: 10px 25px;
+// 		font-size: 14px;
+// 	}
+// }
+
+// .theme-btn-s2 {
+// 	background: $white;
+// 	color: $text-color;
+// 	display: inline-block;
+// 	padding: 12px 22px;
+// 	border: 1px solid $theme-primary-color;
+// 	border-radius: 55px;
+// 	text-transform: capitalize;
+
+// 	z-index: 1;
+// 	position: relative;
+
+// 	&:after {
+// 		position: absolute;
+// 		content: '';
+// 		top: 0;
+// 		left: 0;
+// 		width: 100%;
+// 		height: 100%;
+// 		border-radius: 55px;
+// 		background: $black;
+// 		transition: opacity 0.5s ease-out;
+// 		opacity: 0;
+// 		z-index: -1;
+// 	}
+
+// 	@include media-query(991px) {
+// 		font-size: 14px;
+// 		font-size: calc-rem-value(14);
+// 	}
+
+// 	&:hover,
+// 	&:focus,
+// 	&:active {
+// 		background: darken($theme-primary-color, 5%);
+// 		color: $white;
+// 	}
+
+// 	&:hover:after {
+// 		opacity: 1;
+// 	}
+
+// 	@include media-query(767px) {
+// 		padding: 12px 18px;
+// 		font-size: 13px;
+// 	}
+// }
+
+// .view-cart-btn {
+// 	@extend .theme-btn;
+// 	display: block;
+// 	margin-top: 15px;
+// 	border-radius: 5px;
+// 	padding: 10px 45px;
+
+// 	&:after {
+// 		display: none;
+// 	}
+
+// 	&:hover {
+// 		background-color: darken($theme-primary-color, 8%);
+// 	}
+
+// 	&.s1 {
+// 		background: $black;
+
+// 		&:hover {
+// 			background-color: darken(#ddd, 8%);
+// 		}
+// 	}
+
+// }
+
+// .view-cart-btn{
+// 	background: $theme-primary-color;
+// }
+
+// @keyframes shine {
+// 	100% {
+// 		left: 125%;
+// 	}
+// }
+
+// .shop-btn {
+// 	border-radius: 30px;
+// 	background: $black;
+// 	color: $white;
+// 	text-align: center;
+// 	font-size: 20px;
+// 	font-weight: 600;
+// 	padding: 14px 52px 15px;
+// 	transition: all .3s ease-in-out;
+// 	position: relative;
+// 	overflow: hidden !important;
+// 	display: inline-block;
+// 	@media (max-width:767px) {
+// 		    font-size: 16px;
+// 		    padding: 12px 35px 13px;
+// 	}
+
+// 	&::before {
+// 		position: absolute;
+// 		top: 0;
+// 		left: -75%;
+// 		z-index: 2;
+// 		display: block;
+// 		content: '';
+// 		width: 50%;
+// 		height: 100%;
+// 		background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 100%);
+// 		transform: skewX(-25deg);
+// 	}
+
+// 	&:hover {
+// 		color: $white;
+
+// 		&::before {
+// 			-webkit-animation: shine .75s;
+// 			animation: shine .75s;
+// 		}
+// 	}
+// }
+
+// ===========================
+// THEME BUTTON - Primary Style
+// ===========================
+// ===========================
+// THEME BUTTON - Primary Style
+// ===========================
 .theme-btn {
-	background: transparent;
-	color: $white;
-	display: inline-block;
-	font-weight: 600;
-	padding: 19px 45px;
-	text-transform: capitalize;
-	z-index: 1;
-	position: relative;
-	border-radius: 25px;
-	font-family: $base-font;
-	font-size: 20px;
-	border: 1px solid $white;
-	overflow: hidden;
+  background: transparent;
+  color: $white;
+  display: inline-block;
+  font-weight: 600;
+  padding: 19px 45px;
+  text-transform: capitalize;
+  z-index: 1;
+  position: relative;
+  border-radius: 25px;
+  font-family: $base-font;
+  font-size: 20px;
+  border: 2px solid $white;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-	&:after {
-		position: absolute;
-		top: 0;
-		left: -75%;
-		z-index: 2;
-		display: block;
-		content: "";
-		width: 50%;
-		height: 100%;
-		background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
-		transform: skewX(-25deg);
-	}
+  &:after {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    z-index: 2;
+    display: block;
+    content: "";
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: skewX(-25deg);
+  }
 
-	&:hover,
-	&:focus,
-	&:active {
-		color: $white;
-	}
+  &:hover,
+  &:focus,
+  &:active {
+    background: $white;
+    color: $black;
+    border-color: $white;
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.25);
 
-	&:hover {
-		&::after {
-			animation: shine 0.75s;
-		}
-	}
+    &::after {
+      animation: shine 0.75s ease-in-out;
+    }
+  }
 
+  @include media-query(991px) {
+    font-size: 18px;
+    padding: 17px 40px;
+  }
 
-
-	@include media-query(991px) {
-		font-size: 18px;
-	}
-
-	@include media-query(767px) {
-		padding: 10px 25px;
-		font-size: 14px;
-	}
+  @include media-query(767px) {
+    padding: 12px 25px;
+    font-size: 14px;
+  }
 }
 
+// ===========================
+// THEME BUTTON - Secondary Style
+// ===========================
 .theme-btn-s2 {
-	background: $white;
-	color: $text-color;
-	display: inline-block;
-	padding: 12px 22px;
-	border: 1px solid $theme-primary-color;
-	border-radius: 55px;
-	text-transform: capitalize;
+  background: $white;
+  color: $text-color;
+  display: inline-block;
+  //   padding: 14px 32px;
+  padding-bottom: 12px;
+  padding-top: 16px;
+  padding-left: 32px;
+  padding-right: 32px;
+  border: 2px solid $white;
+  border-radius: 40px;
+  text-transform: capitalize;
+  font-weight: 600;
+  font-size: 16px;
+  z-index: 1;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 
-	z-index: 1;
-	position: relative;
+  &:after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 55px;
+    background: $black;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: -1;
+  }
 
-	&:after {
-		position: absolute;
-		content: '';
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: 55px;
-		background: $black;
-		transition: opacity 0.5s ease-out;
-		opacity: 0;
-		z-index: -1;
-	}
+  @include media-query(991px) {
+    font-size: 15px;
+    padding: 13px 30px;
+  }
 
-	@include media-query(991px) {
-		font-size: 14px;
-		font-size: calc-rem-value(14);
-	}
+  &:hover,
+  &:focus,
+  &:active {
+    background: $black;
+    color: $white;
+    border-color: $black;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 
-	&:hover,
-	&:focus,
-	&:active {
-		background: darken($theme-primary-color, 5%);
-		color: $white;
-	}
+    &:after {
+      opacity: 1;
+    }
+  }
 
-	&:hover:after {
-		opacity: 1;
-	}
-
-	@include media-query(767px) {
-		padding: 12px 18px;
-		font-size: 13px;
-	}
+  @include media-query(767px) {
+    font-size: 14px;
+    padding: 12px 26px;
+  }
 }
 
-
-
+// ===========================
+// VIEW CART BUTTON
+// ===========================
 .view-cart-btn {
-	@extend .theme-btn;
-	display: block;
-	margin-top: 15px;
-	border-radius: 5px;
-	padding: 10px 45px;
+  background: $theme-primary-color;
+  color: $white;
+  display: inline-block;
+  font-weight: 600;
+  padding: 12px 45px;
+  text-transform: capitalize;
+  z-index: 1;
+  position: relative;
+  border-radius: 5px;
+  font-family: $base-font;
+  font-size: 16px;
+  border: 2px solid $theme-primary-color;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  margin-top: 15px;
 
+  &:after {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    z-index: 2;
+    display: block;
+    content: "";
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+    transform: skewX(-25deg);
+  }
 
+  &:hover,
+  &:focus,
+  &:active {
+    background: $white;
+    color: $theme-primary-color;
+    border-color: $theme-primary-color;
+    box-shadow: 0 8px 24px rgba($theme-primary-color, 0.25);
 
-	&:after {
-		display: none;
-	}
+    &::after {
+      animation: shine 0.75s ease-in-out;
+    }
+  }
 
-	&:hover {
-		background-color: darken($theme-primary-color, 8%);
-	}
+  &.s1 {
+    background: $black;
+    border-color: $black;
 
-	&.s1 {
-		background: $black;
+    &:hover {
+      background: $white;
+      color: $black;
+      border-color: $black;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+  }
 
-		&:hover {
-			background-color: darken(#ddd, 8%);
-		}
-	}
-
+  @include media-query(767px) {
+    font-size: 14px;
+    padding: 10px 30px;
+  }
 }
 
-.view-cart-btn{
-	background: $theme-primary-color;
-}
-
-
-@keyframes shine {
-	100% {
-		left: 125%;
-	}
-}
-
-
-
+// ===========================
+// SHOP BUTTON
+// ===========================
 .shop-btn {
-	border-radius: 30px;
-	background: $black;
-	color: $white;
-	text-align: center;
-	font-size: 20px;
-	font-weight: 600;
-	padding: 14px 52px 15px;
-	transition: all .3s ease-in-out;
-	position: relative;
-	overflow: hidden !important;
-	display: inline-block;
-	@media (max-width:767px) {
-		    font-size: 16px;
-		    padding: 12px 35px 13px;
-	}
+  border-radius: 30px;
+  background: $black;
+  color: $white;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 14px 52px 15px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden !important;
+  display: inline-block;
+  border: 2px solid $black;
+  cursor: pointer;
 
-	&::before {
-		position: absolute;
-		top: 0;
-		left: -75%;
-		z-index: 2;
-		display: block;
-		content: '';
-		width: 50%;
-		height: 100%;
-		background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 100%);
-		transform: skewX(-25deg);
-	}
+  @media (max-width: 767px) {
+    font-size: 16px;
+    padding: 12px 35px 13px;
+  }
 
-	&:hover {
-		color: $white;
+  &::before {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    z-index: 2;
+    display: block;
+    content: "";
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: skewX(-25deg);
+  }
 
-		&::before {
-			-webkit-animation: shine .75s;
-			animation: shine .75s;
-		}
-	}
+  &:hover {
+    background: $white;
+    color: $black;
+    border-color: $black;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    &::before {
+      animation: shine 0.75s ease-in-out;
+    }
+  }
+}
+
+// ===========================
+// ANIMATION
+// ===========================
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
 }

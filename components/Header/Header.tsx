@@ -1,92 +1,41 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import MobileMenu from "../MobileMenu";
 import { usePathname } from "next/navigation";
+import { MenuItem } from "@/types/menu.types";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import LanguageSwitcher from "../language-switcher";
+import CustomMUIDrawer from "./Drawer";
+import { Collection } from "@/lib/types/settings";
+import { useSiteStore } from "@/lib/store/siteStore";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
 };
 
-// Menu Items Data - Multi Language
-const menuDataEN = [
-  { title: "Home", link: "/" },
-  {
-    title: "Collections",
-    link: "#",
-    submenu: [
-      { title: "About Us", link: "/about" },
-      { title: "Services", link: "#" },
-    ],
-  },
-  { title: "Request", link: "#" },
-  { title: "Projects", link: "#" },
-  { title: "Locate Us", link: "#" },
-  { title: "E-Catalogue", link: "#" },
-];
-
-const menuDataID = [
-  { title: "Beranda", link: "/" },
-  {
-    title: "Koleksi",
-    link: "#",
-    submenu: [
-      { title: "Tentang Kami", link: "/about" },
-      { title: "Layanan", link: "#" },
-    ],
-  },
-  { title: "Permintaan", link: "#" },
-  { title: "Proyek", link: "#" },
-  { title: "Temukan Kami", link: "#" },
-  { title: "E-Katalog", link: "#" },
-];
-
-const menuDataZH = [
-  { title: "主页", link: "/" },
-  {
-    title: "收藏",
-    link: "#",
-    submenu: [
-      { title: "关于我们", link: "/about" },
-      { title: "服务", link: "#" },
-    ],
-  },
-  { title: "请求", link: "#" },
-  { title: "项目", link: "#" },
-  { title: "找到我们", link: "#" },
-  { title: "电子目录", link: "#" },
-];
-
-const languageOptions = [
-  { code: "EN", label: "English", flag: "🇺🇸" },
-  { code: "ID", label: "Indonesia", flag: "🇮🇩" },
-  { code: "ZH", label: "中文", flag: "🇨🇳" },
-];
-
-const getMenuByLanguage = (lang) => {
-  switch (lang) {
-    case "ID":
-      return menuDataID;
-    case "ZH":
-      return menuDataZH;
-    default:
-      return menuDataEN;
-  }
-};
-
-export default function Header(props) {
+export default function Header(props: {
+  col1?: string;
+  col2?: string;
+  col3?: string;
+  logo: string;
+  hclass?: string;
+  collections: Collection[];
+}) {
   const pathname = usePathname();
 
-  const [menuActive, setMenuState] = useState(false);
-  const [language, setLanguage] = useState("EN");
-  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const t = useTranslations("header");
 
-  const SubmitHandler = (e) => {
-    e.preventDefault();
-  };
+  const staticMenuData = t.raw("menu") as MenuItem[];
 
-  const currentMenuData = getMenuByLanguage(language);
+  const [menuActive, setMenuActive] = useState(false);
+
+  const { data } = useSiteStore((state) => state);
+  const collectionItems = data?.collections?.map((item) => ({
+    title: item?.collection_name,
+    link: `/collections/${item?.collection_name}`,
+  }));
 
   //   const renderMenuItems = (items) => {
   //     return items.map((item, index) => (
@@ -151,11 +100,20 @@ export default function Header(props) {
 
   // Di komponen utama, tambahkan logic untuk active state
 
-  const isActive = (link) =>
+  const isActive = (link: string) =>
     pathname === link || pathname.startsWith(link + "/");
 
-  const renderMenuItems = (items) => {
-    return items.map((item, index) => (
+  const renderMenuItems = (items: MenuItem[]) => {
+    const newItems = items.map((item, index) => {
+      if (index === 1) {
+        return {
+          ...item,
+          submenu: collectionItems,
+        };
+      }
+      return item;
+    });
+    return newItems.map((item, index) => (
       <li
         key={index}
         className={`nav-item ${item.submenu ? "menu-item-has-children" : ""} ${
@@ -230,8 +188,16 @@ export default function Header(props) {
       </li>
     ));
   };
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setMenuActive(newOpen);
+  };
+  console.log(props.logo);
+
   return (
     <header id="header">
+      {/* {JSON.stringify(props.collections)} */}
+      <CustomMUIDrawer open={menuActive} onClose={() => setMenuActive(false)} />
       <div className={"" + props.hclass}>
         <nav className="navigation navbar navbar-expand-lg navbar-light">
           <div className="row align-items-center g-0">
@@ -247,7 +213,13 @@ export default function Header(props) {
                   className="navbar-brand"
                   href="/home"
                 >
-                  <Image src={props.Logo} alt="" />
+                  <Image
+                    src={props.logo}
+                    alt="Logo Perusahaan"
+                    width={400} // Ganti dengan ukuran yang sesuai
+                    height={200} // Ganti dengan ukuran yang sesuai
+                    priority
+                  />
                 </Link>
               </div>
             </div>
@@ -261,138 +233,22 @@ export default function Header(props) {
                     <i className="ti-close"></i>
                   </button>
                   <ul className="nav navbar-nav mb-2 mb-lg-0">
-                    {renderMenuItems(currentMenuData)}
+                    {renderMenuItems(staticMenuData)}
                   </ul>
                   <div className="header-right">
                     <div className="header-search-form-wrapper">
                       <div className="cart-search-contact">
                         <button
-                          onClick={() => setMenuState(!menuActive)}
+                          onClick={() => setMenuActive(!menuActive)}
                           className="search-toggle-btn"
                         >
-                          <i
-                            className={`fi text-black ${
-                              menuActive ? "ti-close" : "flaticon-loupe"
-                            }`}
-                          ></i>
+                          <i className={`fi text-black flaticon-loupe`}></i>
                         </button>
-                        <div
-                          className={`header-search-form ${
-                            menuActive ? "header-search-content-toggle" : ""
-                          }`}
-                        >
-                          <form onSubmit={SubmitHandler}>
-                            <div>
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search here..."
-                              />
-                              <button type="submit">
-                                <i className="fi flaticon-loupe"></i>
-                              </button>
-                            </div>
-                          </form>
-                        </div>
                       </div>
                     </div>
 
                     {/* Language Switcher */}
-                    <div
-                      className="language-switcher"
-                      style={{
-                        marginLeft: "20px",
-                        position: "relative",
-                      }}
-                    >
-                      <button
-                        className="lang-toggle-btn"
-                        onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                        style={{
-                          background: "none",
-                          border: "1px solid #ccc",
-                          padding: "8px 12px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "6px",
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        <span>
-                          {
-                            languageOptions.find((l) => l.code === language)
-                              ?.flag
-                          }
-                        </span>
-                        <span>{language}</span>
-                        <i
-                          className={`fi ${
-                            langDropdownOpen ? "ti-angle-up" : "ti-angle-down"
-                          }`}
-                        ></i>
-                      </button>
-
-                      {langDropdownOpen && (
-                        <div
-                          className="lang-dropdown"
-                          style={{
-                            position: "absolute",
-                            top: "100%",
-                            right: 0,
-                            background: "white",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                            marginTop: "8px",
-                            minWidth: "140px",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                            zIndex: 1000,
-                          }}
-                        >
-                          {languageOptions.map((lang) => (
-                            <button
-                              key={lang.code}
-                              onClick={() => {
-                                setLanguage(lang.code);
-                                setLangDropdownOpen(false);
-                              }}
-                              style={{
-                                width: "100%",
-                                padding: "12px 16px",
-                                background:
-                                  language === lang.code ? "#f0f0f0" : "white",
-                                border: "none",
-                                textAlign: "left",
-                                cursor: "pointer",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                                fontSize: "14px",
-                                borderBottom:
-                                  lang.code !== "ZH"
-                                    ? "1px solid #eee"
-                                    : "none",
-                                transition: "background 0.2s",
-                              }}
-                              onMouseEnter={(e) => {
-                                if (language !== lang.code) {
-                                  e.target.style.background = "#f9f9f9";
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.background =
-                                  language === lang.code ? "#f0f0f0" : "white";
-                              }}
-                            >
-                              <span>{lang.flag}</span>
-                              <span>{lang.label}</span>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <LanguageSwitcher />
                   </div>
                 </div>
               </div>

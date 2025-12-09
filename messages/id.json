@@ -1,0 +1,43 @@
+{
+  "header": {
+    "menu": [
+      {
+        "title": "Beranda",
+        "link": "/"
+      },
+      {
+        "title": "Koleksi",
+        "link": "#",
+        "submenu": [
+          {
+            "title": "Tentang Kami",
+            "link": "/about"
+          },
+          {
+            "title": "Layanan",
+            "link": "#"
+          }
+        ]
+      },
+      {
+        "title": "Permintaan",
+        "link": "/request"
+      },
+      {
+        "title": "Proyek",
+        "link": "/projects"
+      },
+      {
+        "title": "Temukan Kami",
+        "link": "/locate-us"
+      },
+      {
+        "title": "E-Katalog",
+        "link": "/e-catalogue"
+      }
+    ]
+  },
+  "LocaleSwitcher": {
+    "switchLocale": "Switch to {locale, select, de {German} en {English} other {Unknown}}"
+  }
+}

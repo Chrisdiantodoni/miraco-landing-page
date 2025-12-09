@@ -1,0 +1,88 @@
+import { notFound } from "next/navigation";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { ReactNode } from "react";
+import { routing } from "@/i18n/routing";
+import Logo from "@/public/images/logo.svg";
+import Navbar from "@/components/Navbar";
+import Topbar from "@/components/TopBar";
+import { Poppins } from "next/font/google";
+import { Providers } from "./provider";
+import type { Metadata } from "next";
+import { fetchSiteData } from "@/lib/api/settings";
+import { SiteProvider } from "@/lib/providers/SiteProvider";
+import Footer from "@/components/Footer/Footer";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+type Props = {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+};
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  display: "swap", // Penting untuk kinerja
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], // Pilih semua weight atau yang Anda butuhkan
+  // Jika Anda ingin menggunakan font ini dengan Tailwind CSS:
+  // variable: '--font-poppins',
+});
+
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await fetchSiteData();
+  const settings = data.site_settings;
+
+  return {
+    title: "Miraco HPL",
+    description: "Premium furniture materials",
+    openGraph: {
+      title: "Miraco HPL",
+      description: "Premium furniture materials",
+      images: [settings?.logo_dark_url],
+    },
+  };
+}
+
+export default async function LocaleLayout({ children, params }: Props) {
+  // Ensure that the incoming `locale` is valid
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  const siteData = await fetchSiteData();
+
+  return (
+    <html lang={locale}>
+      <head>
+        <link rel="icon" href={siteData.site_settings.logo_dark_url} />
+        <meta
+          property="og:image"
+          content={siteData.site_settings.logo_dark_url}
+        />
+      </head>
+      <body className={poppins.className}>
+        <SiteProvider initialData={siteData}>
+          <Providers>
+            <NextIntlClientProvider>
+              {/* <Topbar /> */}
+              <Navbar
+                collections={siteData.collections}
+                hclass={"wpo-site-header wpo-header-style-s9 my-4"}
+                Logo={siteData?.site_settings?.logo_dark_url}
+                col1={"col-lg-3 col-md-3 col-3 d-lg-none dl-block"}
+                col2={"col-lg-2 col-md-6 col-6"}
+                col3={
+                  "col-lg-10 col-md-1 col-1 d-flex justify-content-end align-items-center"
+                }
+              />
+              {children}
+
+              <Footer logo={siteData?.site_settings?.logo_dark_url} />
+            </NextIntlClientProvider>
+          </Providers>
+        </SiteProvider>
+      </body>
+    </html>
+  );
+}

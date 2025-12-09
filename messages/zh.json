@@ -1,0 +1,43 @@
+{
+  "header": {
+    "menu": [
+      {
+        "title": "主页",
+        "link": "/"
+      },
+      {
+        "title": "收藏",
+        "link": "#",
+        "submenu": [
+          {
+            "title": "关于我们",
+            "link": "/about"
+          },
+          {
+            "title": "服务",
+            "link": "#"
+          }
+        ]
+      },
+      {
+        "title": "请求",
+        "link": "/request"
+      },
+      {
+        "title": "项目",
+        "link": "/projects"
+      },
+      {
+        "title": "找到我们",
+        "link": "/locate-us"
+      },
+      {
+        "title": "电子目录",
+        "link": "/e-catalogue"
+      }
+    ]
+  },
+  "LocaleSwitcher": {
+    "switchLocale": "Switch to {locale, select, de {German} en {English} other {Unknown}}"
+  }
+}

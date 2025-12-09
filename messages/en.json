@@ -1,0 +1,33 @@
+{
+  "header": {
+    "menu": [
+      {
+        "title": "Home",
+        "link": "/"
+      },
+      {
+        "title": "Collections",
+        "link": "#"
+      },
+      {
+        "title": "Request",
+        "link": "/request"
+      },
+      {
+        "title": "Projects",
+        "link": "/projects"
+      },
+      {
+        "title": "Locate Us",
+        "link": "/locate-us"
+      },
+      {
+        "title": "E-Catalogue",
+        "link": "/e-catalogue"
+      }
+    ]
+  },
+  "LocaleSwitcher": {
+    "switchLocale": "Switch to {locale, select, id {Indonesia} en {English} other {China}}"
+  }
+}

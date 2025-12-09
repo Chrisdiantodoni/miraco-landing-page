@@ -1,10 +1,18 @@
 @charset "UTF-8";
 @font-face {
   font-family: "flaticon";
-  src: url("./flaticon.ttf?7be827e199392bb56ae95dacf43f5036") format("truetype"), url("./flaticon.woff?7be827e199392bb56ae95dacf43f5036") format("woff"), url("./flaticon.woff2?7be827e199392bb56ae95dacf43f5036") format("woff2"), url("./flaticon.eot?7be827e199392bb56ae95dacf43f5036#iefix") format("embedded-opentype"), url("./flaticon.svg?7be827e199392bb56ae95dacf43f5036#flaticon") format("svg");
+  src: url("./flaticon.ttf?7be827e199392bb56ae95dacf43f5036") format("truetype"),
+    url("./flaticon.woff?7be827e199392bb56ae95dacf43f5036") format("woff"),
+    url("./flaticon.woff2?7be827e199392bb56ae95dacf43f5036") format("woff2"),
+    url("./flaticon.eot?7be827e199392bb56ae95dacf43f5036#iefix")
+      format("embedded-opentype"),
+    url("./flaticon.svg?7be827e199392bb56ae95dacf43f5036#flaticon")
+      format("svg");
 }
+@import url("https://cdn.jsdelivr.net/npm/flaticon@3/font/flaticon.css");
 
-i[class^="flaticon-"]:before, i[class*=" flaticon-"]:before {
+i[class^="flaticon-"]:before,
+i[class*=" flaticon-"]:before {
   font-family: flaticon !important;
   font-style: normal;
   font-weight: normal !important;

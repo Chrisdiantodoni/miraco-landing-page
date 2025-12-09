@@ -3,7 +3,7 @@
 Theme Name: Bliize | Architecture Construction HTML Template
 Version:        1.0.0
 -------------------------------------------------------------------*/
-
+@import "~@flaticon/flaticon-uicons/css/all/all";
 /*--------------------------------------------------------------
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
@@ -187,6 +187,7 @@ a {
 @import "base/base";
 
 // components
+@import "components/input";
 @import "components/section-title";
 @import "components/buttons";
 @import "components/form";
@@ -194,6 +195,7 @@ a {
 @import "components/page-title";
 @import "components/blog-sidebar";
 @import "components/pagination";
+@import "components/location";
 
 // layout
 @import "layout/header";

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Header from "./Header/Header";
+import { Collection } from "@/lib/types/settings";
 
 interface NavProps {
   hclass: string;
@@ -9,6 +10,7 @@ interface NavProps {
   col2: string;
   col3: string;
   col4?: string;
+  collections: Collection[];
 }
 
 export default function Navbar(props: NavProps) {
@@ -27,11 +29,12 @@ export default function Navbar(props: NavProps) {
     <div className={className}>
       <Header
         hclass={props?.hclass}
-        Logo={props?.Logo}
+        logo={props?.Logo}
         col1={props?.col1}
         col2={props?.col2}
         col3={props?.col3}
-        col4={props?.col4}
+        // col4={props?.col4}
+        collections={props.collections}
       />
     </div>
   );

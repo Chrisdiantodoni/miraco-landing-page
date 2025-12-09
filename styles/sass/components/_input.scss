@@ -1,0 +1,203 @@
+// components/SearchInput.module.scss
+
+/*---------------------------
+	Fonts
+----------------------------*/
+
+/* https: //transfonter.org/ */
+
+@font-face {
+  font-family: "Felidae";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Felidae Regular"),
+    url("../../../fonts/felidae-regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Felidae";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Felidae Regular"),
+    url("../../../fonts/felidae-regular.woff2") format("woff2");
+}
+
+// fonts
+$base-font-size: 15;
+$base-font: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$heading-font: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  sans-serif;
+$heading-font-s2: "Poppins", "Space Grotesk", sans-serif;
+
+// color
+$dark-gray: #070143;
+$body-color: #687693;
+$white: #fff;
+$light: #8188a9;
+$black: #000;
+$small-black: #333;
+$cyan: #848892;
+
+$theme-primary-color: #e3b576;
+$theme-primary-color-s2: #071e93;
+$body-bg-color: #fff;
+$section-bg-color: #fafbfe;
+$text-color: #565656;
+$text-light-color: #676767;
+$heading-color: $dark-gray;
+$border-color: #ebebeb;
+$border-color-s2: #d8e0f1;
+
+// ============= Variables =============
+$primary-color: $dark-gray;
+$text-muted: $light;
+$text-dark: $heading-color;
+$transition-duration: 0.3s;
+$border-radius: 0.375rem;
+
+// ============= Mixins =============
+@mixin transition($properties: all, $duration: $transition-duration) {
+  transition: $properties $duration ease-in-out;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============= Styles =============
+.searchWrapper {
+  width: 100%;
+  margin: 0 auto;
+
+  @media (max-width: 576px) {
+    max-width: 100%;
+  }
+}
+
+.searchInputGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.formControl {
+  flex: 1;
+  padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+  border: 1px solid $border-color-s2;
+  border-radius: $border-radius;
+  font-size: 0.95rem;
+  font-family: $base-font;
+  background-color: $white;
+  color: $text-dark;
+
+  @include transition(border-color box-shadow);
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 0.25rem rgba(7, 1, 67, 0.1);
+  }
+
+  @media (max-width: 576px) {
+    font-size: 16px;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  pointer-events: none;
+  color: $text-muted;
+  @include flex-center;
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+}
+
+.btnClear {
+  position: absolute;
+  right: 50px;
+  background: none;
+  border: none;
+  padding: 0.375rem 0.75rem;
+  cursor: pointer;
+  color: $text-muted;
+  @include flex-center;
+  opacity: 0;
+  visibility: hidden;
+
+  @include transition(opacity visibility color);
+
+  &:hover {
+    color: $text-dark;
+  }
+
+  &:active {
+    color: $primary-color;
+  }
+
+  i {
+    font-size: 18px;
+  }
+
+  // Show state
+  &[class*="show"],
+  &:not(:empty) {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.btnSearch {
+  flex-shrink: 0;
+  padding: 0.75rem 1.25rem;
+  background-color: $primary-color;
+  color: $white;
+  border: 1px solid $primary-color;
+  border-radius: $border-radius;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: $base-font;
+  cursor: pointer;
+  @include flex-center;
+  gap: 6px;
+
+  @include transition(background-color border-color box-shadow);
+
+  &:hover {
+    background-color: #1a0d4d;
+    border-color: #1a0d4d;
+    box-shadow: 0 0 0 0.25rem rgba(7, 1, 67, 0.1);
+  }
+
+  &:active {
+    background-color: #0d0627;
+    border-color: #0d0627;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(7, 1, 67, 0.15);
+  }
+
+  i {
+    font-size: 18px;
+  }
+
+  @media (max-width: 576px) {
+    padding: 0.65rem 0.95rem;
+    font-size: 0.9rem;
+
+    i {
+      font-size: 16px;
+    }
+  }
+}

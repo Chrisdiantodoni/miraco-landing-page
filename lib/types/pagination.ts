@@ -1,0 +1,36 @@
+// types/pagination.ts
+
+/**
+ * Meta information dari Laravel paginate response
+ */
+export interface PaginationMeta {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number;
+  to: number;
+  path: string;
+  first_page_url: string;
+  last_page_url: string;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+}
+
+/**
+ * Generic Laravel Paginate Response
+ * Bisa digunakan untuk semua model (Product, Collection, Category, dll)
+ */
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: PaginationMeta;
+}
+
+/**
+ * Props untuk Pagination Component
+ */
+export interface PaginationProps {
+  paginationData: PaginatedResponse<unknown> | null;
+  onPageChange: (page: number) => void;
+  maxVisiblePages?: number;
+}

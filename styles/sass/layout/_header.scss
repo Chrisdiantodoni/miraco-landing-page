@@ -1,7 +1,29 @@
 /*--------------------------------------------------------------
 2. header
 --------------------------------------------------------------*/
+.search-toggle-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
+/* Icon default */
+.search-toggle-btn .fi {
+  color: #000;
+  font-size: 18px;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+/* Hover effect */
+.search-toggle-btn:hover .fi {
+  color: #000000;
+  transform: scale(1.1);
+}
 /*-- 2.1 topbar --*/
 .navbar-nav {
   .nav-item {
@@ -9,7 +31,7 @@
       position: relative;
       padding: 0.5rem 1rem !important;
       margin: 0 0.5rem;
-      color: #333 !important;
+      color: #000 !important;
       text-decoration: none !important;
       transition: color 0.3s ease;
 
@@ -53,7 +75,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 220px;
+  //   min-width: 220px;
   background: white;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
@@ -76,7 +98,7 @@
       color: #444;
       text-decoration: none;
       font-weight: 500;
-      font-size: 0.95rem;
+      font-size: 16rem;
       transition: all 0.3s ease;
       position: relative;
       gap: 12px;
@@ -1142,18 +1164,18 @@
         padding: 35px 20px;
         display: block;
         color: $white;
-        font-weight: 600;
+        font-weight: 400;
         position: relative;
 
         @media (max-width: 1870px) {
           padding: 35px 18px;
         }
       }
-
+      // edit sub-menu
       > ul .sub-menu {
         background-color: #fff;
         box-shadow: 0px 2px 20px 0px rgba(62, 65, 159, 0.09);
-        width: 225px;
+        width: 180px;
         position: absolute;
         padding: 20px 0;
         left: 0;
@@ -1167,12 +1189,12 @@
       }
 
       > ul > li .sub-menu a {
-        font-size: 18px;
+        font-size: 14px;
         display: block;
         padding: 10px 15px;
         position: relative;
         overflow: hidden;
-        font-weight: 600;
+        font-weight: 400;
         color: $black;
       }
 
@@ -1509,6 +1531,8 @@
   }
 }
 
+// disini edit header
+
 @media (max-width: 1920px) {
   .wpo-site-header #navbar > ul > li > a {
     font-size: 16px;
@@ -1517,13 +1541,13 @@
 
 @media (max-width: 1400px) {
   .wpo-site-header #navbar > ul > li > a {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 1200px) {
   .wpo-site-header #navbar > ul > li > a {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .wpo-site-header .header-right .theme-btn {
@@ -2001,12 +2025,12 @@
     color: $black;
   }
 
-  // @media screen and (min-width: 992px) {
-  // 	 #navbar ul>.image-style-item:hover>.sub-menu.image-style {
-  // 		transform: translateX(-50%) !important;
-  // 		pointer-events: all;
-  // 	}
-  // }
+  @media screen and (min-width: 992px) {
+    #navbar ul > .image-style-item:hover > .sub-menu.image-style {
+      transform: translateX(-50%) !important;
+      pointer-events: all;
+    }
+  }
   .navigation.sticky-header {
     background: #ffffff;
     padding: 20px 80px;
@@ -2276,7 +2300,7 @@
 
   .header-right .search-toggle-btn {
     line-height: 80px;
-    color: #fff;
+    // color: #fff;
     height: 80px;
   }
 
