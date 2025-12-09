@@ -9,6 +9,7 @@ export interface MenuItem {
   id: string | number;
   title: string;
   link: string;
+  subItem: string;
   submenu?: MenuItem[];
   image?: string | MenuItemImage;
   imageStyle?: boolean;

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 
-const modalStyles = {
+const modalStyles: React.CSSProperties = {
   position: "fixed",
   zIndex: 1000,
   left: 0,
@@ -13,16 +14,16 @@ const modalStyles = {
   justifyContent: "center",
 };
 
-const closeStyles = {
+const closeStyles: React.CSSProperties = {
   position: "absolute",
-  top: 20,
-  right: 30,
+  top: "20px",
+  right: "30px",
   color: "#fff",
   fontSize: "2rem",
   cursor: "pointer",
 };
 
-const modalContentStyles = {
+const modalContentStyles: React.CSSProperties = {
   maxWidth: "90%",
   maxHeight: "90%",
   display: "flex",
@@ -30,7 +31,12 @@ const modalContentStyles = {
   justifyContent: "center",
 };
 
-export const ModalContent = ({ onClose, children }) => {
+interface ModalContentProps {
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+export const ModalContent = ({ onClose, children }: ModalContentProps) => {
   return (
     <div style={modalStyles} onClick={onClose}>
       <span style={closeStyles} onClick={onClose}>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // components/CustomMUIDrawer.jsx
 "use client";
 
@@ -5,7 +6,7 @@ import React from "react";
 import Drawer from "@mui/material/Drawer";
 import { SearchDrawerContent } from "./DrawerList"; // Import komponen konten pencarian Anda
 
-const CustomMUIDrawer = ({ open, onClose }) => {
+const CustomMUIDrawer = ({ open, onClose }: any) => {
   return (
     <Drawer
       open={open}

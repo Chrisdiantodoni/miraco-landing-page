@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -37,67 +38,6 @@ export default function Header(props: {
     link: `/collections/${item?.collection_name}`,
   }));
 
-  //   const renderMenuItems = (items) => {
-  //     return items.map((item, index) => (
-  //       <li
-  //         key={index}
-  //         className={`nav-item ${item.submenu ? "menu-item-has-children" : ""}`}
-  //       >
-  //         <Link
-  //           onClick={ClickHandler}
-  //           href={item.link}
-  //           className="nav-link position-relative px-3"
-  //           style={{
-  //             fontWeight: "500",
-  //             color: "#333",
-  //             padding: "0.5rem 1rem",
-  //             textDecoration: "none",
-  //           }}
-  //         >
-  //           {item.title}
-  //           {/* Underline element - HITAM */}
-  //           <span
-  //             className="position-absolute bottom-0 start-0 w-0 h-0.5 bg-dark transition-all duration-300"
-  //             style={{
-  //               backgroundColor: "#000000",
-  //               transition: "width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-  //             }}
-  //           ></span>
-  //         </Link>
-  //         {item.submenu && (
-  //           <ul className={item.imageStyle ? "sub-menu image-style" : "sub-menu"}>
-  //             {item.submenu.map((subitem, subindex) => (
-  //               <li
-  //                 key={subindex}
-  //                 className={subitem.submenu ? "menu-item-has-children" : ""}
-  //               >
-  //                 <Link onClick={ClickHandler} href={subitem.link}>
-  //                   {subitem.image && (
-  //                     <small className="inner">
-  //                       <Image src={subitem.image} alt={subitem.title} />
-  //                     </small>
-  //                   )}
-  //                   <span>{subitem.title}</span>
-  //                 </Link>
-  //                 {subitem.submenu && (
-  //                   <ul className="sub-menu">
-  //                     {subitem.submenu.map((thirditem, thirdindex) => (
-  //                       <li key={thirdindex}>
-  //                         <Link onClick={ClickHandler} href={thirditem.link}>
-  //                           {thirditem.title}
-  //                         </Link>
-  //                       </li>
-  //                     ))}
-  //                   </ul>
-  //                 )}
-  //               </li>
-  //             ))}
-  //           </ul>
-  //         )}
-  //       </li>
-  //     ));
-  //   };
-
   // Di komponen utama, tambahkan logic untuk active state
   const isActive = (link: string) => {
     // Hapus locale prefix dari pathname
@@ -109,7 +49,7 @@ export default function Header(props: {
     return cleanPathname === link || cleanPathname.startsWith(link + "/");
   };
 
-  const renderMenuItems = (items: MenuItem[]) => {
+  const renderMenuItems = (items: any[]) => {
     const newItems = items.map((item, index) => {
       if (index === 1) {
         return {
@@ -140,7 +80,7 @@ export default function Header(props: {
         {/* Submenu Level 1 */}
         {item.submenu && (
           <ul className={item.imageStyle ? "sub-menu image-style" : "sub-menu"}>
-            {item.submenu.map((subitem, subindex) => (
+            {item.submenu.map((subitem: any, subindex: any) => (
               <li
                 key={subindex}
                 className={
@@ -172,19 +112,21 @@ export default function Header(props: {
                 {/* Sub-submenu Level 2 */}
                 {subitem.submenu && (
                   <ul className="sub-menu">
-                    {subitem.submenu.map((thirditem, thirdindex) => (
-                      <li key={thirdindex}>
-                        <Link
-                          onClick={ClickHandler}
-                          href={thirditem.link}
-                          className={`d-block w-100 ${
-                            isActive(thirditem.link) ? "active" : ""
-                          }`}
-                        >
-                          {thirditem.title}
-                        </Link>
-                      </li>
-                    ))}
+                    {subitem.submenu.map(
+                      (thirditem: any, thirdindex: number) => (
+                        <li key={thirdindex}>
+                          <Link
+                            onClick={ClickHandler}
+                            href={thirditem.link}
+                            className={`d-block w-100 ${
+                              isActive(thirditem.link) ? "active" : ""
+                            }`}
+                          >
+                            {thirditem.title}
+                          </Link>
+                        </li>
+                      )
+                    )}
                   </ul>
                 )}
               </li>

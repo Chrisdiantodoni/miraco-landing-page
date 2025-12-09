@@ -32,22 +32,22 @@ const ServiceSectionS6 = (props: { hclass: string }) => {
                 <div className="service-card">
                   <div className="content">
                     <div className="icon">
-                      {data?.collections?.find(
-                        (find) => find.collection_name == "Oak"
-                      )?.image_url ? (
-                        <Image
-                          width={600}
-                          height={500}
-                          src={
-                            data.collections.find(
-                              (find) => find.collection_name == "Oak"
-                            ).image_url
-                          }
-                          alt="Oak collection icon"
-                        />
-                      ) : (
-                        <div className="placeholder">No Image Available</div>
-                      )}
+                      {(() => {
+                        const oakCollection = data?.collections?.find(
+                          (find) => find.collection_name == "Oak"
+                        );
+
+                        return oakCollection?.image_url ? (
+                          <Image
+                            width={600}
+                            height={500}
+                            src={service.SImg} // Now TypeScript knows this is safe
+                            alt="Oak collection icon"
+                          />
+                        ) : (
+                          <div className="placeholder">No Image Available</div>
+                        );
+                      })()}
                     </div>
                     <h2>
                       <Link
