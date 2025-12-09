@@ -48,7 +48,7 @@ export const getDefaultPaginationData = (
 });
 
 const CollectionProducts = ({
-  hclass,
+  //   hclass,
   products,
   //   addToCartProduct,
   //   addToWishListProduct,
