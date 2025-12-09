@@ -8,7 +8,7 @@ const ClickHandler = () => {
   window.scrollTo(10, 0);
 };
 
-const SidebarFilter = (props) => {
+const SidebarFilter = () => {
   return (
     <div className="blog-sidebar">
       <div className="widget category-widget">

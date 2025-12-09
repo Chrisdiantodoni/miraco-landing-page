@@ -10,7 +10,8 @@ const ClickHandler = () => {
   window.scrollTo(10, 0);
 };
 
-const ProjectSection = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ProjectSection = (props: any) => {
   return (
     <section className={"" + props.hclass}>
       <div className="container-fulid">

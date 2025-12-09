@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // types/pagination.ts
 
 /**
@@ -36,7 +37,7 @@ export interface PaginatedResponse<T> {
  * Props untuk Pagination Component
  */
 export interface PaginationProps {
-  paginationData: PaginatedResponse<unknown> | null;
+  paginationData: any;
   onPageChange: (page: number) => void;
   maxVisiblePages?: number;
 }
