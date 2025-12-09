@@ -55,8 +55,10 @@ export const getDefaultPaginationData = (
 const CollectionProducts = ({
   //   hclass,
   products,
-  //   addToCartProduct,
-  //   addToWishListProduct,
+}: //   addToCartProduct,
+//   addToWishListProduct,
+{
+  products: unknown;
 }) => {
   const ClickHandler = () => {
     window.scrollTo(10, 0);
