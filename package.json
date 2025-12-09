@@ -23,7 +23,7 @@
     "less": "^4.4.2",
     "less-loader": "^12.3.0",
     "lucide-react": "^0.556.0",
-    "next": "16.0.6",
+    "next": "16.0.7",
     "next-i18next": "^15.4.3",
     "next-intl": "^4.5.8",
     "popper.js": "^1.16.1",
