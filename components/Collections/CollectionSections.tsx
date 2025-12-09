@@ -5,7 +5,6 @@ import InImg2 from "@/public/images/instagram/2.jpg";
 import InImg3 from "@/public/images/instagram/3.jpg";
 import InImg4 from "@/public/images/instagram/4.jpg";
 import InImg5 from "@/public/images/instagram/5.jpg";
-// import InImg6 from "@/public/images/instagram/6.jpg";
 import Image, { StaticImageData } from "next/image";
 import { ModalContent } from "../Modal/Modal";
 
@@ -38,7 +37,7 @@ const CollectionSections = () => {
         ))}
       </div>
 
-      {isOpen && (
+      {isOpen && selectedImage && (
         <ModalContent onClose={() => setIsOpen(false)}>
           <Image src={selectedImage} alt="Instagram Preview" />
         </ModalContent>
