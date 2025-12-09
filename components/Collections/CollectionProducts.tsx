@@ -3,9 +3,9 @@ import React from "react";
 import Link from "next/link";
 import arrow from "@/public/images/right-arrow-2.svg";
 import Pagination from "../Pagination/Pagination";
-import { PaginationProps } from "@mui/material/Pagination";
 import SidebarFilter from "../SidebarFilter.tsx/SidebarFilter";
 import SearchInput from "../Input/SearchInput";
+import { PaginationMeta, PaginationProps } from "@/lib/types/pagination";
 
 export const INITIAL_PAGINATION_DATA: PaginationProps["paginationData"] = {
   data: [],
@@ -16,6 +16,11 @@ export const INITIAL_PAGINATION_DATA: PaginationProps["paginationData"] = {
     per_page: 10,
     from: 0,
     to: 0,
+    path: "",
+    first_page_url: "",
+    last_page_url: "",
+    next_page_url: null,
+    prev_page_url: null,
   },
   links: {
     first: null,

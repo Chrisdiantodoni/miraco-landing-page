@@ -24,6 +24,12 @@ export interface PaginationMeta {
 export interface PaginatedResponse<T> {
   data: T[];
   meta: PaginationMeta;
+  links: {
+    first: null;
+    last: null;
+    prev: null;
+    next: null;
+  };
 }
 
 /**
