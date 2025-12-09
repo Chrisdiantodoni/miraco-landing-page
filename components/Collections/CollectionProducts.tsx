@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import Link from "next/link";
@@ -58,7 +59,7 @@ const CollectionProducts = ({
 }: //   addToCartProduct,
 //   addToWishListProduct,
 {
-  products: unknown;
+  products: any[];
 }) => {
   const ClickHandler = () => {
     window.scrollTo(10, 0);
