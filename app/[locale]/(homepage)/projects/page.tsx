@@ -5,7 +5,7 @@ import ProjectSection from "@/components/Projects/ProjectSection";
 import RequestFormSection from "@/components/Section/RequestFormSection";
 import { Fragment } from "react/jsx-runtime";
 
-export default function page(props) {
+export default function page() {
   return (
     <Fragment>
       <Hero6 />

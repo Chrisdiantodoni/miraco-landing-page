@@ -4,7 +4,7 @@ import React from "react";
 const PageTitle = (props: {
   pagesub: string;
   pageTitle: string;
-  paddingTop: number;
+  paddingTop?: number;
 }) => {
   return (
     <section
