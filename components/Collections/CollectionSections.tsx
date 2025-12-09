@@ -6,16 +6,16 @@ import InImg3 from "@/public/images/instagram/3.jpg";
 import InImg4 from "@/public/images/instagram/4.jpg";
 import InImg5 from "@/public/images/instagram/5.jpg";
 // import InImg6 from "@/public/images/instagram/6.jpg";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { ModalContent } from "../Modal/Modal";
 
 const images = [InImg1, InImg2, InImg3, InImg4, InImg5];
 
 const CollectionSections = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<StaticImageData>();
 
-  const openModal = (imgSrc) => {
+  const openModal = (imgSrc: StaticImageData) => {
     setSelectedImage(imgSrc);
     setIsOpen(true);
   };
