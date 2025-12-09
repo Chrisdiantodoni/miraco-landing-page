@@ -16,7 +16,7 @@ export default function Index() {
       <ServiceSectionS6 hclass={"wpo-service-section-s6"} />
       <PartnerSection hclass={"wpo-partners-section fade_bottom"} />
       <PageTitle pageTitle="Collections" pagesub="Here is Our Collection" />
-      <CollectionSections hclass={"wpo-work-section-s2"} />
+      <CollectionSections />
 
       <PageTitle
         pageTitle="Projects"
