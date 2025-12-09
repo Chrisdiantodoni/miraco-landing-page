@@ -26,7 +26,7 @@ export default async function Page({ params }: Props) {
       <PageTitle pageTitle="Collections" pagesub="Collections" paddingTop={0} />
 
       <CollectionProducts
-        hclass={"wpo-product-section-s2 section-padding"}
+        // hclass={"wpo-product-section-s2 section-padding"}
         products={currentProducts}
       />
     </Fragment>

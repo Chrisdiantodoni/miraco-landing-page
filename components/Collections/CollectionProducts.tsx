@@ -47,13 +47,21 @@ export const getDefaultPaginationData = (
   },
 });
 
-const CollectionProducts = ({ products }) => {
+const CollectionProducts = ({
+  hclass,
+  products,
+  //   addToCartProduct,
+  //   addToWishListProduct,
+}) => {
   const ClickHandler = () => {
     window.scrollTo(10, 0);
   };
 
   return (
-    <section className="wpo-shop-section section-padding pt-4">
+    <section
+      //   className={hclass}
+      className="wpo-shop-section section-padding pt-4"
+    >
       <div className="container">
         <div className="row">
           {/* Sidebar - Col 3 */}
