@@ -47,12 +47,7 @@ export const getDefaultPaginationData = (
   },
 });
 
-const CollectionProducts = ({
-  hclass,
-  products,
-  addToCartProduct,
-  addToWishListProduct,
-}) => {
+const CollectionProducts = ({ products }) => {
   const ClickHandler = () => {
     window.scrollTo(10, 0);
   };

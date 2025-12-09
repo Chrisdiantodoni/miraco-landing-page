@@ -99,9 +99,15 @@ export default function Header(props: {
   //   };
 
   // Di komponen utama, tambahkan logic untuk active state
+  const isActive = (link: string) => {
+    // Hapus locale prefix dari pathname
+    const pathWithoutLocale = pathname.replace(/^\/(en|id|zh)\//, "/");
 
-  const isActive = (link: string) =>
-    pathname === link || pathname.startsWith(link + "/");
+    // Juga handle case tanpa trailing slash setelah locale
+    const cleanPathname = pathWithoutLocale === "" ? "/" : pathWithoutLocale;
+
+    return cleanPathname === link || cleanPathname.startsWith(link + "/");
+  };
 
   const renderMenuItems = (items: MenuItem[]) => {
     const newItems = items.map((item, index) => {
@@ -248,6 +254,8 @@ export default function Header(props: {
                     </div>
 
                     {/* Language Switcher */}
+                  </div>
+                  <div className="ms-lg-5 ms-2">
                     <LanguageSwitcher />
                   </div>
                 </div>
