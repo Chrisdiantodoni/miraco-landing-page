@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
         pathname: "/storage/**",
       },
     ],
-    dangerouslyAllowLocalIP: true,
+    // dangerouslyAllowLocalIP: true,
   },
   // Cache API responses lebih agresif
   onDemandEntries: {
