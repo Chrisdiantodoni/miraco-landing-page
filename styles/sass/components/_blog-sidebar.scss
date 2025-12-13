@@ -1,255 +1,647 @@
 /*------------------------------------
 	blog sidebar
 ------------------------------------*/
+// .blog-sidebar {
+//   margin-left: auto;
+//   max-width: 363px;
+
+//   @include widther(992px) {
+//   }
+
+//   @include media-query(991px) {
+//     margin-top: 80px;
+//     max-width: 400px;
+//     margin-left: 0;
+//   }
+
+//   @include media-query(767px) {
+//     margin-top: 60px;
+//     max-width: 400px;
+//   }
+
+//   .widget {
+//     border: 1px solid #e2e2e2;
+
+//     h3 {
+//       display: block;
+//       color: #001635;
+//       font-size: 40px;
+//       font-weight: 400;
+//       line-height: 50px;
+//       padding: 15px 30px;
+//       margin-bottom: 0;
+//       border-bottom: 1px solid #e2e2e2;
+//       @media (max-width: 575px) {
+//         padding: 15px 20px;
+//         font-size: 30px;
+//         line-height: 40px;
+//       }
+//     }
+//   }
+
+//   > .widget + .widget {
+//     margin-top: 65px;
+//   }
+
+//   /*** search-widget ***/
+//   .search-widget {
+//     border: 0;
+
+//     h3 {
+//       padding-top: 0;
+//       padding-left: 0;
+//       padding-right: 0;
+//       border: 0;
+//     }
+
+//     form div {
+//       position: relative;
+//     }
+
+//     input {
+//       background-color: transparent;
+//       height: 70px;
+//       padding: 6px 50px 6px 20px;
+//       border: 0;
+//       box-shadow: none;
+//       @include transition-time(0.3s);
+//       border: 1px solid #e2e2e2;
+//       color: #626b72;
+//       font-size: 20px;
+//       font-weight: 400;
+//       line-height: 30px;
+//     }
+
+//     input:focus {
+//       background-color: transparentize($theme-primary-color, 0.9);
+//     }
+
+//     form button {
+//       background: transparent;
+//       font-size: 20px;
+//       color: $white;
+//       background-color: $black;
+//       border: 0;
+//       outline: 0;
+//       position: absolute;
+//       right: 10px;
+//       top: 52%;
+//       height: 50px;
+//       line-height: 50px;
+//       width: 50px;
+//       @include translatingY();
+//     }
+//   }
+
+//   /*** category-widget ***/
+//   .category-widget {
+//     ul {
+//       list-style: none;
+//       padding: 30px;
+//       @media (max-width: 575px) {
+//         padding: 30px 20px;
+//       }
+//     }
+
+//     ul li {
+//       font-size: 19px;
+//       position: relative;
+
+//       @include media-query(767px) {
+//         font-size: 16px;
+//       }
+
+//       span {
+//         position: absolute;
+//         right: 0;
+//       }
+//     }
+
+//     ul > li + li {
+//       margin-top: 12px;
+//       padding-top: 12px;
+//     }
+
+//     ul a {
+//       display: block;
+//       color: #525252;
+//       font-size: 20px;
+//       font-weight: 400;
+//       line-height: 30px;
+
+//       span {
+//         display: inline-block;
+//         width: 30px;
+//         height: 30px;
+//         line-height: 30px;
+//         background-color: $section-bg-color;
+//         text-align: center;
+//         border-radius: 50%;
+
+//         @include media-query(767px) {
+//           font-size: 14px;
+//         }
+//       }
+//     }
+
+//     ul a:hover,
+//     ul li:hover:before {
+//       color: $theme-primary-color;
+//     }
+//   }
+
+//   /*** recent-post-widget ***/
+//   .recent-post-widget {
+//     .post {
+//       overflow: hidden;
+//     }
+
+//     .posts {
+//       padding: 30px;
+//       @media (max-width: 575px) {
+//         padding: 30px 20px;
+//       }
+//     }
+
+//     .posts > .post + .post {
+//       margin-top: 15px;
+//       padding-top: 15px;
+//     }
+
+//     .post .img-holder {
+//       width: 90px;
+//       float: left;
+
+//       img {
+//       }
+//     }
+
+//     .post .details {
+//       width: calc(100% - 90px);
+//       float: left;
+//       padding-left: 20px;
+//     }
+
+//     .post h4 {
+//       margin: 0 0 0.3em;
+//       color: #000;
+//       font-family: $base-font;
+//       font-size: 20px;
+//       font-weight: 500;
+//       line-height: 30px;
+
+//       @include media-query(1199px) {
+//         margin: 0;
+//       }
+
+//       @include media-query(767px) {
+//         font-size: 16px;
+//       }
+//     }
+
+//     .post h4 a {
+//       display: inline-block;
+//       color: $black;
+//     }
+
+//     .post h4 a:hover {
+//       color: #666;
+//     }
+
+//     .post .details .date {
+//       color: $text-color;
+//       color: #666;
+//       font-size: 16px;
+//       font-weight: 400;
+//       line-height: 20px;
+
+//       i {
+//         display: inline-block;
+//         padding-right: 7px;
+//       }
+//     }
+//   }
+
+//   /*** tag-widget ***/
+//   .tag-widget {
+//     ul {
+//       overflow: hidden;
+//       list-style: none;
+//       padding: 30px;
+//     }
+
+//     ul li {
+//       float: left;
+//       margin: 0 8px 8px 0;
+//     }
+
+//     ul li a {
+//       display: inline-block;
+//       padding: 5px 16px;
+//       color: #626b72;
+//       text-align: center;
+//       font-size: 18px;
+//       font-weight: 400;
+//       line-height: 30px;
+//       border: 1px solid #e2e2e2;
+//       text-transform: capitalize;
+//     }
+
+//     ul li a:hover {
+//       background: #707070;
+//       color: $white;
+//     }
+//   }
+// }
+/*------------------------------------
+	blog sidebar
+------------------------------------*/
+// .blog-sidebar {
+//   margin-left: auto;
+//   max-width: 363px;
+
+//   @include widther(992px) {
+//   }
+
+//   @include media-query(991px) {
+//     margin-top: 80px;
+//     max-width: 400px;
+//     margin-left: 0;
+//   }
+
+//   @include media-query(767px) {
+//     margin-top: 60px;
+//     max-width: 400px;
+//   }
+
+//   .widget {
+//     border: 1px solid #e2e2e2;
+
+//     h3 {
+//       display: block;
+//       color: #001635;
+//       font-size: 40px;
+//       font-weight: 400;
+//       line-height: 50px;
+//       padding: 15px 30px;
+//       margin-bottom: 0;
+//       border-bottom: 1px solid #e2e2e2;
+//       @media (max-width: 575px) {
+//         padding: 15px 20px;
+//         font-size: 30px;
+//         line-height: 40px;
+//       }
+//     }
+//   }
+
+//   > .widget + .widget {
+//     margin-top: 65px;
+//   }
+
+//   /*** search-widget ***/
+//   .search-widget {
+//     border: 0;
+
+//     h3 {
+//       padding-top: 0;
+//       padding-left: 0;
+//       padding-right: 0;
+//       border: 0;
+//     }
+
+//     form div {
+//       position: relative;
+//     }
+
+//     input {
+//       background-color: transparent;
+//       height: 70px;
+//       padding: 6px 50px 6px 20px;
+//       border: 0;
+//       box-shadow: none;
+//       @include transition-time(0.3s);
+//       border: 1px solid #e2e2e2;
+//       color: #626b72;
+//       font-size: 20px;
+//       font-weight: 400;
+//       line-height: 30px;
+//     }
+
+//     input:focus {
+//       background-color: transparentize($theme-primary-color, 0.9);
+//     }
+
+//     form button {
+//       background: transparent;
+//       font-size: 20px;
+//       color: $white;
+//       background-color: $black;
+//       border: 0;
+//       outline: 0;
+//       position: absolute;
+//       right: 10px;
+//       top: 52%;
+//       height: 50px;
+//       line-height: 50px;
+//       width: 50px;
+//       @include translatingY();
+//     }
+//   }
+
+//   /*** category-widget ***/
+//   .category-widget {
+//     ul {
+//       list-style: none;
+//       padding: 30px;
+//       @media (max-width: 575px) {
+//         padding: 30px 20px;
+//       }
+//     }
+
+//     ul li {
+//       font-size: 19px;
+//       position: relative;
+
+//       @include media-query(767px) {
+//         font-size: 16px;
+//       }
+
+//       span {
+//         position: absolute;
+//         right: 0;
+//       }
+//     }
+
+//     ul > li + li {
+//       margin-top: 12px;
+//       padding-top: 12px;
+//     }
+
+//     ul a {
+//       display: block;
+//       color: #525252;
+//       font-size: 20px;
+//       font-weight: 400;
+//       line-height: 30px;
+
+//       span {
+//         display: inline-block;
+//         width: 30px;
+//         height: 30px;
+//         line-height: 30px;
+//         background-color: $section-bg-color;
+//         text-align: center;
+//         border-radius: 50%;
+
+//         @include media-query(767px) {
+//           font-size: 14px;
+//         }
+//       }
+//     }
+
+//     ul a:hover,
+//     ul li:hover:before {
+//       color: $theme-primary-color;
+//     }
+//   }
+
+//   /*** recent-post-widget ***/
+//   .recent-post-widget {
+//     .post {
+//       overflow: hidden;
+//     }
+
+//     .posts {
+//       padding: 30px;
+//       @media (max-width: 575px) {
+//         padding: 30px 20px;
+//       }
+//     }
+
+//     .posts > .post + .post {
+//       margin-top: 15px;
+//       padding-top: 15px;
+//     }
+
+//     .post .img-holder {
+//       width: 90px;
+//       float: left;
+
+//       img {
+//       }
+//     }
+
+//     .post .details {
+//       width: calc(100% - 90px);
+//       float: left;
+//       padding-left: 20px;
+//     }
+
+//     .post h4 {
+//       margin: 0 0 0.3em;
+//       color: #000;
+//       font-family: $base-font;
+//       font-size: 20px;
+//       font-weight: 500;
+//       line-height: 30px;
+
+//       @include media-query(1199px) {
+//         margin: 0;
+//       }
+
+//       @include media-query(767px) {
+//         font-size: 16px;
+//       }
+//     }
+
+//     .post h4 a {
+//       display: inline-block;
+//       color: $black;
+//     }
+
+//     .post h4 a:hover {
+//       color: #666;
+//     }
+
+//     .post .details .date {
+//       color: $text-color;
+//       color: #666;
+//       font-size: 16px;
+//       font-weight: 400;
+//       line-height: 20px;
+
+//       i {
+//         display: inline-block;
+//         padding-right: 7px;
+//       }
+//     }
+//   }
+
+//   /*** tag-widget ***/
+//   .tag-widget {
+//     ul {
+//       overflow: hidden;
+//       list-style: none;
+//       padding: 30px;
+//     }
+
+//     ul li {
+//       float: left;
+//       margin: 0 8px 8px 0;
+//     }
+
+//     ul li a {
+//       display: inline-block;
+//       padding: 5px 16px;
+//       color: #626b72;
+//       text-align: center;
+//       font-size: 18px;
+//       font-weight: 400;
+//       line-height: 30px;
+//       border: 1px solid #e2e2e2;
+//       text-transform: capitalize;
+//     }
+
+//     ul li a:hover {
+//       background: #707070;
+//       color: $white;
+//     }
+//   }
+// }
+// --- Variabel Monokrom Murni ---
+// --- Variabel Monokrom Revisi (Sama seperti sebelumnya) ---
+// --- Variabel Monokrom Revisi ---
+// --- Variabel Monokrom Revisi ---
+// --- Variabel Monokrom Revisi ---
+// --- Variabel SCSS ---
+
+// --- Variabel SCSS ---
+$white: #ffffff;
+$black: #000000;
+$light-border: #e8e8e8;
+$sidebar-bg: #fafafa;
+$dark-soft-grey: #555555; // Warna soft untuk judul
+
 .blog-sidebar {
-  margin-left: auto;
-  max-width: 363px;
+  padding: 25px;
+  // border-radius: 1rem;
+  background-color: transparent;
+  border: 0.5px solid $light-border;
+  // border-radius: 0;
+  margin-bottom: 30px;
 
-  @include widther(992px) {
+  // --- Tombol Reset di Atas (Diperbarui untuk Layout Ujung Kiri/Kanan) ---
+  .filter-reset-top {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 0.5px solid $light-border;
+    display: flex;
+    justify-content: space-between; // Pindahkan konten ke ujung
+    align-items: center; // Sejajarkan vertikal
+
+    .active-filter-count {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: $dark-soft-grey; // Lebih lembut dari hitam
+      margin: 0;
+    }
+
+    .reset-button {
+      // Gaya tambahan untuk tombol reset (Button variant="text")
+      text-transform: uppercase; // Opsional: teks huruf kapital
+    }
   }
 
-  @include media-query(991px) {
-    margin-top: 80px;
-    max-width: 400px;
-    margin-left: 0;
-  }
-
-  @include media-query(767px) {
-    margin-top: 60px;
-    max-width: 400px;
-  }
+  // --- Gaya Widget/Accordion ---
+  // ... (Gaya lainnya tetap sama: Judul soft, list item alignment, dll.) ...
 
   .widget {
-    border: 1px solid #e2e2e2;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    margin: 0 !important;
 
-    h3 {
-      display: block;
-      color: #001635;
-      font-size: 40px;
-      font-weight: 400;
-      line-height: 50px;
-      padding: 15px 30px;
-      margin-bottom: 0;
-      border-bottom: 1px solid #e2e2e2;
-      @media (max-width: 575px) {
-        padding: 15px 20px;
-        font-size: 30px;
-        line-height: 40px;
-      }
-    }
-  }
-
-  > .widget + .widget {
-    margin-top: 65px;
-  }
-
-  /*** search-widget ***/
-  .search-widget {
-    border: 0;
-
-    h3 {
-      padding-top: 0;
-      padding-left: 0;
-      padding-right: 0;
-      border: 0;
+    &:not(:last-child) {
+      margin-bottom: 15px;
     }
 
-    form div {
-      position: relative;
+    &::before {
+      display: none;
     }
 
-    input {
-      background-color: transparent;
-      height: 70px;
-      padding: 6px 50px 6px 20px;
-      border: 0;
-      box-shadow: none;
-      @include transition-time(0.3s);
-      border: 1px solid #e2e2e2;
-      color: #626b72;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 30px;
-    }
+    .widget-header {
+      min-height: 48px !important;
+      padding: 0;
+      border-bottom: 1px solid $light-border;
 
-    input:focus {
-      background-color: transparentize($theme-primary-color, 0.9);
-    }
-
-    form button {
-      background: transparent;
-      font-size: 20px;
-      color: $white;
-      background-color: $black;
-      border: 0;
-      outline: 0;
-      position: absolute;
-      right: 10px;
-      top: 52%;
-      height: 50px;
-      line-height: 50px;
-      width: 50px;
-      @include translatingY();
-    }
-  }
-
-  /*** category-widget ***/
-  .category-widget {
-    ul {
-      list-style: none;
-      padding: 30px;
-      @media (max-width: 575px) {
-        padding: 30px 20px;
-      }
-    }
-
-    ul li {
-      font-size: 19px;
-      position: relative;
-
-      @include media-query(767px) {
-        font-size: 16px;
+      .MuiAccordionSummary-content {
+        margin: 12px 0;
       }
 
-      span {
-        position: absolute;
-        right: 0;
-      }
-    }
-
-    ul > li + li {
-      margin-top: 12px;
-      padding-top: 12px;
-    }
-
-    ul a {
-      display: block;
-      color: #525252;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 30px;
-
-      span {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        background-color: $section-bg-color;
-        text-align: center;
-        border-radius: 50%;
-
-        @include media-query(767px) {
-          font-size: 14px;
-        }
-      }
-    }
-
-    ul a:hover,
-    ul li:hover:before {
-      color: $theme-primary-color;
-    }
-  }
-
-  /*** recent-post-widget ***/
-  .recent-post-widget {
-    .post {
-      overflow: hidden;
-    }
-
-    .posts {
-      padding: 30px;
-      @media (max-width: 575px) {
-        padding: 30px 20px;
-      }
-    }
-
-    .posts > .post + .post {
-      margin-top: 15px;
-      padding-top: 15px;
-    }
-
-    .post .img-holder {
-      width: 90px;
-      float: left;
-
-      img {
-      }
-    }
-
-    .post .details {
-      width: calc(100% - 90px);
-      float: left;
-      padding-left: 20px;
-    }
-
-    .post h4 {
-      margin: 0 0 0.3em;
-      color: #000;
-      font-family: $base-font;
-      font-size: 20px;
-      font-weight: 500;
-      line-height: 30px;
-
-      @include media-query(1199px) {
+      h3.filter-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: $dark-soft-grey;
         margin: 0;
       }
-
-      @include media-query(767px) {
-        font-size: 16px;
-      }
-    }
-
-    .post h4 a {
-      display: inline-block;
-      color: $black;
-    }
-
-    .post h4 a:hover {
-      color: #666;
-    }
-
-    .post .details .date {
-      color: $text-color;
-      color: #666;
-      font-size: 16px;
-      font-weight: 400;
-      line-height: 20px;
-
-      i {
-        display: inline-block;
-        padding-right: 7px;
-      }
     }
   }
 
-  /*** tag-widget ***/
-  .tag-widget {
-    ul {
-      overflow: hidden;
-      list-style: none;
-      padding: 30px;
-    }
+  // --- GAYA LIST ITEMS ---
+  .filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-    ul li {
-      float: left;
-      margin: 0 8px 8px 0;
-    }
+    .filter-item {
+      // border-bottom: 1px solid $light-border;
+      padding: 8px 0 !important;
 
-    ul li a {
-      display: inline-block;
-      padding: 5px 16px;
-      color: #626b72;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 400;
-      line-height: 30px;
-      border: 1px solid #e2e2e2;
-      text-transform: capitalize;
-    }
+      &:last-child {
+        border-bottom: none;
+      }
 
-    ul li a:hover {
-      background: #707070;
-      color: $white;
+      .filter-item-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin: 0;
+
+        .MuiCheckbox-root {
+          padding: 5px 9px 5px 0;
+          margin-left: 0;
+          color: $black;
+
+          &.Mui-checked {
+            color: $black;
+          }
+        }
+
+        .filter-label {
+          flex-grow: 1;
+          color: $black;
+          font-size: 0.95rem;
+          cursor: pointer;
+          line-height: 1.5;
+          font-weight: 400;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .Mui-checked ~ .filter-label {
+        font-weight: 400;
+      }
     }
+  }
+}
+// Gaya Checkbox Global
+.monokrom-checkbox {
+  color: $black !important;
+  .MuiSvgIcon-root {
+    font-size: 20px;
   }
 }

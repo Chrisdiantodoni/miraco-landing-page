@@ -1,15 +1,20 @@
+import { getProductById } from "@/lib/api/queries/product";
+import Product from "./product";
+
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
   searchParams: Promise<{ type?: string; id?: string }>;
 };
 
-export default async function Page({ params, searchParams }: Props) {
-  const { slug } = await params;
-  const { type, id } = await searchParams;
-
+export default async function Page({ params }: Props) {
+  const { id } = await params;
+  const productDetail = await getProductById(id);
   return (
-    <div>
-      <div>haha</div>
-    </div>
+    <section className="wpo-shop-single-section section-padding">
+      <div className="container">
+        <Product data={productDetail} />
+        {/* <ProductTabs /> */}
+      </div>
+    </section>
   );
 }

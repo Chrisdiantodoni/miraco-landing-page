@@ -4,14 +4,16 @@ import Link from "next/link";
 // images
 import Logo from "@/public/images/logo-2.svg";
 import Image from "next/image";
-import { useSiteStore } from "@/lib/store/siteStore";
+import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
+import { SocialWidget } from "./SocialWidget";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
 };
 
 const Footer = (props: { logo: string }) => {
-  const { data } = useSiteStore();
+  const data = useSiteSettings();
+
   return (
     <footer className="wpo-site-footer">
       <div className="wpo-upper-footer">
@@ -33,28 +35,15 @@ const Footer = (props: { logo: string }) => {
                   )}
                 </div>
                 <p>
-                  Elit commodo nec urna erat morbi at hac turpis aliquam. In
-                  tristique elit nibh turpis. Lacus volutpat ipsum convallis
-                  tellus pellentesque etiam.
+                  Miraco menghadirkan High Pressure Laminates berkualitas tinggi
+                  dengan standar arsitektur modern. Dibuat dengan presisi untuk
+                  menghadirkan ketahanan, estetika, dan nilai jangka panjang
+                  pada setiap ruang.
                 </p>
-                <div className="social-widget">
-                  <ul>
-                    <li>
-                      <Link onClick={ClickHandler} href="#">
-                        <i className="ti-facebook"></i>
-                      </Link>
-                      <Link onClick={ClickHandler} href="#">
-                        <i className="ti-twitter-alt"></i>
-                      </Link>
-                      <Link onClick={ClickHandler} href="#">
-                        <i className="ti-linkedin"></i>
-                      </Link>
-                      <Link onClick={ClickHandler} href="#">
-                        <i className="ti-instagram"></i>
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                <SocialWidget
+                  social={data?.site_settings}
+                  onClick={ClickHandler}
+                />
               </div>
             </div>
             <div
@@ -66,10 +55,9 @@ const Footer = (props: { logo: string }) => {
                   <h3>Contact</h3>
                 </div>
                 <ul>
-                  <li>bliize@gmail.com</li>
-                  <li>+(208) 555-0112</li>
-                  <li>4517 Washington Ave.</li>
-                  <li> Manchter, Kentucky 495</li>
+                  <li>{data?.site_settings?.email_contacts}</li>
+                  <li>{data?.site_settings?.phone_contacts}</li>
+                  <li>{data?.site_settings?.address}</li>
                 </ul>
               </div>
             </div>
@@ -83,13 +71,8 @@ const Footer = (props: { logo: string }) => {
                 </div>
                 <ul>
                   <li>
-                    <Link onClick={ClickHandler} href="/about">
-                      <span className="rolling-text">About Us</span>{" "}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link onClick={ClickHandler} href="/services">
-                      <span className="rolling-text">Services</span>{" "}
+                    <Link onClick={ClickHandler} href="/request">
+                      <span className="rolling-text">Request</span>{" "}
                     </Link>
                   </li>
                   <li>
@@ -98,13 +81,13 @@ const Footer = (props: { logo: string }) => {
                     </Link>
                   </li>
                   <li>
-                    <Link onClick={ClickHandler} href="/blog">
-                      <span className="rolling-text">Blog</span>{" "}
+                    <Link onClick={ClickHandler} href="/locate-us">
+                      <span className="rolling-text">Locate Us</span>{" "}
                     </Link>
                   </li>
                   <li>
-                    <Link onClick={ClickHandler} href="/contact">
-                      <span className="rolling-text">Contact</span>
+                    <Link onClick={ClickHandler} href="/e-catalogue">
+                      <span className="rolling-text">E-Catalogue</span>
                     </Link>
                   </li>
                 </ul>

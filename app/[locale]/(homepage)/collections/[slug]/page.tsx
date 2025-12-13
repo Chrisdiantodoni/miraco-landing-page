@@ -1,8 +1,9 @@
 import CollectionProducts from "@/components/Collections/CollectionProducts";
-import Hero9 from "@/components/Hero/Hero9";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import { Fragment } from "react/jsx-runtime";
-import api from "@/api";
+import { getProducts } from "@/lib/api/queries/product";
+import { getSiteData } from "@/lib/api/queries/settings";
+import { Collection } from "@/lib/types";
 
 type Props = {
   params: Promise<{
@@ -10,11 +11,23 @@ type Props = {
   }>;
 };
 
+export async function generateStaticParams() {
+  const { collections } = (await getSiteData()) as {
+    collections: Collection[];
+  };
+
+  return collections.map((collection) => ({
+    slug: collection.collection_name,
+  }));
+}
+
+export const dynamicParams = false;
+
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-
-  const productsArray = api();
-  const currentProducts = productsArray.slice(8, 16);
+  const products = await getProducts({
+    collection_slug: slug,
+  });
 
   return (
     <Fragment>
@@ -24,10 +37,9 @@ export default async function Page({ params }: Props) {
       /> */}
       {/* <Hero9 /> */}
       <PageTitle pageTitle="Collections" pagesub="Collections" paddingTop={0} />
-
       <CollectionProducts
         // hclass={"wpo-product-section-s2 section-padding"}
-        products={currentProducts}
+        data={products}
       />
     </Fragment>
   );

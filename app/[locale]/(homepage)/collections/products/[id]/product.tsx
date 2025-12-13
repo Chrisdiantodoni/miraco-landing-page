@@ -1,0 +1,340 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import { Link } from "@/i18n/navigation";
+import { Meta } from "@/lib/types";
+import { Product as ProductTypes } from "@/lib/types/product/product";
+import { BadgeCheck, Check, LucideDownload, Maximize, X } from "lucide-react";
+import Image from "next/image";
+import React, { useState } from "react";
+import "react-medium-image-zoom/dist/styles.css";
+import Slider from "react-slick";
+
+interface productDetailProps {
+  data: {
+    meta: Meta;
+    data: ProductTypes;
+  };
+}
+
+const getProductFormattedCode = (p: ProductTypes | any) => {
+  if (!p?.code) return "No code provided";
+
+  const categoryCode = p.sub_collection?.category?.code || "";
+  const productCode = p.code;
+  const subCategoryCode = p.finishing?.code || "";
+
+  const parts = [categoryCode, productCode, subCategoryCode].filter(
+    (part) => part && part.trim()
+  );
+  return parts.join(" ");
+};
+
+const Product = ({ data }: productDetailProps) => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+  const product = data?.data;
+  const relatedProducts = product?.related_products;
+  const currentProduct = product;
+  const allPillProducts: (ProductTypes | any)[] = [];
+  if (currentProduct) {
+    allPillProducts.push(currentProduct);
+  }
+  relatedProducts.forEach((rp: any) => {
+    if (rp.id !== currentProduct?.id) {
+      allPillProducts.push(rp);
+    }
+  });
+
+  const [activeProductId, setActiveProductId] = useState<string | number>(
+    currentProduct?.id
+  );
+
+  // 3. Cari objek produk aktif berdasarkan ID (derived state)
+  // Ini akan digunakan untuk memperbarui konten detail jika Anda mengimplementasikannya
+  const activeProduct = allPillProducts.find(
+    (p) => p.id === activeProductId
+  ) as ProductTypes;
+
+  // 4. Handler klik pada pill
+  const handlePillClick = (productId: string | number) => {
+    // HANYA MENGUBAH STATE, tidak mengubah URL halaman
+    setActiveProductId(productId);
+    // Anda bisa menambahkan logika lain di sini (misalnya, fetch data jika diperlukan)
+  };
+
+  // Menggunakan kode produk dari activeProduct (jika Anda ingin detail berubah berdasarkan pill)
+  const formattedCode = getProductFormattedCode(activeProduct);
+
+  const allMedia = activeProduct?.media || [];
+  const productDownload = allMedia.find(
+    (find) => find?.type == "product_to_download"
+  );
+  const thumbnail = allMedia.find((find) => find?.type === "product_thumbnail");
+  const otherMedia = allMedia.filter(
+    (find) =>
+      find?.type !== "product_to_download" &&
+      find?.type !== "product_thumbnail" &&
+      find?.image_url &&
+      find.image_url.length > 0
+  );
+
+  const sliderMedia: { image_url: string; alt: string }[] = [];
+
+  // 1. Tambahkan Media Download (Indeks 0)
+  if (productDownload?.image_url?.trim()) {
+    sliderMedia.push({
+      image_url: productDownload.image_url,
+      alt: activeProduct?.name || "Product Download Image",
+    });
+  }
+
+  // 2. Tambahkan Thumbnail (Indeks 1, atau Indeks 0 jika downloadMedia tidak ada)
+  if (thumbnail?.image_url?.trim()) {
+    sliderMedia.push({
+      image_url: thumbnail.image_url,
+      alt: activeProduct?.name || "Product Thumbnail",
+    });
+  }
+
+  // 3. Tambahkan Media Lain (Setelahnya)
+  otherMedia.forEach((media) => {
+    if (media?.image_url?.trim()) {
+      sliderMedia.push({
+        image_url: media.image_url,
+        alt: activeProduct?.name || "Product Image",
+      });
+    }
+  });
+  const hasImages = sliderMedia.length > 0;
+
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentZoomImage, setCurrentZoomImage] = useState<{
+    url: string;
+    alt: string;
+    index: number;
+  } | null>(null);
+
+  const handleZoomClick = (url: string, alt: string) => {
+    // Cari indeks gambar di sliderMedia untuk navigasi
+    const index = sliderMedia.findIndex((item) => item.image_url === url);
+
+    setCurrentZoomImage({ url, alt, index });
+    setLightboxOpen(true);
+  };
+
+  // Tutup lightbox
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    setCurrentZoomImage(null);
+  };
+
+  return (
+    <div className="row mt-5">
+      {lightboxOpen && currentZoomImage && (
+        <div className="custom-lightbox-overlay" onClick={closeLightbox}>
+          {/* TOMBOL CLOSE DIPINDAHKAN DI SINI (Anak langsung dari Overlay) */}
+          <button
+            className="lightbox-close-btn"
+            onClick={closeLightbox}
+            aria-label="Tutup"
+          >
+            <X />
+          </button>
+
+          <div
+            className="custom-lightbox-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Tampilkan Gambar Besar */}
+            <div className="lightbox-image-container">
+              <Image
+                src={currentZoomImage.url}
+                alt={currentZoomImage.alt}
+                sizes="100vw"
+                fill
+                style={{
+                  objectFit: "contain",
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="col col-lg-5 col-12">
+        <div className="shop-single-slider">
+          <div className="slider-nav">
+            {hasImages ? (
+              <Slider {...settings}>
+                {sliderMedia.map((mediaItem, index) => {
+                  return (
+                    <div key={index}>
+                      <div className="product-image-wrapper">
+                        <Image
+                          src={mediaItem?.image_url}
+                          alt={mediaItem.alt}
+                          sizes="(max-width: 991px) 100vw, 40vw"
+                          fill
+                          style={{ objectFit: "cover" }}
+                        />
+                        {/* Icon Zoom Overlay */}
+                        <button
+                          className="zoom-icon-btn"
+                          // Ganti `handleZoomClick` dengan fungsi yang sebenarnya memicu modal/fungsi zoom Anda
+                          onClick={() =>
+                            handleZoomClick(mediaItem.image_url, mediaItem.alt)
+                          }
+                          aria-label="Perbesar Gambar"
+                        >
+                          <Maximize size={24} />{" "}
+                          {/* Ganti dengan ikon pilihan Anda */}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </Slider>
+            ) : (
+              // =========================================================
+              <div className="placeholder">No Image Available</div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="col col-lg-7 col-12">
+        <div className="product-details">
+          <span>{formattedCode}</span>
+          <h2>{activeProduct?.name}</h2>
+
+          {/* <div className="price">
+            <span className="current">{item.price}</span>
+            <span className="old">{item.delPrice}</span>
+          </div> */}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: activeProduct?.description ?? <p></p>,
+            }}
+          />
+          <div className="product-specification">
+            <div className="product-spec-row">
+              <div>Category</div>
+              <div>
+                {activeProduct?.sub_collection?.category?.category_name}
+              </div>
+            </div>
+            <div className="product-spec-row">
+              <div>Collection</div>
+              <div>{activeProduct?.collection?.collection_name}</div>
+            </div>
+            <div className="product-spec-row">
+              <div>Sub Collection</div>
+              <div>{activeProduct?.sub_collection?.sub_collection_name}</div>
+            </div>
+            <div className="product-spec-row">
+              <div>Finish</div>
+              <div>{activeProduct?.finishing?.sub_category_name}</div>
+            </div>
+            <div className="product-spec-row">
+              <div>Size</div>
+              <div>{activeProduct?.size}</div>
+            </div>
+            <div className="product-spec-row">
+              <div>Thickness</div>
+              <div>{activeProduct?.thickness}</div>
+            </div>
+            {activeProduct?.is_available_in_miraedge ? (
+              <div className="d-flex gx-2">
+                <Check className="text-success" />
+                <div>MiraEdge</div>
+              </div>
+            ) : null}
+          </div>
+          {allPillProducts && allPillProducts.length > 0 && (
+            <div className="related-products-pills">
+              <div className="pills-container">
+                {allPillProducts.map((p: any) => {
+                  // Fungsi untuk mendapatkan formattedCode dari produk terkait
+
+                  const pillFormattedCode = getProductFormattedCode(p);
+
+                  // Tentukan apakah ini adalah produk yang sedang aktif
+                  const isActive = p.id === activeProductId;
+
+                  // Dapatkan HEX Warna
+                  const colorHex = p.color_hex ?? "#000000";
+
+                  return (
+                    <button
+                      type="button"
+                      // Menggunakan button (bukan Link) karena kita hanya mengubah state lokal
+                      key={p.id}
+                      onClick={() => handlePillClick(p.id)}
+                      className={`product-pill ${
+                        isActive ? "active-pill" : ""
+                      }`}
+                    >
+                      {/* =================================================== */}
+                      {/* INDIKATOR WARNA */}
+                      {/* =================================================== */}
+                      {colorHex && (
+                        <div
+                          className="color-dot"
+                          style={{
+                            backgroundColor: colorHex,
+                            border: colorHex.toLowerCase().startsWith("#f")
+                              ? "1px solid #000000" // Hanya border hitam jika warna putih
+                              : "none",
+                          }}
+                        />
+                      )}
+                      {/* =================================================== */}
+
+                      {pillFormattedCode}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div className="product-option">
+            <div className="product-row">
+              <button className="theme-btn2">Order</button>
+              <button className="theme-btn ms-2">
+                <LucideDownload />
+                Download
+              </button>
+            </div>
+          </div>
+          <div className="product-back-btn">
+            <Link
+              href={`/collections/${
+                product?.collection?.collection_name || ""
+              }`}
+            >
+              Back to {product?.collection?.collection_name} /{" "}
+              {product?.collection?.collection_name} CORE
+            </Link>
+          </div>
+          {/* <div className="tg-btm">
+            <p>
+              <span>Categories:</span>
+              {item.brand}
+            </p>
+            <p>
+              <span>Tags:</span>
+              {item.category}
+            </p>
+          </div> */}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Product;

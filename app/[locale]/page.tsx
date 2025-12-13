@@ -8,22 +8,33 @@ import PageTitle from "@/components/PageTitle/PageTitle";
 import Image from "next/image";
 import CollectionSections from "@/components/Collections/CollectionSections";
 import ProjectSection from "@/components/Projects/ProjectSection";
+import { getHome } from "@/lib/api/queries/home";
+import { getLocale } from "next-intl/server";
 
-export default function Index() {
+export const delay = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export default async function Index() {
+  const locale = await getLocale();
+  // await delay(2000);
+  const { data } = await getHome({ locale });
   return (
     <Fragment>
-      <Hero6 />
-      <ServiceSectionS6 hclass={"wpo-service-section-s6"} />
-      <PartnerSection hclass={"wpo-partners-section fade_bottom"} />
-      <PageTitle pageTitle="Collections" pagesub="Here is Our Collection" />
-      <CollectionSections />
+      <Hero6 hero={data?.hero} />
+      <div className="container">
+        <ServiceSectionS6 hclass={"wpo-service-section-s6"} />
+        <PartnerSection hclass={"wpo-partners-section fade_bottom"} />
+        <PageTitle pageTitle="Collections" pagesub="Here is Our Collection" />
+        <CollectionSections />
 
-      <PageTitle
-        pageTitle="Projects"
-        pagesub="See Our Projects"
-        paddingTop={100}
-      />
-      <ProjectSection hclass={"wpo-project-section section-padding"} />
+        <PageTitle
+          pageTitle="Projects"
+          pagesub="See Our Projects"
+          paddingTop={100}
+        />
+        <ProjectSection hclass={"wpo-project-section section-padding"} />
+      </div>
     </Fragment>
   );
 }

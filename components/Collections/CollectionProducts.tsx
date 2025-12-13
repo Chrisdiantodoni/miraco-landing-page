@@ -6,72 +6,42 @@ import arrow from "@/public/images/right-arrow-2.svg";
 import Pagination from "../Pagination/Pagination";
 import SidebarFilter from "../SidebarFilter.tsx/SidebarFilter";
 import SearchInput from "../Input/SearchInput";
-import { PaginationMeta, PaginationProps } from "@/lib/types/pagination";
+import { PaginationMeta } from "@/lib/types/pagination";
+import { ProductListResponse } from "@/lib/types/product/product";
+import Image from "next/image";
+import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
 
-export const INITIAL_PAGINATION_DATA: PaginationProps["paginationData"] = {
-  data: [],
-  meta: {
-    current_page: 1,
-    last_page: 1,
-    total: 0,
-    per_page: 10,
-    from: 0,
-    to: 0,
-    path: "",
-    first_page_url: "",
-    last_page_url: "",
-    next_page_url: null,
-    prev_page_url: null,
-  },
-  links: {
-    first: null,
-    last: null,
-    prev: null,
-    next: null,
-  },
+interface CollectionProductProps {
+  data: ProductListResponse;
+}
+
+const getProductFormattedCode = (p: any) => {
+  if (!p?.code) return "No code provided";
+
+  const categoryCode = p.sub_collection?.category?.code || "";
+  const productCode = p.code;
+  const subCategoryCode = p.finishing?.code || "";
+
+  const parts = [categoryCode, productCode, subCategoryCode].filter(
+    (part) => part && part.trim()
+  );
+  return parts.join(" ");
 };
 
-export const getDefaultPaginationData = (
-  total = 0,
-  perPage = 10,
-  currentPage = 1
-) => ({
-  data: [],
-  meta: {
-    current_page: currentPage,
-    last_page: Math.ceil(total / perPage) || 1,
-    total,
-    per_page: perPage,
-    from: total === 0 ? 0 : (currentPage - 1) * perPage + 1,
-    to: Math.min(currentPage * perPage, total),
-  },
-  links: {
-    first: null,
-    last: null,
-    prev: null,
-    next: null,
-  },
-});
-
-const CollectionProducts = ({
-  //   hclass,
-  products,
-}: //   addToCartProduct,
-//   addToWishListProduct,
-{
-  products: any[];
-}) => {
+const CollectionProducts = ({ data }: CollectionProductProps) => {
   const ClickHandler = () => {
     window.scrollTo(10, 0);
   };
 
+  // Tentukan ukuran ikon yang Anda inginkan (misalnya 16x16 pixel)
+  const ICON_SIZE = 16;
+  const dataProducts = data?.data;
+  const products = dataProducts?.data || [];
+
   return (
-    <section
-      //   className={hclass}
-      className="wpo-shop-section section-padding pt-4"
-    >
+    <section className="section-padding pt-4">
       <div className="container">
-        <div className="row">
+        <div className="row g-5">
           {/* Sidebar - Col 3 */}
           <div className="col col-lg-3 col-12 mb-lg-0 mb-3">
             <SidebarFilter />
@@ -80,49 +50,105 @@ const CollectionProducts = ({
           {/* Products - Col 9 */}
           <div className="col col-lg-9 col-12">
             <div className="row">
-              <div
-                className="col-12"
-                style={{
-                  marginBottom: 20,
-                }}
-              >
-                <SearchInput />
+              <div className="col-12" style={{ marginBottom: 30 }}>
+                <SearchInput onSearch={() => {}} />
               </div>
-              {products.map((product, index) => (
-                <div
-                  className="col col-lg-3 col-md-6 col-12 fade_bottom"
-                  key={index}
-                >
-                  <div className="shop-card">
-                    <div className="image">
-                      <img src={product.proImg} alt="" />
-                    </div>
-                    <div className="content">
-                      <h2>
-                        <Link
-                          onClick={ClickHandler}
-                          href={"/shop-single/[slug]"}
-                          as={`/shop-single/${product.slug}`}
-                        >
-                          {product.title}
-                        </Link>
-                      </h2>
-                      <del>${product.delPrice}</del>
-                      <span>${product.price}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
+            <div className="row g-5">
+              {/* Search Input */}
 
-            {/* Pagination - Full Width */}
-            <div className="col-12">
-              <Pagination
-                paginationData={getDefaultPaginationData(100, 10, 1)}
-                onPageChange={(page) => {
-                  // handle page change
-                }}
-              />
+              {/* Products Grid */}
+              {products.length > 0 ? (
+                products.map((product, index) => {
+                  const productImage = product?.media?.find(
+                    (find) => find?.type == "product_thumbnail"
+                  )?.image_url;
+
+                  return (
+                    <div
+                      className="col col-lg-3 col-md-6 col-12 fade_bottom"
+                      key={product?.id || index}
+                    >
+                      <Link
+                        onClick={ClickHandler}
+                        href={`/collections/products/${product?.id}`}
+                      >
+                        <div className="shop-card">
+                          <div className="image">
+                            {productImage ? (
+                              <Image
+                                src={productImage}
+                                alt={product?.name || "Product image"}
+                                width={350}
+                                height={350}
+                                style={{
+                                  objectFit: "contain",
+                                  width: "100%",
+                                  height: "auto",
+                                }}
+                                priority={index < 2}
+                              />
+                            ) : (
+                              <div className="placeholder">
+                                No Image Available
+                              </div>
+                            )}
+                          </div>
+                          <div className="content">
+                            {product?.name && (
+                              <div className="product-info-row">
+                                {/* KIRI: KODE DAN NAMA DALAM SATU GRUP */}
+                                <div className="product-text-group">
+                                  {/* Baris 1: Kode Terformat */}
+                                  <span
+                                    className="product-code"
+                                    style={{ fontWeight: 500 }}
+                                  >
+                                    {getProductFormattedCode(product)}
+                                  </span>
+
+                                  {/* Baris 2: Nama Produk */}
+                                  <span className="product-name-text">
+                                    {product.name}
+                                  </span>
+                                </div>
+                                {product?.is_available_in_miraedge == 1 && (
+                                  <Image
+                                    src={miraedge}
+                                    alt="Product Icon"
+                                    width={ICON_SIZE}
+                                    height={ICON_SIZE}
+                                    className="product-icon"
+                                    style={{
+                                      objectFit: "contain",
+                                      flexShrink: 0,
+                                    }}
+                                  />
+                                )}
+                                {/* KANAN: ICON MIRAEDGE */}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="col-12 text-center py-5">
+                  <p>No products found</p>
+                </div>
+              )}
+
+              {/* Pagination - Full Width */}
+              <div className="col-12">
+                <Pagination
+                  paginationData={data?.data}
+                  onPageChange={(page) => {
+                    // handle page change
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
   },
+  reactStrictMode: false,
 };
 
 const withNextIntl = createNextIntlPlugin();

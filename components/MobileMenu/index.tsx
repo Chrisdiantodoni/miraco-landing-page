@@ -3,274 +3,95 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/List";
 import Collapse from "@mui/material/Collapse";
 import Link from "next/link";
-
-const menus = [
-  {
-    id: 1,
-    title: "Home",
-    link: "#",
-    submenu: [
-      {
-        id: 11,
-        title: "Modern Architecture",
-        link: "/home",
-      },
-      {
-        id: 12,
-        title: "Classic Architecture",
-        link: "/bliize-classic-architecture",
-      },
-      {
-        id: 13,
-        title: "Modern Architecture 02",
-        link: "/bliize-modern-architecture-s2",
-      },
-      {
-        id: 14,
-        title: "Classic Architecture Dark",
-        link: "/bliize-classic-architecture-dark",
-      },
-      {
-        id: 15,
-        title: "Classic Interior Design",
-        link: "/bliize-classic-interior-design",
-      },
-
-      {
-        id: 16,
-        title: "Classic Interior Design 02",
-        link: "/bliize-classic-interior-design-s2",
-      },
-
-      {
-        id: 17,
-        title: "Classic Interior Design Dark",
-        link: '/bliize-classic-interior-design-dark"',
-      },
-
-      {
-        id: 18,
-        title: "Renovation",
-        link: "/bliize-renovation",
-      },
-
-      {
-        id: 19,
-        title: "Modern Woocommerce",
-        link: "/bliize-modern-woocommerce",
-      },
-      {
-        id: 120,
-        title: "Minimal Woocommerce",
-        link: "/bliize-minimal-woocommerce",
-      },
-      {
-        id: 121,
-        title: "Urban Planning",
-        link: "/bliize-urban-planning",
-      },
-      {
-        id: 122,
-        title: "Costruction",
-        link: "/bliize-costruction",
-      },
-      {
-        id: 123,
-        title: "Costruction 02",
-        link: "/bliize-costruction-s2",
-      },
-      {
-        id: 124,
-        title: "Costruction Profile",
-        link: "/bliize-costruction-profile",
-      },
-      {
-        id: 125,
-        title: "Frelancer Architect",
-        link: "/bliize-frelancer-architect",
-      },
-    ],
-  },
-
-  {
-    id: 2,
-    title: "Pages",
-    link: "#",
-    submenu: [
-      {
-        id: 21,
-        title: "About Us",
-        link: "/about",
-      },
-      {
-        id: 22,
-        title: "Services",
-        link: "/services",
-      },
-      {
-        id: 23,
-        title: "Service single",
-        link: "/service-single/Custom-Solutions",
-      },
-      {
-        id: 24,
-        title: "Team",
-        link: "/team",
-      },
-      {
-        id: 25,
-        title: "Team single",
-        link: "/team-single/Robert-Fox",
-      },
-      {
-        id: 26,
-        title: "Pricing",
-        link: "/pricing",
-      },
-      {
-        id: 27,
-        title: "Login",
-        link: "/login",
-      },
-      {
-        id: 28,
-        title: "Contact Us",
-        link: "/contact",
-      },
-      {
-        id: 29,
-        title: "privacy",
-        link: "/privacy",
-      },
-      {
-        id: 221,
-        title: "Terms",
-        link: "/terms",
-      },
-      {
-        id: 222,
-        title: "404 Error",
-        link: "/404",
-      },
-    ],
-  },
-
-  {
-    id: 3,
-    title: "Projects",
-    link: "#",
-    submenu: [
-      {
-        id: 31,
-        title: "Projects",
-        link: "/projects",
-      },
-      {
-        id: 32,
-        title: "Projects Single",
-        link: "/project-single/Modern-House-In-UK",
-      },
-    ],
-  },
-
-  {
-    id: 4,
-    title: "Shop",
-    link: "#",
-    submenu: [
-      {
-        id: 41,
-        title: "Shop",
-        link: "/shop",
-      },
-      {
-        id: 42,
-        title: "Shop Single",
-        link: "/shop-single/Fresh-key-Lime",
-      },
-      {
-        id: 43,
-        title: "Cart",
-        link: "/cart",
-      },
-      {
-        id: 44,
-        title: "Checkout",
-        link: "/checkout",
-      },
-      {
-        id: 45,
-        title: "Wishlist",
-        link: "/wishlist",
-      },
-    ],
-  },
-  {
-    id: 5,
-    title: "Blog",
-    link: "#",
-    submenu: [
-      {
-        id: 51,
-        title: "Blog",
-        link: "/blog",
-      },
-      {
-        id: 52,
-        title: "Blog Left sidebar",
-        link: "/blog-left-sidebar",
-      },
-      {
-        id: 53,
-        title: "Blog full width",
-        link: "/blog-fullwidth",
-      },
-      {
-        id: 54,
-        title: "Blog single",
-        link: "/blog-single/How-To-Teach-Kids-Ramadan-Isn’t-About-Food1",
-      },
-    ],
-  },
-];
+import { useTranslations } from "next-intl";
+import { MenuItem } from "@/types/menu.types";
+import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
+import { X } from "lucide-react";
 
 const MobileMenu = () => {
   const [openId, setOpenId] = useState(0);
   const [menuActive, setMenuState] = useState(false);
+  const settings = useSiteSettings();
 
   const ClickHandler = () => {
     window.scrollTo(10, 0);
   };
+  const t = useTranslations("header");
 
+  const staticMenuData = t.raw("menu") as MenuItem[];
+  const collectionItems = settings?.collections?.map((item) => ({
+    title: item?.collection_name,
+    link: `/collections/${item?.collection_name}`,
+  }));
+
+  const newItems = staticMenuData.map((item, index) => {
+    if (index === 1) {
+      return {
+        ...item,
+        submenu: collectionItems,
+      };
+    }
+    return item;
+  });
   return (
     <div>
       <div className={`mobileMenu ${menuActive ? "show" : ""}`}>
         <div className="menu-close">
           <div className="clox" onClick={() => setMenuState(!menuActive)}>
-            <i className="ti-close"></i>
+            <X />
           </div>
         </div>
 
         <ul className="responsivemenu">
-          {menus.map((item, mn) => {
+          {newItems.map((item, mn) => {
+            const hasSubmenu = !!item.submenu;
+            const linkProps = {
+              className: "active",
+              onClick: ClickHandler,
+              // Jika memiliki submenu, gunakan onClick untuk toggle, bukan untuk navigasi langsung
+              href: hasSubmenu ? "#" : item.link,
+            };
             return (
               <ListItem className={item.id === openId ? "active" : ""} key={mn}>
                 {item.submenu ? (
                   <Fragment>
-                    <p
-                      onClick={() =>
-                        setOpenId(item.id === openId ? 0 : item.id)
-                      }
+                    <Link
+                      {...linkProps}
+                      // Lakukan toggle hanya jika ada submenu
+                      onClick={(e) => {
+                        ClickHandler(); // Scroll handler
+                        if (hasSubmenu) {
+                          e.preventDefault(); // Mencegah navigasi ke '#'
+                          setOpenId(
+                            item.id === openId ? 0 : (item.id as number)
+                          );
+                        }
+                      }}
+                      style={{
+                        // Terapkan display: flex agar ikon dan teks sejajar vertikal
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        // Jika Anda mempertahankan padding di CSS, ini mungkin tidak perlu
+                      }}
                     >
                       {item.title}
-                      <i
-                        className={
-                          item.id === openId
-                            ? "fa fa-angle-up"
-                            : "fa fa-angle-down"
-                        }
-                      ></i>
-                    </p>
+                      {hasSubmenu && (
+                        <i
+                          className={
+                            item.id === openId
+                              ? "fa fa-angle-up"
+                              : "fa fa-angle-down"
+                          }
+                          style={{
+                            // Ikon panah harus diletakkan di sini, bukan di p
+                            // Hapus CSS absolute dari ikon di p
+                            position: "static", // override absolute jika ada CSS li i
+                            marginLeft: "10px",
+                          }}
+                        ></i>
+                      )}
+                    </Link>
                     <Collapse
                       in={item.id === openId}
                       timeout="auto"

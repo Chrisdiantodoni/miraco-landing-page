@@ -8,7 +8,7 @@ import { Fragment } from "react/jsx-runtime";
 export default function page() {
   return (
     <Fragment>
-      <Hero6 />
+      {/* <Hero6 /> */}
       <PageTitle pageTitle={"Dream House Residentials"} pagesub={"Projects"} />
 
       <ProjectSection

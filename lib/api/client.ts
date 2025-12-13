@@ -1,0 +1,128 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Laravel standard response structure
+export type LaravelResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+  meta?: {
+    current_page?: number;
+    last_page?: number;
+    per_page?: number;
+    total?: number;
+    [key: string]: any;
+  };
+  errors?: Record<string, string[]>;
+};
+
+type ApiOptions = {
+  method?: string;
+  body?: any;
+  token?: string;
+  revalidate?: number;
+  params?: Record<string, any>;
+};
+
+// ========================================
+// HELPER FUNCTIONS
+// ========================================
+
+function buildUrl(url: string, params?: Record<string, any>) {
+  if (!params) return url;
+  const query = new URLSearchParams(params).toString();
+  return `${url}?${query}`;
+}
+
+async function baseFetch<T>(url: string, options?: ApiOptions): Promise<any> {
+  try {
+    const { method = "GET", body, token, revalidate, params } = options || {};
+    const isFormData = body instanceof FormData;
+    // Validate URL
+    if (!url) {
+      throw new Error("URL is required for API call");
+    }
+
+    const fullUrl = buildUrl(url, params);
+
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
+
+    if (body && method !== "GET") {
+      headers["Content-Type"] = "application/json";
+    }
+
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(fullUrl, {
+      method,
+      headers,
+      body: isFormData ? body : body ? JSON.stringify(body) : undefined,
+      next: revalidate ? { revalidate } : undefined,
+    });
+
+    // Parse response
+    const responseData = await res.json();
+
+    // Check if response is OK
+    if (!res.ok) {
+      // Laravel error response
+      const errorMessage =
+        responseData.message || responseData.error || `API Error ${res.status}`;
+
+      throw new Error(errorMessage);
+    }
+
+    // Return full Laravel response
+    return responseData as LaravelResponse<T>;
+  } catch (error) {
+    console.error("API Request failed:", error);
+
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error(
+      typeof error === "string" ? error : "An unexpected error occurred"
+    );
+  }
+}
+
+// ========================================
+// API CLIENT
+// ========================================
+
+export const api = {
+  // GET request - returns full Laravel response
+  get: <T>(
+    url: string,
+    opts?: { params?: any; revalidate?: number; token?: string }
+  ) => baseFetch<T>(url, { method: "GET", ...opts }),
+
+  // GET request - returns only data (convenience method)
+  getData: async <T>(
+    url: string,
+    opts?: { params?: any; revalidate?: number; token?: string }
+  ): Promise<T> => {
+    const response = await baseFetch<T>(url, { method: "GET", ...opts });
+    return response.data;
+  },
+
+  post: <T>(url: string, body: any, token?: string) =>
+    baseFetch<T>(url, { method: "POST", body, token }),
+
+  postFormData: <T>(url: string, body: FormData, token?: string) =>
+    baseFetch<T>(url, { method: "POST", body, token }),
+  // POST request - returns only data (convenience method)
+  postData: async <T>(url: string, body: any, token?: string): Promise<T> => {
+    const response = await baseFetch<T>(url, { method: "POST", body, token });
+    return response.data;
+  },
+
+  put: <T>(url: string, body: any, token?: string) =>
+    baseFetch<T>(url, { method: "PUT", body, token }),
+
+  delete: <T>(url: string, token?: string) =>
+    baseFetch<T>(url, { method: "DELETE", token }),
+};

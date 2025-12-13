@@ -2,16 +2,16 @@ import { useLocale } from "next-intl";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
+export const languageOptions = [
+  { code: "en", label: "ENG", flag: "🇺🇸" },
+  { code: "id", label: "ID", flag: "🇮🇩" },
+  { code: "zh", label: "CN", flag: "🇨🇳" },
+];
+
 const LanguageSwitcher = () => {
   const locale = useLocale();
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const languageOptions = [
-    { code: "en", label: "ENG", flag: "🇺🇸" },
-    { code: "id", label: "ID", flag: "🇮🇩" },
-    { code: "zh", label: "CN", flag: "🇨🇳" },
-  ];
 
   // Tutup dropdown saat klik di luar
   useEffect(() => {

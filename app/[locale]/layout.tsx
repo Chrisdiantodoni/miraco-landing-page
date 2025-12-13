@@ -8,12 +8,12 @@ import Topbar from "@/components/TopBar";
 import { Poppins } from "next/font/google";
 import { Providers } from "./provider";
 import type { Metadata } from "next";
-import { fetchSiteData } from "@/lib/api/settings";
-import { SiteProvider } from "@/lib/providers/SiteProvider";
 import Footer from "@/components/Footer/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
+import { SiteSettingsProvider } from "@/lib/providers/SiteSettingProvider";
+import { ToastContainer } from "react-toastify";
+import { getSiteData } from "@/lib/api/queries/settings";
 type Props = {
   children: ReactNode;
   params: Promise<{ locale: string }>;
@@ -30,7 +30,7 @@ const poppins = Poppins({
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await fetchSiteData();
+  const data = await getSiteData();
   const settings = data.site_settings;
 
   return {
@@ -50,19 +50,18 @@ export default async function LocaleLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  const siteData = await fetchSiteData();
-
+  const siteData = await getSiteData();
   return (
-    <html lang={locale}>
+    <html lang={locale} data-scroll-behavior="smooth">
       <head>
-        <link rel="icon" href={siteData.site_settings.logo_dark_url} />
+        <link rel="icon" href={siteData?.site_settings?.logo_dark_url} />
         <meta
           property="og:image"
-          content={siteData.site_settings.logo_dark_url}
+          content={siteData?.site_settings?.logo_dark_url}
         />
       </head>
       <body className={poppins.className}>
-        <SiteProvider initialData={siteData}>
+        <SiteSettingsProvider settings={siteData}>
           <Providers>
             <NextIntlClientProvider>
               {/* <Topbar /> */}
@@ -79,9 +78,10 @@ export default async function LocaleLayout({ children, params }: Props) {
               {children}
 
               <Footer logo={siteData?.site_settings?.logo_dark_url} />
+              <ToastContainer />
             </NextIntlClientProvider>
           </Providers>
-        </SiteProvider>
+        </SiteSettingsProvider>
       </body>
     </html>
   );

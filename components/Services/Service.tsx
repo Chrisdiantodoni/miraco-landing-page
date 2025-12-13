@@ -3,18 +3,18 @@ import Link from "next/link";
 // import Services from "../../api/Services";
 import Image from "next/image";
 import Services from "@/app/api/templates-api/Services";
-import { useSiteStore } from "@/lib/store/siteStore";
+import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
 };
 const ServiceSectionS6 = (props: { hclass: string }) => {
-  const { data } = useSiteStore();
+  const data = useSiteSettings();
 
   // console.log();
   return (
     <section className={"" + props.hclass}>
-      <div className="container-fluid">
+      <div className="container">
         <div className="service-wrap">
           <div className="title fade_bottom">
             <h2>Our Services For You</h2>

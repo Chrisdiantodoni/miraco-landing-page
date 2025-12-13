@@ -1,13 +1,148 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { RequestResponse } from "@/lib/types/request/request";
 import React, { useState } from "react";
+import { useForm, Controller, FieldValues, useWatch } from "react-hook-form";
+import {
+  Form,
+  FormFeedback, // Digunakan untuk pesan error
+  FormGroup, // Digunakan untuk membungkus label, input, dan feedback
+  Input, // Komponen input dari Reactstrap
+  Label,
+} from "reactstrap";
 
-const Contactpage = () => {
-  const [forms, setForms] = useState({
-    name: "",
-    email: "",
-    adress: "",
-    service: "",
-    note: "",
+import dynamic from "next/dynamic";
+import { useMutation } from "@tanstack/react-query";
+import { sendFormSpreee, storeRequest } from "@/lib/api/queries/request";
+import { toast } from "react-toastify";
+interface ContactPageProps {
+  data: RequestResponse;
+}
+
+const DynamicClientSelect = dynamic(() => import("../Input/ClientSelect"), {
+  ssr: false,
+  loading: () => (
+    <Input type="select" className="form-control" disabled defaultValue="">
+      <option>Loading options...</option>
+    </Input>
+  ), // Opsional: Tampilkan loading state
+});
+// Definisikan tipe input yang baru
+interface RequestFormFields extends FieldValues {
+  name: string;
+  email: string;
+  region: string;
+  phone_number: string;
+  instagram: string;
+  address: string;
+  company_name: string;
+  product_requests: string;
+  description: string;
+  banner_size: string;
+}
+
+const Contactpage = ({ data }: ContactPageProps) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<RequestFormFields>({
+    defaultValues: {
+      name: "",
+      email: "",
+      region_id: {
+        label: "",
+        value: "",
+      }, // Required
+      phone_number: "", // Required
+      instagram: "",
+      address: "",
+      company_name: "",
+      product_requests: "",
+      description: "",
+    },
+  });
+
+  const productRequests = useWatch<any>({
+    control,
+    name: "product_requests",
+  });
+
+  const region = useWatch<any>({
+    control,
+    name: "region_id",
+  });
+  const productOptions = data?.data?.product_requests.map((item) => ({
+    label: item?.name,
+    value: item?.name,
+  }));
+
+  const regionOptions = data?.data?.regions.map((item) => ({
+    label: item?.region_name,
+    value: item?.id,
+  }));
+
+  // Fields yang wajib diisi (untuk helper label)
+  const requiredFields = [
+    "name",
+    "email",
+    "region_id",
+    "phone_number",
+    "product_requests",
+  ];
+
+  const onSubmit = async (data: RequestFormFields) => {
+    // 1. Destructure 'data' untuk memisahkan region_id
+    const { region_id, ...restOfData } = data; // region_id akan diisolasi, sisanya masuk ke restOfData
+
+    // 2. Cari label Region berdasarkan region_id yang sudah diisolasi
+    const regionLabel = regionOptions?.find(
+      (find) => find?.value == region_id
+    )?.label;
+
+    // 3. Gabungkan sisa data (restOfData) dengan properti region yang baru
+    const dataFormSpree = {
+      ...restOfData, // Semua data kecuali region_id
+      region: regionLabel, // Tambahkan properti 'region' dengan label yang benar
+    };
+
+    console.log({ dataFormSpree });
+    mutate(data);
+  };
+
+  // Helper untuk label dengan bintang merah
+  const getLabel = (fieldName: string, labelText: string) => (
+    <Label htmlFor={fieldName}>
+      {labelText}
+      {requiredFields.includes(fieldName) && (
+        <span className="required-star">*</span>
+      )}
+    </Label>
+  );
+
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (body: any) => {
+      // console.log({ body });
+      // return;
+      const response = await storeRequest(body);
+      return { response, body };
+    },
+    onSuccess: async ({ response, body }) => {
+      if (response?.meta?.code == 200) {
+        reset();
+        toast.success("Successfully Send Request");
+
+        // TIDAK menggunakan await, agar tugas ini berjalan di latar belakang
+        sendFormSpreee(body).catch((err) => {
+          toast.error("Failed to send Gmail");
+          console.error("Formspree failed:", err);
+        });
+      }
+    },
+    onError: (res: any) => {
+      console.log(res);
+    },
   });
 
   return (
@@ -15,130 +150,246 @@ const Contactpage = () => {
       <div className="container">
         <div className="row">
           <div className="col col-lg-10 offset-lg-1">
-            <div className="office-info">
-              <div className="row">
-                <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
-                  <div className="office-info-item">
-                    <div className="office-info-icon">
-                      <div className="icon">
-                        <i className="fi flaticon-placeholder"></i>
-                      </div>
-                    </div>
-                    <div className="office-info-text">
-                      <h2>Address</h2>
-                      <p>7 Green Lake Street Crawfordsville, IN 47933</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
-                  <div className="office-info-item">
-                    <div className="office-info-icon">
-                      <div className="icon">
-                        <i className="fi flaticon-email"></i>
-                      </div>
-                    </div>
-                    <div className="office-info-text">
-                      <h2>Email Us</h2>
-                      <p>bliize@gmail.com</p>
-                      <p>bliize@gmail.com</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col col-xl-4 col-lg-6 col-md-6 col-12">
-                  <div className="office-info-item">
-                    <div className="office-info-icon">
-                      <div className="icon">
-                        <i className="fi flaticon-phone-call"></i>
-                      </div>
-                    </div>
-                    <div className="office-info-text">
-                      <h2>Call Now</h2>
-                      <p>+1 800 123 456 789</p>
-                      <p>+1 800 123 654 987</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div className="wpo-contact-title">
-              <h2>Have Any Question?</h2>
+              <h2>Request From Us</h2>
               <p>
-                It is a long established fact that a reader will be distracted
-                content of a page when looking.
+                Tell us what you need, and our team will get in touch shortly.
               </p>
             </div>
             <div className="wpo-contact-form-area">
-              <form className="contact-validation-active">
-                <div>
-                  <input
-                    type="text"
-                    className="form-control"
+              {/* Menggunakan Form dari Reactstrap dan RHF handleSubmit */}
+              <Form
+                onSubmit={handleSubmit(onSubmit)}
+                className="contact-validation-active"
+              >
+                {/* 1. Name (required|string) */}
+                <FormGroup>
+                  {getLabel("name", "Name")}
+                  <Controller
                     name="name"
-                    value={forms.name}
-                    placeholder="Your Name*"
+                    control={control}
+                    rules={{ required: "Name is required." }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        className="form-control"
+                        placeholder="Name"
+                        id="name"
+                        invalid={!!errors.name} // Set invalid jika ada error
+                      />
+                    )}
                   />
-                  {/* {validator.message(
-                    "name",
-                    forms.name,
-                    "required|alpha_space"
-                  )} */}
-                </div>
-                <div>
-                  <input
-                    type="email"
-                    className="form-control"
+                  <FormFeedback>{errors.name?.message}</FormFeedback>
+                </FormGroup>
+
+                {/* 2. Email (required|email) */}
+                <FormGroup>
+                  {getLabel("email", "Email")}
+                  <Controller
                     name="email"
-                    value={forms.email}
-                    placeholder="Your Email*"
+                    control={control}
+                    rules={{
+                      required: "Email is required.",
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: "Email address is invalid.",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="email"
+                        className="form-control"
+                        placeholder="Email"
+                        id="email"
+                        invalid={!!errors.email}
+                      />
+                    )}
                   />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="adress"
-                    value={forms.adress}
-                    placeholder="Address"
+                  <FormFeedback>{errors.email?.message}</FormFeedback>
+                </FormGroup>
+
+                {/* 3. Region ID (required|string - SELECT) */}
+                <FormGroup>
+                  {getLabel("region_id", "Region")}
+                  <Controller
+                    name="region_id"
+                    rules={{ required: "Region is Required" }}
+                    control={control}
+                    render={({ field }) => (
+                      <DynamicClientSelect
+                        field={field}
+                        options={regionOptions}
+                        hasError={!!errors.region_id}
+                        placeholder="Select Region"
+                        isClearable={true}
+                      />
+                    )}
                   />
-                </div>
-                <div>
-                  <select
-                    name="service"
-                    className="form-control"
-                    value={forms.service}
-                  >
-                    <option value="" disabled>
-                      Services
-                    </option>
-                    <option>Subject 1</option>
-                    <option>Subject 2</option>
-                    <option>Subject 3</option>
-                    <option>Subject 4</option>
-                  </select>
-                </div>
-                <div className="fullwidth">
-                  <textarea
-                    className="form-control"
-                    name="note"
-                    value={forms.note}
-                    placeholder="Message..."
+                  {errors?.region_id && (
+                    <FormFeedback style={{ display: "block" }}>
+                      {errors.region_id.message as React.ReactNode}
+                    </FormFeedback>
+                  )}
+                </FormGroup>
+
+                {/* 4. Phone Number (required) */}
+                <FormGroup>
+                  {getLabel("phone_number", "Phone Number")}
+                  <Controller
+                    name="phone_number"
+                    control={control}
+                    rules={{ required: "Phone number is required." }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        className="form-control"
+                        placeholder="Phone Number"
+                        id="phone_number"
+                        invalid={!!errors.phone_number}
+                      />
+                    )}
                   />
-                </div>
+                  <FormFeedback>{errors.phone_number?.message}</FormFeedback>
+                </FormGroup>
+
+                {/* 5. Instagram (nullable) */}
+                <FormGroup>
+                  {getLabel("instagram", "Instagram Account")}
+                  <Controller
+                    name="instagram"
+                    control={control}
+                    // Tidak ada rules required
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        className="form-control"
+                        placeholder="Instagram (Optional)"
+                        id="instagram"
+                        invalid={!!errors.instagram}
+                      />
+                    )}
+                  />
+                  {/* <FormFeedback>{errors.instagram?.message}</FormFeedback> */}
+                </FormGroup>
+
+                {/* 6. Company Name (nullable) */}
+                <FormGroup>
+                  {getLabel("company_name", "Company Name")}
+                  <Controller
+                    name="company_name"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        className="form-control"
+                        placeholder="Company Name (Optional)"
+                        id="company_name"
+                        invalid={!!errors.company_name}
+                      />
+                    )}
+                  />
+                  {/* <FormFeedback>{errors.company_name?.message}</FormFeedback> */}
+                </FormGroup>
+
+                {/* 7. Address (nullable - Full Width) */}
+                <FormGroup className="fullwidth">
+                  {getLabel("address", "Address")}
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="textarea"
+                        className="form-control"
+                        placeholder="Address (Optional)"
+                        id="address"
+                        invalid={!!errors.address}
+                      />
+                    )}
+                  />
+                  {/* <FormFeedback>{errors.address?.message}</FormFeedback> */}
+                </FormGroup>
+
+                {/* 8. Product Requests (nullable - SELECT) */}
+                <FormGroup>
+                  {getLabel("product_requests", "Product Request")}
+                  <Controller
+                    name="product_requests"
+                    control={control}
+                    rules={{ required: "Product Request is Required" }}
+                    render={({ field }) => (
+                      <DynamicClientSelect
+                        field={field}
+                        options={productOptions}
+                        hasError={!!errors.product_requests}
+                        placeholder="Select Product"
+                        isClearable={true}
+                      />
+                    )}
+                  />
+                </FormGroup>
+                {productRequests == "Sample Product" && (
+                  <FormGroup className="fullwidth">
+                    {getLabel(
+                      "description",
+                      "Description (e.g., MR 1401 RK, 0.7 mm, 1220 x 2440 mm, 3 pcs (qty))"
+                    )}
+                    <Controller
+                      name="description"
+                      control={control}
+                      rules={{
+                        required:
+                          "Please specify the required product details.",
+                        pattern: {
+                          value:
+                            /^[\w\s]{2,}\s?,\s?\d+(\.\d+)?\s?(mm|cm|m)\s?,\s?\d+(\.\d+)?\s?x\s?\d+(\.\d+)?\s?(mm|cm|m)\s?,\s?\d+\s?(pcs|unit|roll|lembar)\s?(\(qty\))?$/i,
+                          message:
+                            "Format must be: Code, Thickness/Spec, Dimension, Quantity. E.g., MR 1401 RK, 0.7 mm, 1220 x 2440 mm, 3 pcs (qty)",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          className="form-control"
+                          placeholder="e.g MR 1401 RK, 0.7 mm, 1220 x 2440 mm, 3 pcs (qty)"
+                          id="description"
+                          invalid={!!errors.description}
+                        />
+                      )}
+                    />
+                    {errors?.description && (
+                      <FormFeedback style={{ display: "block" }}>
+                        {errors.description.message as React.ReactNode}
+                      </FormFeedback>
+                    )}
+                    {/* <FormFeedback>{errors.description?.message}</FormFeedback> */}
+                  </FormGroup>
+                )}
+                {/* 10. Description (nullable - Full Width Textarea) */}
+
+                {/* Submit Area & Status Messages */}
                 <div className="submit-area">
-                  <button type="submit" className="theme-btn">
-                    Get in Touch
+                  <button
+                    type="submit"
+                    className="theme-btn-s2"
+                    style={{
+                      border: "1px solid #000",
+                    }}
+                    disabled={isPending}
+                  >
+                    {isPending ? "Sending..." : "Get in Touch"}
                   </button>
                   <div id="loader">
                     <i className="ti-reload"></i>
                   </div>
                 </div>
-                <div className="clearfix error-handling-messages">
-                  <div id="success">Thank you</div>
-                  <div id="error">
-                    Error occurred while sending email. Please try again later.
-                  </div>
-                </div>
-              </form>
+              </Form>
             </div>
           </div>
         </div>

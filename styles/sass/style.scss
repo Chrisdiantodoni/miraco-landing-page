@@ -178,6 +178,58 @@ a {
     color: inherit;
   }
 }
+
+/* Dalam file CSS/SCSS global Anda (misalnya: styles/toast.css) */
+
+/* ------------------------------------------- */
+/* A. SUCCESS TOAST (Putih dengan Teks Hitam)  */
+/* ------------------------------------------- */
+
+/* Kontainer utama toast (warna background) */
+.Toastify__toast--success {
+  background: white !important; /* Background putih */
+  color: black !important; /* Teks hitam */
+  border: 1px solid #e0e0e0; /* Border abu-abu tipis (opsional) */
+}
+
+/* Progress bar (gunakan warna hitam/abu-abu) */
+.Toastify__progress-bar--success {
+  background: black !important;
+}
+
+/* Icon (berhasil/check) */
+.Toastify__toast--success > .Toastify__toast-icon {
+  color: black !important;
+}
+
+/* ---------------------------------------- */
+/* B. ERROR TOAST (Hitam dengan Teks Putih) */
+/* ---------------------------------------- */
+
+/* Kontainer utama toast (warna background) */
+.Toastify__toast--error {
+  background: black !important; /* Background hitam */
+  color: white !important; /* Teks putih */
+}
+
+/* Progress bar (gunakan warna putih/abu-abu terang) */
+.Toastify__progress-bar--error {
+  background: white !important;
+}
+
+/* Icon (error/cross) */
+.Toastify__toast--error > .Toastify__toast-icon {
+  color: white !important;
+}
+
+/* ---------------------------------------- */
+/* C. Lain-Lain (Info/Default/Warning)      */
+/* ---------------------------------------- */
+.Toastify__toast {
+  border-radius: 8px !important; /* Jaga agar tampilan tetap konsisten */
+  /* Pastikan semua elemen di dalamnya (body) juga berwarna hitam/putih */
+}
+
 // helpers
 @import "helpers/variables";
 @import "helpers/functions";

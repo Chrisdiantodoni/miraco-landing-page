@@ -1,681 +1,1131 @@
 /* 24. wpo-shop-single-page */
+
+// lightbox
+/* Overlay Gelap (Sudah Benar, memastikan layar penuh) */
+.custom-lightbox-overlay {
+  position: fixed; /* Kunci penempatan tombol absolute di pojok layar */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* ... lainnya ... */
+  z-index: 1000;
+}
+/* Kotak Konten Modal */
+.custom-lightbox-content {
+  position: relative;
+  width: 85vw; /* Hampir lebar penuh layar */
+  height: 100vh; /* Hampir tinggi penuh layar */
+  /* Pastikan gambar di dalamnya bisa diatur */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.lightbox-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 9999; /* Z-Index Tertinggi (Penting agar selalu di atas) */
+
+  /* Desain Dasar */
+  display: flex; /* Untuk menengahkan ikon X */
+  align-items: center;
+  justify-content: center;
+
+  width: 40px; /* Lebar dan Tinggi Tetap */
+  height: 40px;
+
+  border: none; /* Hilangkan border default */
+  padding: 0; /* Hilangkan padding default */
+  border-radius: 50%; /* Bentuk Bulat Sempurna */
+
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  /* Desain Kontras (agar terlihat di atas gambar) */
+  background-color: rgba(0, 0, 0, 0.5); /* Hitam semi-transparan */
+  color: white; /* Ikon selalu Putih */
+
+  /* Efek Hover */
+  &:hover {
+    background-color: $black; /* Hitam solid saat di-hover */
+    transform: scale(1.05); /* Sedikit efek zoom */
+  }
+
+  /* Gaya Ikon (Asumsi menggunakan ikon dari Lucide/React Icons) */
+  svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    line-height: 1;
+  }
+
+  /* Untuk tampilan mobile */
+  @media (max-width: 768px) {
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+/* Kontainer Gambar di dalam modal */
+.lightbox-image-container {
+  /* Kontainer gambar mengambil hampir seluruh ruang konten */
+  width: 100%;
+  height: 100%;
+  position: relative; /* Penting untuk gambar Next.js fill */
+}
+
+/* Gaya tambahan pada tag Image Next.js di dalam modal */
+.lightbox-image-container img {
+  /* Mengisi ruang di dalam container, mempertahankan rasio aspek, dan terlihat penuh */
+  object-fit: contain !important;
+}
+
+.lightbox-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3); /* Sedikit lebih terang saat di-hover */
+}
+
+/* Overlay Gelap (Pastikan background modal sangat gelap agar 'close' putih terlihat) */
+.custom-lightbox-overlay {
+  /* ... properti lainnya ... */
+  background: rgba(0, 0, 0, 0.95); /* Pastikan background sangat gelap */
+  /* ... */
+}
+/* Tambahkan di SCSS Anda */
+.product-image-wrapper {
+  position: relative; /* Wajib untuk Image fill */
+  width: 100%; /* Mengambil lebar penuh dari col-lg-5 */
+
+  /* Teknik untuk Rasio Aspek 5:7 (Tinggi/Lebar = 700/500 = 1.4 = 140%) */
+  /* Ini akan membuat tinggi wadah selalu 140% dari lebarnya */
+  padding-bottom: 140%;
+  height: 0; /* Mengabaikan height agar padding-bottom bekerja */
+  overflow: hidden; /* Penting untuk menjaga Image di dalam wadah */
+}
+.product-image-wrapper {
+  position: relative; /* Ini sudah ada, dan ini adalah KUNCI */
+  width: 100%;
+  padding-bottom: 140%;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Aturan untuk Tombol Ikon Zoom */
+.product-image-wrapper .zoom-icon-btn {
+  /* Penempatan */
+  position: absolute;
+  bottom: 15px; /* Jarak dari atas */
+  right: 15px; /* Jarak dari kanan */
+  z-index: 10; /* Harus lebih tinggi dari gambar (yang memiliki fill) */
+
+  /* Desain */
+  background: rgba(0, 0, 0, 0.5); /* Latar belakang semi-transparan */
+  color: white;
+  border: none;
+  border-radius: 50%; /* Membuat tombol bulat */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease; /* Transisi agar halus saat hover */
+}
+
+.custom-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9); /* Latar belakang gelap */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Pastikan di atas segalanya */
+}
+
+/* Efek Hover Opsional (untuk visual feedback) */
+.product-image-wrapper .zoom-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.8); /* Menjadi lebih gelap saat di-hover */
+}
 .wpo-shop-single-section {
+  /*** product slider ***/
+  .shop-single-slider {
+    .slick-prev,
+    .slick-next {
+      width: 40px;
+      height: 40px;
+      z-index: 10;
+      opacity: 1;
+      transition: all 0.3s ease;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
 
-    /*** product slider ***/
-    .shop-single-slider {
-        .slider-for {
-            text-align: center;
+      top: 50%;
+      transform: translateY(-50%);
 
-            img {
-                display: inline-block;
-                width: 100%;
-            }
-        }
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
 
-        .slider-nav {
-            padding: 0 25px;
+      &:hover {
+        background-color: $black;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
 
-            [data-rmiz-wrap="visible"] {
-                display: block;
-            }
-        }
+      &:focus {
+        background-color: $black;
+        outline: none;
+      }
 
-        .slider-nav>i {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            @include translatingY();
-            z-index: 100;
-        }
+      // Hilangkan default icon
+      &:before {
+        display: none;
+      }
 
-        .slider-nav>i:hover {
-            cursor: pointer;
-        }
-
-        .slider-nav .nav-btn-rt {
-            left: auto;
-            right: 0;
-        }
-
-        .slider-nav .slick-slide {
-            text-align: center;
-
-            img {
-                display: inline-block;
-                width: 100%;
-            }
-        }
+      // Custom SVG arrow
+      &:after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid $white;
+        border-right: 2px solid $white;
+        display: block;
+      }
     }
 
-    .product-details {
-        padding: 15px 30px 80px;
+    .slick-prev {
+      left: 15px;
 
-        @include media-query(1199px) {
-            padding: 10px 30px 15px;
+      &:after {
+        transform: rotate(-135deg);
+        margin-left: 3px;
+      }
+    }
+
+    .slick-next {
+      right: 15px;
+
+      &:after {
+        transform: rotate(45deg);
+        margin-right: 3px;
+      }
+    }
+
+    @include media-query(767px) {
+      .slick-prev,
+      .slick-next {
+        width: 32px;
+        height: 32px;
+
+        &:after {
+          width: 8px;
+          height: 8px;
         }
+      }
+
+      .slick-prev {
+        left: 10px;
+      }
+
+      .slick-next {
+        right: 10px;
+      }
+    }
+    .slider-for {
+      text-align: center;
+
+      img {
+        display: inline-block;
+        // width: 500px;
+      }
+    }
+
+    .slider-nav {
+      padding: 0 25px;
+
+      [data-rmiz-wrap="visible"] {
+        display: block;
+      }
+
+      .product-image-wrapper {
+        position: relative;
+        width: 100%;
+        padding-bottom: 140%;
+        height: 0;
+        overflow: hidden; /* <--- PENTING: Untuk menyembunyikan bagian yang di-zoom */
+      }
+
+      /* --- 2. Target Elemen Gambar untuk Transformasi --- */
+      /* Selector ini menargetkan tag <img> yang dihasilkan oleh Next.js 
+         di dalam struktur wrapper dan Zoom. */
+
+      /* Target <img> di dalam wrapper saat wrapper di-hover */
+      .product-image-wrapper:hover img {
+        transform: scale(1.1); /* Zoom sebesar 10% */
+      }
+
+      /* Target <img> di dalam wrapper untuk transisi */
+      .product-image-wrapper img {
+        transition: transform 0.4s ease-in-out; /* Transisi mulus */
+      }
+
+      /* Target elemen yang dibuat Next.js untuk Image fill (biasanya div) */
+      .product-image-wrapper > div {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Mungkin perlu selector yang lebih spesifik jika img tidak terdeteksi: */
+      /* Coba ini jika selector di atas gagal */
+      .product-image-wrapper:hover > div > img {
+        transform: scale(1.1);
+      }
+      .product-image-wrapper > div > img {
+        transition: transform 0.4s ease-in-out;
+      }
+    }
+
+    .slider-nav > i {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      @include translatingY();
+      z-index: 100;
+    }
+
+    .slider-nav > i:hover {
+      cursor: pointer;
+    }
+
+    .slider-nav .nav-btn-rt {
+      left: auto;
+      right: 0;
+    }
+
+    .slider-nav .slick-slide {
+      text-align: center;
+
+      img {
+        display: inline-block;
+        width: 100%;
+      }
+    }
+  }
+
+  .product-details {
+    .product-specification {
+      width: 100%; // Pastikan ini 100% dari parent (col-lg-7)
+      max-width: 350px; // Opsional: Batasi lebar maksimum agar tidak terlalu melebar di layar besar
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .product-spec-row {
+      display: flex;
+      justify-content: space-between; /* Memisahkan div:first-child (Label) dan div:last-child (Value) */
+      align-items: center;
+      padding: 10px 0;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #eee;
+      width: 100%; /* Penting untuk Flexbox */
+
+      div:first-child {
+        font-weight: 500;
+        // Memberi sedikit lebar minimal/preferred untuk label
+        flex-basis: 85%;
+        min-width: 200px;
+        color: #333; // Sesuaikan warna jika perlu
+      }
+
+      div:last-child {
+        font-weight: 400;
+        color: #555;
+        text-align: left; // Pastikan nilai spesifikasi rata kanan
+        flex-basis: 65%; // Sisanya untuk nilai
+      }
+    }
+    padding: 15px 30px 80px;
+
+    @include media-query(1199px) {
+      padding: 10px 30px 15px;
+    }
+
+    @include media-query(991px) {
+      margin-top: 45px;
+      padding: 40px 30px;
+    }
+
+    @include media-query(767px) {
+      padding: 0;
+    }
+    span {
+      font-size: 25px;
+      margin: 0 0 0.33em;
+      font-weight: 400;
+      color: #333333;
+    }
+
+    h2 {
+      font-size: 35px;
+      line-height: 1.4em;
+      margin: 0 0 0.33em;
+      font-weight: 400;
+
+      @include media-query(767px) {
+        font-size: 25px;
+      }
+    }
+
+    .price {
+      font-size: 25px;
+      color: $black;
+      margin: 7px 0 20px;
+      font-weight: 500;
+
+      @include media-query(991px) {
+        font-size: 30px;
+      }
+
+      @include media-query(767px) {
+        font-size: 25px;
+      }
+
+      .old {
+        font-size: 24px;
+        font-size: calc-rem-value(24);
+        font-weight: normal;
+        color: lighten($text-color, 20%);
+        text-decoration: line-through;
+        display: inline-block;
+        margin-left: 5px;
+        font-weight: 500;
 
         @include media-query(991px) {
-            margin-top: 45px;
-            padding: 40px 30px;
+          font-size: 20px;
+          font-size: calc-rem-value(20);
         }
 
         @include media-query(767px) {
-            padding: 0;
+          font-size: 18px;
+          font-size: calc-rem-value(18);
+        }
+      }
+    }
+
+    .product-rt {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .rating {
+        margin-right: 10px;
+
+        i {
+          color: #f9d322;
+          font-size: 20px;
+          font-style: normal;
+
+          &:last-child {
+            color: #ddd;
+          }
+        }
+      }
+    }
+
+    p {
+      margin-bottom: 1.3em;
+    }
+
+    ul {
+      list-style: none;
+
+      li {
+        padding-left: 20px;
+        position: relative;
+        margin-bottom: 10px;
+
+        &:before {
+          position: absolute;
+          left: 0;
+          top: 6px;
+          width: 8px;
+          height: 8px;
+          background: $black;
+          content: "";
+          border-radius: 50%;
+        }
+      }
+    }
+
+    /*** product option ***/
+    .product-option {
+      margin-top: 30px;
+    }
+
+    .tg-btm {
+      margin-top: 25px;
+
+      p {
+        margin-bottom: 0px;
+
+        span {
+          font-weight: 500;
+          color: $black;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .product-option .product-row {
+      button:after {
+        display: none;
+      }
+    }
+
+    .product-option .product-row > div {
+      display: inline-block;
+    }
+
+    .product-option .product-row > div + div {
+      margin-left: 15px;
+
+      .theme-btn {
+        border-radius: 0;
+        border-width: 1px;
+        height: 40px;
+        padding: 0 18px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .theme-btn2 {
+        border-radius: 0;
+        border-width: 1px;
+        height: 40px;
+        padding: 0 18px;
+        transition: all 0.3s ease-in-out;
+      }
+    }
+
+    .product-option .product-row > div:last-child .theme-btn:hover {
+      background: $black;
+      border-color: $black;
+      color: $white;
+    }
+
+    .product-option .theme-btn {
+      background-color: transparent;
+      color: #333;
+      font-size: 14px;
+      padding: 0 20px;
+      height: 35px;
+      outline: 0;
+      border: 2px solid #e6e6e6;
+      border-radius: 0;
+      transition: all 0.3s ease-in-out;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      vertical-align: middle; // Tambahkan ini
+
+      &:hover {
+        background-color: $black;
+        color: $white;
+        border-color: $black;
+      }
+
+      @include media-query(767px) {
+        font-size: 14px;
+        font-size: calc-rem-value(14);
+      }
+
+      &:before {
+        display: none;
+      }
+
+      svg {
+        width: 18px; // Sesuaikan ukuran
+        height: 18px;
+        display: block; // Penting!
+        flex-shrink: 0;
+      }
+    }
+
+    .product-option .theme-btn2 {
+      background-color: $black;
+      color: $white;
+      font-size: 14px;
+      padding: 0 20px;
+      height: 35px;
+      outline: 0;
+      border: 2px solid $black;
+      border-radius: 0;
+      transition: all 0.3s ease-in-out;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      vertical-align: middle; // Tambahkan ini
+
+      &:hover {
+        background-color: $white;
+        color: $black;
+        border-color: $black;
+      }
+
+      @include media-query(767px) {
+        font-size: 14px;
+        font-size: calc-rem-value(14);
+      }
+
+      &:before {
+        display: none;
+      }
+    }
+
+    .product-option .heart-btn i {
+      font-size: 15px;
+      font-size: calc-rem-value(15);
+    }
+
+    .product-option .product-row > div:last-child .theme-btn {
+      background-color: $white;
+      font-size: 18px;
+      font-size: calc-rem-value(18);
+      color: $text-color;
+      border: 1px solid lighten($black, 90%);
+    }
+
+    #product-count {
+      border-radius: 0;
+      border: 1px solid lighten($black, 90%);
+    }
+
+    #product-count:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    .product-back-btn {
+      margin-bottom: 25px; /* Memberi ruang di bawah tombol sebelum detail produk */
+      margin-top: 25px; /* Opsional: Sedikit geser ke atas untuk tata letak yang lebih baik */
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px; /* Jarak antara ikon (jika ada) dan teks */
+        font-size: 14px;
+        font-weight: 500;
+        color: #555; /* Warna teks yang sedikit lebih lembut */
+        text-decoration: none;
+        padding: 5px 0;
+        transition: color 0.2s ease-in-out;
+
+        /* Styling saat di-hover */
+        &:hover {
+          color: $black; /* Ganti dengan $black atau warna utama Anda */
+          text-decoration: underline; /* Menambahkan garis bawah saat di-hover */
         }
 
-        h2 {
-            font-size: 35px;
-            line-height: 1.4em;
-            margin: 0 0 0.33em;
-            font-weight: 500;
+        /* Opsional: Tambahkan indikator visual (seperti panah) */
+        &:before {
+          content: "\2190"; /* Karakter panah ke kiri (←) */
+          font-size: 18px;
+          line-height: 1;
+          display: block;
+        }
+      }
 
-            @include media-query(767px) {
-                font-size: 25px;
-            }
+      // Media Query untuk Tampilan Seluler (jika diperlukan)
+      @include media-query(767px) {
+        margin-bottom: 15px;
+
+        a {
+          font-size: 15px;
+        }
+      }
+    }
+    .related-products-pills {
+      margin-top: 25px;
+      margin-bottom: 25px;
+
+      h3 {
+        font-size: 18px;
+        font-weight: 400;
+        color: $black;
+        margin-bottom: 10px;
+      }
+
+      .pills-container {
+        display: flex;
+        flex-wrap: wrap; // Memungkinkan pills pindah baris
+        gap: 10px; // Jarak antar pills
+      }
+
+      .product-pill {
+        // Mengubah dari inline-block menjadi flex untuk menampung dot
+        display: inline-flex;
+        align-items: center; // Sejajarkan dot dan teks di tengah
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+
+        background-color: transparent;
+        color: #666;
+        border: 1px solid #ddd;
+
+        &:hover {
+          background-color: #ececec;
+          color: $black;
         }
 
-        .price {
-            font-size: 25px;
-            color: $black;
-            margin: 7px 0 20px;
-            font-weight: 500;
+        &.active-pill {
+          background-color: $black;
+          color: $white;
+          border-color: $black;
+          cursor: default;
+          pointer-events: none;
+        }
+      }
 
+      .color-dot {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%; // Bentuk bulat
+        margin-right: 8px; // Jarak antara dot dan teks kode
+        // Menambahkan border agar terlihat kontras jika warnanya putih
+        // border: 1px solid black;
+        flex-shrink: 0; // Pastikan dot tidak menyusut
+      }
+    }
 
-            @include media-query(991px) {
-                font-size: 30px;
-            }
+    .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-up,
+    .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-down {
+      border-radius: 0;
+      border-color: lighten($black, 90%);
+      display: block;
+      padding: 1px 4px;
+      font-size: 10px;
 
-            @include media-query(767px) {
-                font-size: 25px;
-            }
+      &:hover {
+        background-color: $theme-primary-color;
+        color: $white;
+      }
+    }
+  }
 
-            .old {
-                font-size: 24px;
-                font-size: calc-rem-value(24);
-                font-weight: normal;
-                color: lighten($text-color, 20%);
-                text-decoration: line-through;
-                display: inline-block;
-                margin-left: 5px;
-                font-weight: 500;
+  /*** product info ***/
+  .product-info {
+    margin-top: 75px;
 
-                @include media-query(991px) {
-                    font-size: 20px;
-                    font-size: calc-rem-value(20);
-                }
+    @media (max-width: 991px) {
+      margin-top: 40px;
+    }
 
-                @include media-query(767px) {
-                    font-size: 18px;
-                    font-size: calc-rem-value(18);
-                }
-            }
+    h4 {
+      font-size: 25px;
+      margin: 0;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: $black;
+    }
+
+    p {
+      margin-bottom: 1.3em;
+    }
+
+    .tab-pane p:last-child {
+      margin-bottom: 0;
+    }
+
+    /*** tabs ***/
+    .nav-tabs {
+      font-family: $heading-font;
+      border: 0;
+
+      @include media-query(767px) {
+        margin-bottom: 20px;
+      }
+    }
+
+    .nav-tabs li {
+      margin-right: 1px;
+    }
+
+    .nav-tabs li a.active {
+      border: 0;
+      outline: 0;
+    }
+
+    .nav-tabs a {
+      font-size: 15px;
+      font-size: calc-rem-value(15);
+      color: $text-color;
+      border: 0;
+      border-radius: 0;
+      margin: 0;
+      display: block;
+      padding: 12px 20px 11px;
+      font-family: $base-font;
+      position: relative;
+
+      @include media-query(767px) {
+        font-size: 14px;
+        font-size: calc-rem-value(14);
+        font-weight: normal;
+        padding: 10px 10px 8px;
+        text-transform: none;
+      }
+
+      &:before {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 3px;
+        background: $black;
+        border-radius: 4px;
+        content: "";
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    .nav-tabs a:hover,
+    .nav-tabs a.active {
+      &:before {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    .nav-tabs .active,
+    .nav-tabs li:hover {
+      border-color: $black;
+    }
+
+    .tab-content {
+      border-top: 1px solid transparentize($theme-primary-color, 0.7);
+      padding-top: 30px;
+      margin-top: -1px;
+
+      @include media-query(767px) {
+        border: 0;
+        padding: 0;
+        margin: 0;
+      }
+    }
+
+    /*** client rv ***/
+    .client-rv {
+      overflow: hidden;
+      margin-bottom: 30px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .client-pic {
+        width: 100px;
+        float: left;
+
+        img {
+          border-radius: 50%;
         }
 
+        @include media-query(767px) {
+          width: 100%;
+          float: none;
+          margin-bottom: 10px;
+        }
+      }
+
+      .details {
+        width: calc(100% - 130px);
+        float: right;
+
+        @include media-query(767px) {
+          width: 100%;
+          float: none;
+        }
+      }
+
+      .name-rating {
         .product-rt {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-
-            .rating {
-                margin-right: 10px;
-
-                i {
-                    color: #f9d322;
-                    font-size: 20px;
-                    font-style: normal;
-
-                    &:last-child {
-                        color: #ddd;
-                    }
-                }
-            }
+          display: flex;
+          align-items: center;
         }
+
+        .rating {
+        }
+      }
+
+      .name-rating-time {
+        @include media-query(767px) {
+          padding-bottom: 3px;
+        }
+      }
+
+      .name-rating-time > div,
+      .name-rating > div {
+        display: inline-block;
+        font-size: 14px;
+        font-size: calc-rem-value(14);
+
+        @include media-query(767px) {
+          font-size: 12px;
+          font-size: calc-rem-value(12);
+          display: block;
+        }
+      }
+
+      .rating {
+        padding-left: 12px;
+
+        i {
+          font-style: normal;
+          color: #f9d322;
+          font-size: 15px;
+
+          &:last-child {
+            color: #ddd;
+          }
+        }
+
+        @include media-query(767px) {
+          padding-left: 0;
+          margin: 4px 0 7px;
+        }
+      }
+
+      .name-rating-time .time {
+        float: right;
+        color: lighten($black, 70%);
+        text-transform: uppercase;
+
+        @include media-query(767px) {
+          float: none;
+        }
+      }
+
+      .review-body {
+        padding-top: 12px;
+      }
+    }
+
+    /*** review form ***/
+
+    .review-form {
+      margin-top: 45px;
+
+      h4 {
+        font-size: 30px;
+        font-weight: 500;
+      }
+
+      p {
+        margin-bottom: 1.73em;
+      }
+
+      .give-rat-sec {
+        margin-bottom: 10px;
 
         p {
-            margin-bottom: 1.3em;
+          margin-bottom: 0;
+        }
+      }
+
+      .give-rating {
+        display: inline-block;
+        position: relative;
+        height: 50px;
+        line-height: 50px;
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+
+      .give-rating label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .give-rating label:last-child {
+        position: static;
+      }
+
+      .give-rating label:nth-child(1) {
+        z-index: 5;
+      }
+
+      .give-rating label:nth-child(2) {
+        z-index: 4;
+      }
+
+      .give-rating label:nth-child(3) {
+        z-index: 3;
+      }
+
+      .give-rating label:nth-child(4) {
+        z-index: 2;
+      }
+
+      .give-rating label:nth-child(5) {
+        z-index: 1;
+      }
+
+      .give-rating label input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+      }
+
+      .give-rating label .icon {
+        float: left;
+        color: transparent;
+      }
+
+      .give-rating label:last-child .icon {
+        color: #ddd;
+      }
+
+      .give-rating:not(:hover) label input:checked ~ .icon,
+      .give-rating:hover label:hover input ~ .icon {
+        color: #ffd400;
+      }
+
+      .give-rating label input:focus:not(:checked) ~ .icon:last-child {
+        color: #ddd;
+        text-shadow: 0 0 5px #ffd400;
+      }
+
+      form {
+        input,
+        textarea {
+          background: transparent;
+          border-radius: 0;
+          box-shadow: none;
+          height: 50px;
+          border: 1px solid #efefef;
         }
 
-
-
-        ul {
-            list-style: none;
-
-            li {
-                padding-left: 20px;
-                position: relative;
-                margin-bottom: 10px;
-
-                &:before {
-                    position: absolute;
-                    left: 0;
-                    top: 6px;
-                    width: 8px;
-                    height: 8px;
-                    background: $black;
-                    content: "";
-                    border-radius: 50%;
-                }
-            }
+        .form-control {
+          font-size: 18px;
         }
 
-        /*** product option ***/
-        .product-option {
-            margin-top: 30px;
+        input:focus,
+        textarea:focus {
+          box-shadow: none;
+          outline: none;
         }
 
-        .tg-btm {
-            margin-top: 25px;
-
-            p {
-                margin-bottom: 0px;
-
-                span {
-                    font-weight: 500;
-                    color: $black;
-                    margin-right: 5px;
-                }
-            }
+        textarea {
+          height: 130px;
         }
 
-        .product-option .product-row {
-
-            button:after {
-                display: none;
-            }
-
+        > div {
+          margin-bottom: 27px;
         }
 
-        .product-option .product-row>div {
-
-            display: inline-block;
+        > div:last-child {
+          margin-bottom: 0;
         }
 
-        .product-option .product-row>div+div {
-            margin-left: 15px;
+        .theme-btn {
+          background-color: transparent;
+          color: #908f8f;
+          outline: 0;
+          box-shadow: none;
+          border-radius: 0;
+          border: 1px solid #efefef;
+          padding: 15px 45px;
 
-            .theme-btn {
-                border-radius: 0;
-                border-width: 1px;
-                height: 40px;
-                padding: 0 18px;
-                transition: all .3s ease-in-out;
-            }
-        }
-
-
-
-        .product-option .product-row>div:last-child .theme-btn:hover {
-            background: $black;
-            border-color: $black;
+          &:hover {
+            background-color: $black;
             color: $white;
-        }
+          }
 
-        .product-option .theme-btn {
-            background-color: transparent;
-            color: #333;
-            font-size: 14px;
-            padding: 0 20px;
-            height: 35px;
-            line-height: 32px;
-            outline: 0;
-            border: 2px solid #e6e6e6;
-            border-radius: 0;
-            transition: all .3s ease-in-out;
-
-            &:hover {
-                background-color: $black;
-                color: $white;
-                border-color: $black;
-            }
-
-            @include media-query(767px) {
-                font-size: 14px;
-                font-size: calc-rem-value(14);
-            }
-
-            &:before {
-                display: none;
-            }
-        }
-
-        .product-option .heart-btn i {
+          @include widther(767px) {
             font-size: 15px;
             font-size: calc-rem-value(15);
+          }
         }
-
-        .product-option .product-row>div:last-child .theme-btn {
-            background-color: $white;
-            font-size: 18px;
-            font-size: calc-rem-value(18);
-            color: $text-color;
-            border: 1px solid lighten($black, 90%);
-        }
-
-        #product-count {
-            border-radius: 0;
-            border: 1px solid lighten($black, 90%);
-        }
-
-        #product-count:focus {
-            box-shadow: none;
-            outline: none;
-        }
-
-        .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-up,
-        .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-down {
-            border-radius: 0;
-            border-color: lighten($black, 90%);
-            display: block;
-            padding: 1px 4px;
-            font-size: 10px;
-
-            &:hover {
-                background-color: $theme-primary-color;
-                color: $white;
-            }
-        }
+      }
     }
-
-    /*** product info ***/
-    .product-info {
-        margin-top: 75px;
-
-        @media(max-width:991px) {
-            margin-top: 40px;
-        }
-
-        h4 {
-            font-size: 25px;
-            margin: 0;
-            font-weight: 500;
-            margin-bottom: 10px;
-            color: $black;
-        }
-
-        p {
-            margin-bottom: 1.3em;
-        }
-
-        .tab-pane p:last-child {
-            margin-bottom: 0;
-        }
-
-        /*** tabs ***/
-        .nav-tabs {
-            font-family: $heading-font;
-            border: 0;
-
-            @include media-query(767px) {
-                margin-bottom: 20px;
-            }
-        }
-
-        .nav-tabs li {
-            margin-right: 1px;
-        }
-
-        .nav-tabs li a.active {
-            border: 0;
-            outline: 0;
-        }
-
-        .nav-tabs a {
-            font-size: 15px;
-            font-size: calc-rem-value(15);
-            color: $text-color;
-            border: 0;
-            border-radius: 0;
-            margin: 0;
-            display: block;
-            padding: 12px 20px 11px;
-            font-family: $base-font;
-            position: relative;
-
-            @include media-query(767px) {
-                font-size: 14px;
-                font-size: calc-rem-value(14);
-                font-weight: normal;
-                padding: 10px 10px 8px;
-                text-transform: none;
-            }
-
-            &:before {
-                position: absolute;
-                left: 0;
-                bottom: 0;
-                width: 100%;
-                height: 3px;
-                background: $black;
-                border-radius: 4px;
-                content: "";
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-
-        .nav-tabs a:hover,
-        .nav-tabs a.active {
-            &:before {
-                opacity: 1;
-                visibility: visible;
-            }
-        }
-
-        .nav-tabs .active,
-        .nav-tabs li:hover {
-            border-color: $black;
-
-        }
-
-        .tab-content {
-            border-top: 1px solid transparentize($theme-primary-color, 0.7);
-            padding-top: 30px;
-            margin-top: -1px;
-
-            @include media-query(767px) {
-                border: 0;
-                padding: 0;
-                margin: 0;
-            }
-        }
-
-        /*** client rv ***/
-        .client-rv {
-            overflow: hidden;
-            margin-bottom: 30px;
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-
-            .client-pic {
-                width: 100px;
-                float: left;
-
-                img {
-                    border-radius: 50%;
-                }
-
-                @include media-query(767px) {
-                    width: 100%;
-                    float: none;
-                    margin-bottom: 10px;
-                }
-            }
-
-            .details {
-                width: calc(100% - 130px);
-                float: right;
-
-                @include media-query(767px) {
-                    width: 100%;
-                    float: none;
-                }
-            }
-
-            .name-rating {
-                .product-rt {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .rating {}
-            }
-
-            .name-rating-time {
-
-                @include media-query(767px) {
-                    padding-bottom: 3px;
-                }
-            }
-
-            .name-rating-time>div,
-            .name-rating>div {
-                display: inline-block;
-                font-size: 14px;
-                font-size: calc-rem-value(14);
-
-                @include media-query(767px) {
-                    font-size: 12px;
-                    font-size: calc-rem-value(12);
-                    display: block;
-                }
-            }
-
-            .rating {
-                padding-left: 12px;
-
-                i {
-                    font-style: normal;
-                    color: #f9d322;
-                    font-size: 15px;
-
-                    &:last-child {
-                        color: #ddd;
-                    }
-                }
-
-                @include media-query(767px) {
-                    padding-left: 0;
-                    margin: 4px 0 7px;
-                }
-            }
-
-            .name-rating-time .time {
-                float: right;
-                color: lighten($black, 70%);
-                text-transform: uppercase;
-
-                @include media-query(767px) {
-                    float: none;
-                }
-            }
-
-            .review-body {
-                padding-top: 12px;
-            }
-        }
-
-        /*** review form ***/
-
-        .review-form {
-            margin-top: 45px;
-
-            h4 {
-                font-size: 30px;
-                font-weight: 500;
-            }
-
-            p {
-                margin-bottom: 1.73em;
-
-            }
-
-            .give-rat-sec {
-                margin-bottom: 10px;
-
-                p {
-                    margin-bottom: 0;
-                }
-            }
-
-            .give-rating {
-                display: inline-block;
-                position: relative;
-                height: 50px;
-                line-height: 50px;
-                font-size: 30px;
-                margin-bottom: 10px;
-            }
-
-            .give-rating label {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100%;
-                cursor: pointer;
-            }
-
-            .give-rating label:last-child {
-                position: static;
-            }
-
-            .give-rating label:nth-child(1) {
-                z-index: 5;
-            }
-
-            .give-rating label:nth-child(2) {
-                z-index: 4;
-            }
-
-            .give-rating label:nth-child(3) {
-                z-index: 3;
-            }
-
-            .give-rating label:nth-child(4) {
-                z-index: 2;
-            }
-
-            .give-rating label:nth-child(5) {
-                z-index: 1;
-            }
-
-            .give-rating label input {
-                position: absolute;
-                top: 0;
-                left: 0;
-                opacity: 0;
-            }
-
-            .give-rating label .icon {
-                float: left;
-                color: transparent;
-            }
-
-            .give-rating label:last-child .icon {
-                color: #ddd;
-            }
-
-            .give-rating:not(:hover) label input:checked~.icon,
-            .give-rating:hover label:hover input~.icon {
-                color: #FFD400;
-            }
-
-            .give-rating label input:focus:not(:checked)~.icon:last-child {
-                color: #ddd;
-                text-shadow: 0 0 5px #FFD400;
-            }
-
-            form {
-
-                input,
-                textarea {
-                    background: transparent;
-                    border-radius: 0;
-                    box-shadow: none;
-                    height: 50px;
-                    border: 1px solid #efefef;
-                }
-
-                .form-control {
-                    font-size: 18px;
-                }
-
-                input:focus,
-                textarea:focus {
-                    box-shadow: none;
-                    outline: none;
-                }
-
-                textarea {
-                    height: 130px;
-                }
-
-                >div {
-                    margin-bottom: 27px;
-                }
-
-                >div:last-child {
-                    margin-bottom: 0;
-                }
-
-                .theme-btn {
-                    background-color: transparent;
-                    color: #908f8f;
-                    outline: 0;
-                    box-shadow: none;
-                    border-radius: 0;
-                    border: 1px solid #efefef;
-                    padding: 15px 45px;
-
-                    &:hover {
-                        background-color: $black;
-                        color: $white;
-                    }
-
-                    @include widther(767px) {
-                        font-size: 15px;
-                        font-size: calc-rem-value(15);
-
-                    }
-                }
-            }
-        }
-    }
-
-    .slider-nav .slick-slide:focus {
-        outline: none;
-    }
+  }
+
+  .slider-nav .slick-slide:focus {
+    outline: none;
+  }
 }
 
-
-
 .quantity-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    border: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  border: 1px solid #e6e6e6;
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    width: 30px;
     height: 40px;
-    line-height: 40px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    text-align: center;
+  }
 
-    span {
-        width: 30px;
-        height: 40px;
-        border: none;
-        background-color: #f0f0f0;
-        cursor: pointer;
-        text-align: center;
+  .decrement {
+    width: 30px;
+    display: inline-block;
+  }
+
+  .increment {
+    width: 30px;
+    display: inline-block;
+  }
+
+  input[type="text"] {
+    width: 30px;
+    height: 40px;
+    text-align: center;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: default;
+
+    &:focus {
+      outline: 0;
+      box-shadow: 0 0 5px 0 transparent;
     }
-
-    .decrement {
-        width: 30px;
-        display: inline-block;
-    }
-
-    .increment {
-        width: 30px;
-        display: inline-block;
-    }
-
-
-    input[type="text"] {
-        width: 30px;
-        height: 40px;
-        text-align: center;
-        border: none;
-        outline: none;
-        background-color: transparent;
-        cursor: default;
-
-        &:focus {
-            outline: 0;
-            box-shadow: 0 0 5px 0 transparent;
-        }
-
-    }
+  }
 }

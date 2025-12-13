@@ -1,5 +1,8 @@
+import { Category } from "./product/category";
+import { SubCollection } from "./product/collection";
+
 export interface SiteSettings {
-  id: string;
+  id?: string;
   email_contacts: string;
   phone_contacts: string;
   logo_white: string;
@@ -7,8 +10,7 @@ export interface SiteSettings {
   whatsapp: string;
   instagram: string;
   facebook: string;
-  created_at: string;
-  updated_at: string;
+  address: string;
   logo_white_url: string;
   logo_dark_url: string;
 }
@@ -26,4 +28,6 @@ export interface Collection {
 export interface SiteData {
   site_settings: SiteSettings;
   collections: Collection[];
+  sub_collections: SubCollection[];
+  categories: Category[];
 }

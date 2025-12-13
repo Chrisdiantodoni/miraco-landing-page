@@ -10,7 +10,7 @@ import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "../language-switcher";
 import CustomMUIDrawer from "./Drawer";
 import { Collection } from "@/lib/types/settings";
-import { useSiteStore } from "@/lib/store/siteStore";
+import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -31,9 +31,9 @@ export default function Header(props: {
   const staticMenuData = t.raw("menu") as MenuItem[];
 
   const [menuActive, setMenuActive] = useState(false);
+  const settings = useSiteSettings();
 
-  const { data } = useSiteStore((state) => state);
-  const collectionItems = data?.collections?.map((item) => ({
+  const collectionItems = settings?.collections?.map((item) => ({
     title: item?.collection_name,
     link: `/collections/${item?.collection_name}`,
   }));
@@ -140,7 +140,7 @@ export default function Header(props: {
   const toggleDrawer = (newOpen: boolean) => () => {
     setMenuActive(newOpen);
   };
-  console.log(props.logo);
+  // console.log(props.logo);
 
   return (
     <header id="header">

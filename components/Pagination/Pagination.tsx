@@ -1,34 +1,49 @@
-import { PaginationProps } from "@/lib/types/pagination";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { PaginationMeta } from "@/lib/types/pagination";
+// Import/Definisikan tipe Product jika ini adalah komponen spesifik
+// Jika Anda ingin ini menjadi komponen generik, gunakan <T>
 
-export default function Pagination({
+// Definisikan Tipe Generic untuk Komponen
+// T adalah tipe data untuk item yang dipaginasi (misalnya: Product, User, dll.)
+export default function Pagination<T>({
   paginationData,
   onPageChange,
   maxVisiblePages = 5,
-}: PaginationProps) {
+}: // maxVisiblePages = 5, // maxVisiblePages tidak digunakan dalam logika, bisa dihapus atau diimplementasikan
+{
+  // Gunakan PaginationMeta<T> untuk memastikan tipe data benar
+  paginationData: any;
+  onPageChange: (page: number) => void; // Tambahkan tipe untuk onPageChange
+  maxVisiblePages?: number; // Tambahkan kembali jika ingin digunakan
+}) {
   // Validate pagination data
-  if (!paginationData || !paginationData.meta) {
+  if (!paginationData) {
     return null;
   }
 
-  const { current_page, last_page, total, per_page } = paginationData.meta;
+  // Karena sekarang menggunakan Generic <T>, kita tidak perlu lagi eslint-disable @typescript-eslint/no-explicit-any
+  // Anda bisa menghapus eslint-disable @typescript-eslint/no-explicit-any dari bagian atas file jika ini adalah satu-satunya alasan.
+
+  const { current_page, last_page, total } = paginationData;
 
   // Jika hanya 1 halaman, tidak perlu tampilkan pagination
   if (last_page <= 1) {
     return null;
   }
 
-  /**
-   * Generate array halaman yang ditampilkan
-   * Misal: current=5, last=10, maxVisible=5
-   * Tampilkan: [3, 4, 5, 6, 7]
-   */
+  // ... (Logika getVisiblePages tetap sama)
+  const maxVisiblePagesActual = maxVisiblePages || 5;
+
   const getVisiblePages = () => {
-    let start = Math.max(1, current_page - Math.floor(maxVisiblePages / 2));
-    const end = Math.min(last_page, start + maxVisiblePages - 1);
+    let start = Math.max(
+      1,
+      current_page - Math.floor(maxVisiblePagesActual / 2)
+    );
+    const end = Math.min(last_page, start + maxVisiblePagesActual - 1);
 
     // Adjust start jika end terlalu dekat dengan last_page
-    if (end - start + 1 < maxVisiblePages) {
-      start = Math.max(1, end - maxVisiblePages + 1);
+    if (end - start + 1 < maxVisiblePagesActual) {
+      start = Math.max(1, end - maxVisiblePagesActual + 1);
     }
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchSiteData } from "@/lib/api/settings";
+import { fetchSiteData } from "@/lib/api/queries/settings";
 
 // Cache di memory (in-production, gunakan Redis)
 let cachedData: unknown = null;
