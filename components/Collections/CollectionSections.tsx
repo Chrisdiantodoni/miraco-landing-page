@@ -27,9 +27,7 @@ const CollectionSections = () => {
             <Link
               className="instagram-card"
               key={index}
-              href={`/collections/${col?.collection_name?.toLowerCase()}?id=${
-                col?.id
-              }`}
+              href={`/collections/${col?.collection_name?.toLowerCase()}`}
             >
               {col?.image_url && (
                 <Image

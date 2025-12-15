@@ -15,38 +15,41 @@ import {
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ slug: string }>;
 };
 
+// app/[locale]/collections/[slug]/page.tsx
+
 export async function generateStaticParams() {
-  // 1. Definisikan semua locale yang didukung
-  const locales = ["en", "id", "zh"]; // Tambahkan semua locale yang Anda dukung
+  // ✅ Definisikan semua locale yang didukung
+  const locales = ["en", "id", "zh"];
+  const allParams: { slug: string; locale: string }[] = [];
 
-  let allParams: { slug: string; locale: string }[] = [];
-
-  // 2. Loop melalui setiap locale untuk mengambil data
+  // ✅ Loop melalui setiap locale untuk mengambil data
   for (const locale of locales) {
-    const { collections } = (await getSiteData({ locale })) as {
-      collections: Collection[];
-    };
+    try {
+      const { collections } = (await getSiteData({ locale })) as {
+        collections: Collection[];
+      };
 
-    // 3. Gabungkan slug dan locale
-    const paramsForLocale = collections.map((collection) => ({
-      slug: `${collection.collection_name}`,
-      locale: locale, // ✅ Tambahkan locale ke params
-    }));
-
-    allParams = allParams.concat(paramsForLocale);
+      // ✅ Tambahkan params untuk setiap collection
+      collections.forEach((collection) => {
+        allParams.push({
+          slug: collection.collection_name?.toLowerCase(),
+          locale: locale,
+        });
+      });
+    } catch (error) {
+      console.error(`Error fetching collections for locale ${locale}:`, error);
+    }
   }
 
+  console.log("Generated static params:", allParams);
   return allParams;
 }
+
 const normalizeQueryParams = (params: Record<string, any>) => {
   const normalized: Record<string, any> = {};
-
-  // Collection ID
-  if (params.collection_id) {
-    normalized.collection_id = Number(params.collection_id);
-  }
 
   // ✅ Category ID - parse comma-separated atau array
   if (params.category_id) {
@@ -96,6 +99,9 @@ const normalizeQueryParams = (params: Record<string, any>) => {
   if (params.search && params.search.trim()) {
     normalized.search = params.search.trim();
   }
+  if (params.collection) {
+    normalized.collection = params.collection;
+  }
 
   // Page
   normalized.page = params.page ? Number(params.page) : 1;
@@ -105,13 +111,12 @@ const normalizeQueryParams = (params: Record<string, any>) => {
 
 export const dynamicParams = false;
 
-export default async function Page({ searchParams }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
-
+  const { slug } = await params;
   const queryClient = new QueryClient();
-
   // ✅ Extract semua params
-  const collectionId = resolvedSearchParams?.id || "";
+  const collection = slug || "";
   const search = resolvedSearchParams?.search || "";
   const page = resolvedSearchParams?.page || 1;
   const categoryId = resolvedSearchParams?.category_id || "";
@@ -120,7 +125,7 @@ export default async function Page({ searchParams }: Props) {
   console.log(categoryId, "search params");
   // ✅ Normalize params
   const initialParams = normalizeQueryParams({
-    collection_id: collectionId,
+    collection: collection,
     search: search,
     page: page,
     category_id: categoryId,
