@@ -2,6 +2,7 @@ import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -44,7 +45,6 @@ const nextConfig: NextConfig = {
     pagesBufferLength: 5,
   },
   reactStrictMode: false,
-  output: "export",
 };
 
 const withNextIntl = createNextIntlPlugin();
