@@ -189,7 +189,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
-
+  const STALE_TIME_MS = 30 * 1000;
   // ✅ Query dengan error handling
   const { data, isFetching, isError, error } = useQuery<ProductListResponse>({
     queryKey: ["products", queryParamsForApi],
@@ -199,7 +199,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
       return result;
     },
     initialData: initialData,
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIME_MS,
   });
 
   // ✅ Effect untuk update URL search
@@ -289,7 +289,11 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
           <div className="col col-lg-9 col-12">
             <div className="row">
               <div className="col-12" style={{ marginBottom: 30 }}>
-                <SearchInput value={searchTerm} onChange={handleSearchChange} />
+                <SearchInput
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  placeholder="Cari Finishing, Texture, Sub Collection..."
+                />
               </div>
             </div>
 

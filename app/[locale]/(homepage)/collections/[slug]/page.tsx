@@ -18,15 +18,28 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const { collections } = (await getSiteData({ locale: "en" })) as {
-    collections: Collection[];
-  };
+  // 1. Definisikan semua locale yang didukung
+  const locales = ["en", "id"]; // Tambahkan semua locale yang Anda dukung
 
-  return collections.map((collection) => ({
-    slug: `${collection.collection_name}?id=${collection?.id}`,
-  }));
+  let allParams: { slug: string; locale: string }[] = [];
+
+  // 2. Loop melalui setiap locale untuk mengambil data
+  for (const locale of locales) {
+    const { collections } = (await getSiteData({ locale })) as {
+      collections: Collection[];
+    };
+
+    // 3. Gabungkan slug dan locale
+    const paramsForLocale = collections.map((collection) => ({
+      slug: `${collection.collection_name}`,
+      locale: locale, // ✅ Tambahkan locale ke params
+    }));
+
+    allParams = allParams.concat(paramsForLocale);
+  }
+
+  return allParams;
 }
-
 const normalizeQueryParams = (params: Record<string, any>) => {
   const normalized: Record<string, any> = {};
 

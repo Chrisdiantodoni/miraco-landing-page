@@ -5,6 +5,7 @@ export const ENDPOINTS = {
   HOME: `${API_URL}/sites/home`,
   HERO: `${API_URL}/sites/hero`,
   COLLECTION: `${API_URL}/sites/products/list`,
+  COLLECTION_ALL: `${API_URL}/products/list`,
   COLLECTION_BY_ID: (id: string | number) => `${API_URL}/sites/products/${id}`,
   PROJECT: `${API_URL}/sites/projects/list`,
   PROJECT_BY_ID: (id: string | number) => `${API_URL}/sites/projects/${id}`,
