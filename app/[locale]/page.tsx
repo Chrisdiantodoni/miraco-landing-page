@@ -24,8 +24,12 @@ export default async function Index() {
       <Hero6 hero={data?.hero} />
       <div className="container">
         <ServiceSectionS6 hclass={"wpo-service-section-s6"} />
-        <PartnerSection hclass={"wpo-partners-section fade_bottom"} />
-        <PageTitle pageTitle="Collections" pagesub="Here is Our Collection" />
+        {/* <PartnerSection hclass={"wpo-partners-section fade_bottom"} /> */}
+        <PageTitle
+          pageTitle="Collections"
+          pagesub="Here is Our Collection"
+          paddingTop={0}
+        />
         <CollectionSections />
 
         <PageTitle

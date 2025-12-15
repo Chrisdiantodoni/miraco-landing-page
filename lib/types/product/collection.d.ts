@@ -4,6 +4,9 @@ import { Category } from "./category";
 export type Collection = {
   id: number;
   collection_name: string;
+  name_en: string;
+  name_id: string;
+  name_zh: string;
   created_at: string;
   updated_at: string;
   image: string | null;
@@ -16,6 +19,7 @@ export type SubCollection = {
   sub_collection_name: string;
   created_at: string;
   updated_at: string;
+  collection_id: string;
   category_id: string;
   category: Category;
 };

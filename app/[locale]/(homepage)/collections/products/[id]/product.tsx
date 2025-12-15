@@ -230,7 +230,7 @@ const Product = ({ data }: productDetailProps) => {
             </div>
             <div className="product-spec-row">
               <div>Collection</div>
-              <div>{activeProduct?.collection?.collection_name}</div>
+              <div>{activeProduct?.collection?.name_en}</div>
             </div>
             <div className="product-spec-row">
               <div>Sub Collection</div>

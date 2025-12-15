@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useCallback, useMemo } from "react";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
-// Import komponen MUI yang diperlukan
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import List from "@mui/material/List";
@@ -12,31 +11,50 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { ChevronDown, X } from "lucide-react";
+import type {
+  ActiveFilters,
+  Category,
+  Collection,
+  SubCollection,
+  FilterType,
+  FilterItem,
+  SidebarFilterProps,
+  FilterBlockProps,
+} from "@/lib/types/filter";
 
 // --- Variabel Warna ---
 const $black = "#000000";
 
-// --- Fungsi Pembantu Tetap Sama ---
+// --- Fungsi Pembantu ---
+const getItemData = (
+  item: Category | Collection | SubCollection,
+  filterType: FilterType
+): FilterItem => {
+  let name: string;
 
-const getItemData = (item, filterType) => {
-  let name;
   switch (filterType) {
     case "categories":
-    case "types":
-      name = item.category_name;
+      name = (item as Category).category_name;
       break;
-    case "collections":
     case "subCollections":
-      name = item.collection_name || item.sub_collection_name;
+      name =
+        (item as Collection).collection_name ||
+        (item as SubCollection).sub_collection_name;
       break;
     default:
       name = "";
   }
-  return { id: item.id, name: name || `Unnamed ${filterType}` };
+
+  return {
+    id: item.id,
+    name: name || `Unnamed ${filterType}`,
+  };
 };
 
 // --- Komponen Checkbox ---
-const MonokromCheckbox = (props) => (
+const MonokromCheckbox: React.FC<React.ComponentProps<typeof Checkbox>> = (
+  props
+) => (
   <Checkbox
     {...props}
     className="monokrom-checkbox"
@@ -44,11 +62,8 @@ const MonokromCheckbox = (props) => (
   />
 );
 
-// -------------------------------------------------------------------
-// Komponen Pembantu FilterBlock (Menggunakan className)
-// -------------------------------------------------------------------
-
-const FilterBlock = ({
+// --- Komponen FilterBlock ---
+const FilterBlock: React.FC<FilterBlockProps> = ({
   title,
   data,
   filterType,
@@ -57,7 +72,8 @@ const FilterBlock = ({
 }) => {
   if (!data || data.length === 0) return null;
 
-  const [expanded, setExpanded] = useState(true);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [expanded, setExpanded] = useState<boolean>(true);
 
   return (
     <Accordion
@@ -104,21 +120,21 @@ const FilterBlock = ({
   );
 };
 
-// -----------------------------------------------------
-// Komponen Utama SidebarFilter
-// -----------------------------------------------------
-
-const SidebarFilter = ({ onFilterChange }) => {
+// --- Komponen Utama SidebarFilter ---
+const SidebarFilter: React.FC<SidebarFilterProps> = ({
+  onFilterChange,
+  collection_id,
+}) => {
   const settings = useSiteSettings();
 
   const types = settings?.categories || [];
-  const collections = settings?.collections || [];
-  const subCollections = settings?.sub_collections || [];
+  const subCollections =
+    settings?.sub_collections?.filter(
+      (filter) => filter?.collection_id == collection_id
+    ) || [];
 
-  const [draftFilters, setDraftFilters] = useState({
+  const [draftFilters, setDraftFilters] = useState<ActiveFilters>({
     categories: [],
-    types: [],
-    collections: [],
     subCollections: [],
   });
 
@@ -132,19 +148,19 @@ const SidebarFilter = ({ onFilterChange }) => {
   const hasActiveFilters = activeFilterCount > 0;
 
   const handleCheckboxChange = useCallback(
-    (filterType, slug) => {
+    (filterType: FilterType, slug: string | number) => {
       setDraftFilters((prev) => {
         const currentList = prev[filterType];
         const isChecked = currentList.includes(slug);
 
-        let newSelectedList;
+        let newSelectedList: (string | number)[];
         if (isChecked) {
           newSelectedList = currentList.filter((itemSlug) => itemSlug !== slug);
         } else {
           newSelectedList = [...currentList, slug];
         }
 
-        const newFilters = {
+        const newFilters: ActiveFilters = {
           ...prev,
           [filterType]: newSelectedList,
         };
@@ -160,10 +176,8 @@ const SidebarFilter = ({ onFilterChange }) => {
   );
 
   const resetFilters = () => {
-    const emptyFilters = {
+    const emptyFilters: ActiveFilters = {
       categories: [],
-      types: [],
-      collections: [],
       subCollections: [],
     };
     setDraftFilters(emptyFilters);
@@ -174,7 +188,7 @@ const SidebarFilter = ({ onFilterChange }) => {
 
   return (
     <div className="blog-sidebar">
-      {/* 1. Tombol Reset di Atas (Selalu Ada, Disabled jika kosong) */}
+      {/* Tombol Reset di Atas */}
       <div className="filter-reset-top">
         <Typography
           variant="body2"
@@ -188,21 +202,19 @@ const SidebarFilter = ({ onFilterChange }) => {
           variant="text"
           size="small"
           className="reset-button"
-          disabled={!hasActiveFilters} // Disabled jika tidak ada filter
+          disabled={!hasActiveFilters}
           sx={{
             color: $black,
             p: 0,
             minWidth: "auto",
             fontSize: "0.85rem",
             fontWeight: 600,
-
-            // Gaya hover dan disabled untuk visual yang lebih baik
             "&:hover": {
               bgcolor: "transparent",
               textDecoration: "underline",
             },
             "&.Mui-disabled": {
-              color: "#aaa", // Warna abu-abu saat disabled
+              color: "#aaa",
               cursor: "default",
               textDecoration: "none",
             },
@@ -213,11 +225,11 @@ const SidebarFilter = ({ onFilterChange }) => {
         </Button>
       </div>
 
-      {/* 2. Filter Blocks */}
+      {/* Filter Blocks */}
       <FilterBlock
         title="Types"
         data={types}
-        filterType="types"
+        filterType="categories"
         activeFilters={draftFilters}
         handleCheckboxChange={handleCheckboxChange}
       />

@@ -2,7 +2,7 @@
 import { api } from "../client";
 import { ENDPOINTS } from "../endpoints";
 
-export async function getSiteData(params?: Record<string, any>) {
+export async function getSiteData(params: { locale?: string }) {
   return api
     .get(ENDPOINTS.SITE_SETTINGS, {
       params,
