@@ -19,7 +19,7 @@ type Props = {
 
 export async function generateStaticParams() {
   // 1. Definisikan semua locale yang didukung
-  const locales = ["en", "id"]; // Tambahkan semua locale yang Anda dukung
+  const locales = ["en", "id", "zh"]; // Tambahkan semua locale yang Anda dukung
 
   let allParams: { slug: string; locale: string }[] = [];
 
