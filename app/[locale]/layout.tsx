@@ -58,6 +58,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
   const siteData = await getSiteData({ locale });
+
   return (
     <html lang={locale} data-scroll-behavior="smooth">
       <head>
