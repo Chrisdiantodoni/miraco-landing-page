@@ -44,6 +44,7 @@ const nextConfig: NextConfig = {
     pagesBufferLength: 5,
   },
   reactStrictMode: false,
+  output: "export",
 };
 
 const withNextIntl = createNextIntlPlugin();
