@@ -34,51 +34,99 @@ const getProductFormattedCode = (p: any) => {
   return parts.join(" ");
 };
 
-// ✅ PERBAIKAN: Helper function yang LENGKAP untuk normalize query params
-const normalizeQueryParams = (params: Record<string, any>) => {
+// ✅ PERBAIKAN: Helper function untuk normalize query params (with UUID support)
+export const normalizeQueryParams = (params: Record<string, any>) => {
   const normalized: Record<string, any> = {};
 
-  // Collection ID - selalu number
+  // Collection ID - could be number or UUID
   if (params.collection_id) {
-    normalized.collection_id = Number(params.collection_id);
+    // Check if it's a number or UUID
+    const isNumber = !isNaN(Number(params.collection_id));
+    normalized.collection_id = isNumber
+      ? Number(params.collection_id)
+      : params.collection_id;
   }
 
-  // ✅ Category ID - parse dari comma-separated string
+  // ✅ Category ID - parse dari comma-separated string (UUID or number)
   if (params.category_id) {
     if (typeof params.category_id === "string" && params.category_id.trim()) {
-      const ids = params.category_id
+      // Decode URL encoded string (%2C -> ,)
+      const decoded = decodeURIComponent(params.category_id);
+
+      // Split by comma
+      const ids = decoded
         .split(",")
-        .map((id: string) => Number(id.trim()))
-        .filter((id: number) => !isNaN(id) && id > 0);
+        .map((id: string) => id.trim())
+        .filter((id: string) => id.length > 0);
 
       if (ids.length > 0) {
-        normalized.category_id = ids;
+        // ✅ PENTING: Jangan convert ke number kalau UUID!
+        // Check if first ID looks like a UUID (has dashes)
+        const firstId = ids[0];
+        const looksLikeUUID = firstId.includes("-") && firstId.length > 20;
+
+        if (looksLikeUUID) {
+          // Keep as string array for UUIDs
+          normalized.category_id = ids;
+        } else {
+          // Convert to numbers for integer IDs
+          const numericIds = ids
+            .map((id) => Number(id))
+            .filter((id) => !isNaN(id) && id > 0);
+          if (numericIds.length > 0) {
+            normalized.category_id = numericIds;
+          }
+        }
       }
     } else if (Array.isArray(params.category_id)) {
-      normalized.category_id = params.category_id
-        .map((id: any) => Number(id))
-        .filter((id: number) => !isNaN(id) && id > 0);
+      // Already array, just filter empty values
+      const filtered = params.category_id.filter(
+        (id: any) => id && String(id).trim()
+      );
+      if (filtered.length > 0) {
+        normalized.category_id = filtered;
+      }
     }
   }
 
-  // ✅ Sub Collection ID - parse dari comma-separated string
+  // ✅ Sub Collection ID - parse dari comma-separated string (UUID or number)
   if (params.sub_collection_id) {
     if (
       typeof params.sub_collection_id === "string" &&
       params.sub_collection_id.trim()
     ) {
-      const ids = params.sub_collection_id
+      // Decode URL encoded string
+      const decoded = decodeURIComponent(params.sub_collection_id);
+
+      // Split by comma
+      const ids = decoded
         .split(",")
-        .map((id: string) => Number(id.trim()))
-        .filter((id: number) => !isNaN(id) && id > 0);
+        .map((id: string) => id.trim())
+        .filter((id: string) => id.length > 0);
 
       if (ids.length > 0) {
-        normalized.sub_collection_id = ids;
+        // Check if first ID looks like a UUID
+        const firstId = ids[0];
+        const looksLikeUUID = firstId.includes("-") && firstId.length > 20;
+
+        if (looksLikeUUID) {
+          normalized.sub_collection_id = ids;
+        } else {
+          const numericIds = ids
+            .map((id) => Number(id))
+            .filter((id) => !isNaN(id) && id > 0);
+          if (numericIds.length > 0) {
+            normalized.sub_collection_id = numericIds;
+          }
+        }
       }
     } else if (Array.isArray(params.sub_collection_id)) {
-      normalized.sub_collection_id = params.sub_collection_id
-        .map((id: any) => Number(id))
-        .filter((id: number) => !isNaN(id) && id > 0);
+      const filtered = params.sub_collection_id.filter(
+        (id: any) => id && String(id).trim()
+      );
+      if (filtered.length > 0) {
+        normalized.sub_collection_id = filtered;
+      }
     }
   }
 
@@ -92,7 +140,6 @@ const normalizeQueryParams = (params: Record<string, any>) => {
 
   return normalized;
 };
-
 const CollectionProducts = ({ initialData }: CollectionProductProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -130,14 +177,6 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
 
     const normalized = normalizeQueryParams(params);
 
-    console.log("=== Query Params Debug ===");
-    console.log("Raw URL params:", {
-      category_id,
-      sub_collection_id,
-    });
-    console.log("Params before normalize:", params);
-    console.log("Params after normalize:", normalized);
-
     return normalized;
   }, [
     collection_id,
@@ -161,7 +200,6 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
     },
     initialData: initialData,
     staleTime: 5 * 60 * 1000,
-    placeholderData: (previousData) => previousData,
   });
 
   // ✅ Effect untuk update URL search
