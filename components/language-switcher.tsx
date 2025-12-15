@@ -1,6 +1,6 @@
 import { useLocale } from "next-intl";
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { usePathname, Link } from "@/i18n/navigation";
 
 export const languageOptions = [
   { code: "en", label: "ENG", flag: "🇺🇸" },
@@ -9,10 +9,17 @@ export const languageOptions = [
 ];
 
 const LanguageSwitcher = () => {
+  const slugTranslations: Record<string, Record<string, string>> = {
+    woods: {
+      en: "woods",
+      id: "kayu",
+      zh: "木材",
+    },
+  };
   const locale = useLocale();
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const pathname = usePathname();
   // Tutup dropdown saat klik di luar
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -85,7 +92,7 @@ const LanguageSwitcher = () => {
         >
           {languageOptions.map((lang, index) => (
             <Link
-              href={"/" + lang.code}
+              href={pathname}
               locale={lang.code}
               prefetch={false}
               key={lang.code}
