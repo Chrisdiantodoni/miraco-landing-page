@@ -19,6 +19,7 @@ import { getProducts } from "@/lib/api/queries/product";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
+  collection: string;
 }
 
 const getProductFormattedCode = (p: any) => {
@@ -140,11 +141,12 @@ export const normalizeQueryParams = (params: Record<string, any>) => {
 
   return normalized;
 };
-const CollectionProducts = ({ initialData }: CollectionProductProps) => {
+const CollectionProducts = ({
+  collection,
+  initialData,
+}: CollectionProductProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  const collection_id = searchParams.get("id");
   const sub_collection_id = searchParams.get("sub_collection_id");
   const category_id = searchParams.get("category_id");
   const initialSearchTerm = searchParams.get("search") || "";
@@ -161,7 +163,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
   const queryParamsForApi = useMemo(() => {
     // ✅ PENTING: Jangan set default value sebagai empty array!
     const params: Record<string, any> = {
-      collection_id: collection_id || "",
+      collection: collection || "",
       search: debouncedSearchTerm || "",
       page: currentPage || "1",
     };
@@ -179,7 +181,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
 
     return normalized;
   }, [
-    collection_id,
+    collection,
     category_id,
     sub_collection_id,
     debouncedSearchTerm,
@@ -189,7 +191,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
-
+  const STALE_TIME_MS = 30 * 1000;
   // ✅ Query dengan error handling
   const { data, isFetching, isError, error } = useQuery<ProductListResponse>({
     queryKey: ["products", queryParamsForApi],
@@ -199,7 +201,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
       return result;
     },
     initialData: initialData,
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIME_MS,
   });
 
   // ✅ Effect untuk update URL search
@@ -280,7 +282,7 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
           {/* Sidebar - Col 3 */}
           <div className="col col-lg-3 col-12 mb-lg-0 mb-3">
             <SidebarFilter
-              collection_id={collection_id as string}
+              collection_id={products[0]?.collection_id as string}
               onFilterChange={handleFilters}
             />
           </div>
@@ -289,7 +291,11 @@ const CollectionProducts = ({ initialData }: CollectionProductProps) => {
           <div className="col col-lg-9 col-12">
             <div className="row">
               <div className="col-12" style={{ marginBottom: 30 }}>
-                <SearchInput value={searchTerm} onChange={handleSearchChange} />
+                <SearchInput
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  placeholder="Cari Finishing, Texture, Sub Collection..."
+                />
               </div>
             </div>
 

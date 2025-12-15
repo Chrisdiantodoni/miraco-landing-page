@@ -46,6 +46,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// app/[locale]/layout.tsx
+export async function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "id" }, { locale: "zh" }];
+}
+
 export default async function LocaleLayout({ children, params }: Props) {
   // Ensure that the incoming `locale` is valid
   const { locale } = await params;

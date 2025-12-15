@@ -36,7 +36,7 @@ export default function Header(props: {
 
   const collectionItems = settings?.collections?.map((item) => ({
     title: item?.collection_name,
-    link: `/collections/${item?.collection_name?.toLowerCase()}?id=${item?.id}`,
+    link: `/collections/${item?.collection_name?.toLowerCase()}`,
   }));
 
   const isActive = (link: string) => {

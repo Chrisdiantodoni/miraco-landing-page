@@ -27,9 +27,7 @@ const CollectionSections = () => {
             <Link
               className="instagram-card"
               key={index}
-              href={`/collections/${col?.collection_name?.toLowerCase()}?id=${
-                col?.id
-              }`}
+              href={`/collections/${col?.collection_name?.toLowerCase()}`}
             >
               {col?.image_url && (
                 <Image
@@ -37,6 +35,7 @@ const CollectionSections = () => {
                   alt={col.collection_name || "Collection Image"} // Aksesibilitas
                   className="img img-responsive"
                   width={350}
+                  priority
                   height={350}
                 />
               )}
