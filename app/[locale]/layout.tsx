@@ -15,6 +15,7 @@ import { SiteSettingsProvider } from "@/lib/providers/SiteSettingProvider";
 import { ToastContainer } from "react-toastify";
 import { getSiteData } from "@/lib/api/queries/settings";
 import { getLocale } from "next-intl/server";
+import image from "@/public/images/miraco/logo/logo-miraco.png";
 type Props = {
   children: ReactNode;
   params: Promise<{ locale: string }>;
@@ -69,7 +70,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               <Navbar
                 collections={siteData.collections}
                 hclass={"wpo-site-header wpo-header-style-s9 my-4"}
-                Logo={siteData?.site_settings?.logo_dark_url}
+                Logo={siteData?.site_settings?.logo_dark_url ?? image}
                 col1={"col-lg-3 col-md-3 col-3 d-lg-none dl-block"}
                 col2={"col-lg-2 col-md-6 col-6"}
                 col3={
@@ -78,7 +79,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               />
               {children}
 
-              <Footer logo={siteData?.site_settings?.logo_dark_url} />
+              <Footer logo={siteData?.site_settings?.logo_dark_url ?? image} />
               <ToastContainer />
             </NextIntlClientProvider>
           </Providers>

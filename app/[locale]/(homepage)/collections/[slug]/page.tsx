@@ -6,6 +6,7 @@ import { getProducts } from "@/lib/api/queries/product";
 import { getSiteData } from "@/lib/api/queries/settings";
 import { Collection } from "@/lib/types";
 import { ProductListResponse } from "@/lib/types/product/product";
+
 import {
   QueryClient,
   HydrationBoundary,
@@ -26,9 +27,6 @@ export async function generateStaticParams() {
   }));
 }
 
-export const dynamicParams = false;
-
-// ✅ PERBAIKAN: Helper function untuk normalize dengan filter support
 const normalizeQueryParams = (params: Record<string, any>) => {
   const normalized: Record<string, any> = {};
 
@@ -41,19 +39,14 @@ const normalizeQueryParams = (params: Record<string, any>) => {
   if (params.category_id) {
     if (typeof params.category_id === "string" && params.category_id.trim()) {
       // Parse "1,2,3" menjadi [1, 2, 3]
-      const ids = params.category_id
-        .split(",")
-        .map((id: string) => Number(id.trim()))
-        .filter((id: number) => !isNaN(id) && id > 0);
+      const ids = params.category_id.split(",").map((id: string) => id);
 
       if (ids.length > 0) {
         normalized.category_id = ids;
       }
     } else if (Array.isArray(params.category_id)) {
       // Jika sudah array, normalize ke number[]
-      const ids = params.category_id
-        .map((id: any) => Number(id))
-        .filter((id: number) => !isNaN(id) && id > 0);
+      const ids = params.category_id.map((id: any) => id);
 
       if (ids.length > 0) {
         normalized.category_id = ids;
@@ -97,6 +90,8 @@ const normalizeQueryParams = (params: Record<string, any>) => {
   return normalized;
 };
 
+export const dynamicParams = false;
+
 export default async function Page({ searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
 
@@ -109,15 +104,7 @@ export default async function Page({ searchParams }: Props) {
   const categoryId = resolvedSearchParams?.category_id || "";
   const subCollectionId = resolvedSearchParams?.sub_collection_id || "";
 
-  console.log("=== Server Side Debug ===");
-  console.log("Raw Search Params:", {
-    id: collectionId,
-    search,
-    page,
-    category_id: categoryId,
-    sub_collection_id: subCollectionId,
-  });
-
+  console.log(categoryId, "search params");
   // ✅ Normalize params
   const initialParams = normalizeQueryParams({
     collection_id: collectionId,
@@ -134,12 +121,8 @@ export default async function Page({ searchParams }: Props) {
     await queryClient.prefetchQuery({
       queryKey: ["products", initialParams],
       queryFn: async () => {
-        console.log("Prefetching products with:", initialParams);
         const result = await getProducts(initialParams);
-        console.log("Prefetch success:", {
-          total: result?.data?.total,
-          count: result?.data?.data?.length,
-        });
+
         return result;
       },
     });

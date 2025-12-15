@@ -11,6 +11,7 @@ import LanguageSwitcher from "../language-switcher";
 import CustomMUIDrawer from "./Drawer";
 import { Collection } from "@/lib/types/settings";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
+import image from "@/public/images/miraco/logo/logo-miraco.png";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -188,7 +189,7 @@ export default function Header(props: {
                   href="/home"
                 >
                   <Image
-                    src={props.logo}
+                    src={props.logo ?? image}
                     alt="Logo Perusahaan"
                     width={400} // Ganti dengan ukuran yang sesuai
                     height={200} // Ganti dengan ukuran yang sesuai
