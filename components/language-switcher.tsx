@@ -1,6 +1,8 @@
 import { useLocale } from "next-intl";
 import { useState, useEffect, useRef } from "react";
 import { usePathname, Link } from "@/i18n/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getCollection } from "@/lib/api/queries/settings";
 
 export const languageOptions = [
   { code: "en", label: "ENG", flag: "🇺🇸" },
@@ -9,18 +11,22 @@ export const languageOptions = [
 ];
 
 const LanguageSwitcher = () => {
-  const slugTranslations: Record<string, Record<string, string>> = {
-    woods: {
-      en: "woods",
-      id: "kayu",
-      zh: "木材",
-    },
-  };
   const locale = useLocale();
+
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   // Tutup dropdown saat klik di luar
+
+  const { data } = useQuery({
+    queryKey: ["getCollections"],
+    queryFn: async () => {
+      const response = await getCollection();
+      return response;
+    },
+  });
+  console.log({ data });
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

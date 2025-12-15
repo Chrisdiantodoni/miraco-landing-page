@@ -10,3 +10,19 @@ export async function getSiteData(params: { locale?: string }) {
     })
     ?.then((res) => res.data);
 }
+
+export async function getSubCollection() {
+  return api
+    .get(ENDPOINTS.SUB_COLLECTION, {
+      revalidate: 60,
+    })
+    .then((res) => res.data);
+}
+
+export async function getCollection() {
+  return api
+    .get(ENDPOINTS.COLLECTION_MASTER, {
+      revalidate: 60,
+    })
+    .then((res) => res.data);
+}
