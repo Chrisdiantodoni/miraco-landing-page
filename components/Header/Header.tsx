@@ -12,6 +12,9 @@ import CustomMUIDrawer from "./Drawer";
 import { Collection } from "@/lib/types/settings";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
+import { useQuery } from "@tanstack/react-query";
+import { getCollection } from "@/lib/api/queries/settings";
+import createStore from "../../context/index";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -27,6 +30,8 @@ export default function Header(props: {
 }) {
   const pathname = usePathname();
 
+  const { handle } = createStore((state) => state);
+
   const t = useTranslations("header");
 
   const staticMenuData = t.raw("menu") as MenuItem[];
@@ -38,6 +43,22 @@ export default function Header(props: {
     title: item?.collection_name,
     link: `/collections/${item?.collection_name?.toLowerCase()}`,
   }));
+
+  const { data, isSuccess, isError } = useQuery({
+    queryKey: ["getCollections"],
+    queryFn: async () => {
+      const response = await getCollection();
+      return response;
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      const collections: Collection[] = data;
+      console.log({ data });
+      handle("collections", collections);
+    }
+  }, [isSuccess]);
 
   const isActive = (link: string) => {
     // 1. --- BERSIHKAN CLEAN PATHNAME (PATH SAAT INI) ---

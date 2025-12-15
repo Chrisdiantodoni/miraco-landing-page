@@ -1,8 +1,7 @@
 import { useLocale } from "next-intl";
 import { useState, useEffect, useRef } from "react";
 import { usePathname, Link } from "@/i18n/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { getCollection } from "@/lib/api/queries/settings";
+import createStore from "../context/index";
 
 export const languageOptions = [
   { code: "en", label: "ENG", flag: "🇺🇸" },
@@ -12,20 +11,59 @@ export const languageOptions = [
 
 const LanguageSwitcher = () => {
   const locale = useLocale();
-
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  // Tutup dropdown saat klik di luar
 
-  const { data } = useQuery({
-    queryKey: ["getCollections"],
-    queryFn: async () => {
-      const response = await getCollection();
-      return response;
-    },
-  });
-  console.log({ data });
+  const { collections } = createStore((state) => state);
+
+  const nameToSlug = (name: string) => {
+    return name.toLowerCase().replace(/\s+/g, "-");
+  };
+
+  // Function untuk find collection berdasarkan slug di locale tertentu
+  const findCollectionBySlug = (slug: string, searchLocale: string) => {
+    // PENTING: Decode slug dulu untuk handle Chinese/special chars
+    const decodedSlug = decodeURIComponent(slug);
+
+    return collections.find((collection) => {
+      const name = collection[
+        `name_${searchLocale}` as keyof Collection
+      ] as string;
+      return nameToSlug(name) === decodedSlug;
+    });
+  };
+
+  const getTranslatedPath = (targetLocale: string) => {
+    // Decode pathname dulu untuk handle Chinese characters
+    const decodedPathname = decodeURIComponent(pathname);
+    let translatedPath = decodedPathname;
+
+    // Split path untuk cek setiap segment
+    const segments = decodedPathname.split("/").filter(Boolean);
+
+    segments.forEach((segment) => {
+      // Cari collection yang match dengan segment di CURRENT locale
+      const matchedCollection = findCollectionBySlug(segment, locale);
+
+      if (matchedCollection) {
+        // Ambil slug target locale
+        const targetName = matchedCollection[
+          `name_${targetLocale}` as keyof Collection
+        ] as string;
+        const targetSlug = nameToSlug(targetName);
+
+        // Replace segment lama dengan segment baru
+        translatedPath = translatedPath.replace(
+          `/${segment}`,
+          `/${targetSlug}`
+        );
+      }
+    });
+
+    // Encode kembali untuk URL (Next.js akan handle ini otomatis, tapi untuk safety)
+    return translatedPath;
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -98,7 +136,7 @@ const LanguageSwitcher = () => {
         >
           {languageOptions.map((lang, index) => (
             <Link
-              href={pathname}
+              href={getTranslatedPath(lang.code)}
               locale={lang.code}
               prefetch={false}
               key={lang.code}
