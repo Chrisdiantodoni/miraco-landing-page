@@ -21,7 +21,7 @@ const MobileMenu = () => {
   const staticMenuData = t.raw("menu") as MenuItem[];
   const collectionItems = settings?.collections?.map((item) => ({
     title: item?.collection_name,
-    link: `/collections/${item?.collection_name}`,
+    link: `/collections/${item?.collection_name?.toLowerCase()}id=${item?.id}`,
   }));
 
   const newItems = staticMenuData.map((item, index) => {

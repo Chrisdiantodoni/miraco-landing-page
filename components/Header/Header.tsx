@@ -35,18 +35,44 @@ export default function Header(props: {
 
   const collectionItems = settings?.collections?.map((item) => ({
     title: item?.collection_name,
-    link: `/collections/${item?.collection_name}`,
+    link: `/collections/${item?.collection_name?.toLowerCase()}?id=${item?.id}`,
   }));
 
-  // Di komponen utama, tambahkan logic untuk active state
   const isActive = (link: string) => {
-    // Hapus locale prefix dari pathname
-    const pathWithoutLocale = pathname.replace(/^\/(en|id|zh)\//, "/");
+    // 1. --- BERSIHKAN CLEAN PATHNAME (PATH SAAT INI) ---
+    const pathWithoutQuery = pathname.split("?")[0];
 
-    // Juga handle case tanpa trailing slash setelah locale
-    const cleanPathname = pathWithoutLocale === "" ? "/" : pathWithoutLocale;
+    // Perbaikan Regex: Mencocokkan ^/ diikuti (en|id|zh) diikuti (secara opsional) oleh /
+    // Diganti dengan '/', sehingga /id atau /en/collections menjadi / atau /collections
+    const pathWithoutLocale = pathWithoutQuery.replace(/^\/(en|id|zh)\/?/, "/");
 
-    return cleanPathname === link || cleanPathname.startsWith(link + "/");
+    // Pastikan hasil akhirnya '/'. Tidak perlu normalisasi ekstra jika regex di atas sudah benar.
+    const cleanPathname = pathWithoutLocale;
+
+    // 2. --- BERSIHKAN LINK TARGET (MENU ITEM) ---
+    const targetLinkWithoutQuery = link.split("?")[0];
+
+    // 3. --- PERBANDINGAN BERKONDISI ---
+
+    // Kondisi 1: Home (Link target adalah '/')
+    if (targetLinkWithoutQuery === "/") {
+      // Halaman Home hanya aktif jika Clean Path benar-benar '/' (bukan '/collections/kayu')
+      return cleanPathname === "/";
+    }
+
+    // Kondisi 2: Halaman Non-Home
+    // a. Cocok persis (e.g., /about === /about)
+    const isExactMatch = cleanPathname === targetLinkWithoutQuery;
+
+    // b. Cocok sebagai prefix (e.g., /collections/kayu/detail... mulai dengan /collections/kayu/)
+    // Tambahkan '/' di akhir link target untuk memastikan itu adalah folder/path, bukan string acak.
+    const prefix = targetLinkWithoutQuery + "/";
+    const isPrefixMatch = cleanPathname.startsWith(prefix);
+
+    // console.log(`Clean Path: ${cleanPathname}, Target Link: ${targetLinkWithoutQuery}`);
+    // console.log(`Is Exact Match: ${isExactMatch}, Is Prefix Match: ${isPrefixMatch}`);
+
+    return isExactMatch || isPrefixMatch;
   };
 
   const renderMenuItems = (items: any[]) => {
@@ -136,10 +162,10 @@ export default function Header(props: {
       </li>
     ));
   };
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setMenuActive(newOpen);
-  };
+  // console.log({ settings });
+  // const toggleDrawer = (newOpen: boolean) => () => {
+  //   setMenuActive(newOpen);
+  // };
   // console.log(props.logo);
 
   return (

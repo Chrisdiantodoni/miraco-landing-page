@@ -110,6 +110,17 @@
   height: 0; /* Mengabaikan height agar padding-bottom bekerja */
   overflow: hidden; /* Penting untuk menjaga Image di dalam wadah */
 }
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #999;
+  font-size: 14px;
+  background: #f0f0f0;
+}
 .product-image-wrapper {
   position: relative; /* Ini sudah ada, dan ini adalah KUNCI */
   width: 100%;

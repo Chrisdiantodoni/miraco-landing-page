@@ -21,6 +21,8 @@ export default function Pagination<T>({
     return null;
   }
 
+  console.log({ paginationData });
+
   // Karena sekarang menggunakan Generic <T>, kita tidak perlu lagi eslint-disable @typescript-eslint/no-explicit-any
   // Anda bisa menghapus eslint-disable @typescript-eslint/no-explicit-any dari bagian atas file jika ini adalah satu-satunya alasan.
 

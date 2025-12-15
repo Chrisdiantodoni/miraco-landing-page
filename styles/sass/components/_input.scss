@@ -102,8 +102,8 @@ $border-radius: 0.375rem;
 
   &:focus {
     outline: none;
-    border-color: $primary-color;
-    box-shadow: 0 0 0 0.25rem rgba(7, 1, 67, 0.1);
+    // border-color: $primary-color;
+    box-shadow: 0 0 0 0.1rem rgba(7, 1, 67, 0.1);
   }
 
   @media (max-width: 576px) {
@@ -124,7 +124,7 @@ $border-radius: 0.375rem;
 
 .btnClear {
   position: absolute;
-  right: 65px;
+  right: 10px;
   background: none;
   border: none;
   padding: 0.375rem 0.75rem;

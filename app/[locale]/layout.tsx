@@ -14,6 +14,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { SiteSettingsProvider } from "@/lib/providers/SiteSettingProvider";
 import { ToastContainer } from "react-toastify";
 import { getSiteData } from "@/lib/api/queries/settings";
+import { getLocale } from "next-intl/server";
 type Props = {
   children: ReactNode;
   params: Promise<{ locale: string }>;
@@ -30,7 +31,7 @@ const poppins = Poppins({
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getSiteData();
+  const data = await getSiteData({ locale: "en" });
   const settings = data.site_settings;
 
   return {
@@ -50,7 +51,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  const siteData = await getSiteData();
+  const siteData = await getSiteData({ locale });
   return (
     <html lang={locale} data-scroll-behavior="smooth">
       <head>

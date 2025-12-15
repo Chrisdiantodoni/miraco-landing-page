@@ -16,7 +16,7 @@ const CollectionSections = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const settings = useSiteSettings();
-
+  console.log(settings, "setting collections");
   return (
     <section className="wpo-instagram-section section-padding pb-0">
       <h2 className="d-none">hidden content</h2>
@@ -27,7 +27,9 @@ const CollectionSections = () => {
             <Link
               className="instagram-card"
               key={index}
-              href={`/collections/${col?.collection_name}`}
+              href={`/collections/${col?.collection_name?.toLowerCase()}?id=${
+                col?.id
+              }`}
             >
               {col?.image_url && (
                 <Image

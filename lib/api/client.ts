@@ -70,10 +70,9 @@ async function baseFetch<T>(url: string, options?: ApiOptions): Promise<any> {
       // Laravel error response
       const errorMessage =
         responseData.message || responseData.error || `API Error ${res.status}`;
-
+      console.log(responseData);
       throw new Error(errorMessage);
     }
-
     // Return full Laravel response
     return responseData as LaravelResponse<T>;
   } catch (error) {
