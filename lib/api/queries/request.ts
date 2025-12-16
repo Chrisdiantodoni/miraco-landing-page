@@ -13,6 +13,9 @@ export async function storeRequest(body: Record<string, any>) {
   return api.post(ENDPOINTS.REQUESTS, body);
 }
 
-export async function sendFormSpreee(body: Record<string, any>) {
+export async function sendFormSpree(body: Record<string, any>) {
   return api.post(ENDPOINTS.FORMSPREE, body);
+}
+export async function sendFormSpreeDONI(body: Record<string, any>) {
+  return api.post(ENDPOINTS.FORMSPREE_DONI, body);
 }

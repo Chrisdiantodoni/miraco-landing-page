@@ -190,13 +190,14 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     <div className="blog-sidebar">
       {/* Tombol Reset di Atas */}
       <div className="filter-reset-top">
-        <Typography
+        <p className="active-filter-count" style={{ fontWeight: "bold" }}>
+          {activeFilterCount} Active Filters
+        </p>
+        {/* <Typography
           variant="body2"
           component="p"
           className="active-filter-count"
-        >
-          {activeFilterCount} Active Filters
-        </Typography>
+        ></Typography> */}
         <Button
           onClick={resetFilters}
           variant="text"

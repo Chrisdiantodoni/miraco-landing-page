@@ -37,7 +37,10 @@ export default async function Index() {
           pagesub="See Our Projects"
           paddingTop={100}
         />
-        <ProjectSection hclass={"wpo-project-section section-padding"} />
+        <ProjectSection
+          hclass={"wpo-project-section section-padding"}
+          projects={data?.projects}
+        />
       </div>
     </Fragment>
   );

@@ -1,4 +1,7 @@
 // types/project.ts
+import { Media } from "@/lib/types/media";
+import { Product } from "@/lib/types/product/product";
+
 export type Project = {
   id: string;
   project_name: string;
@@ -15,4 +18,12 @@ export type Project = {
   featured_image?: string;
   featured_image_url?: string;
   gallery?: string[];
+  project_type: ProjectType;
+  media: Media[];
+  featured_products: Product[];
 };
+
+interface ProjectType {
+  id: string;
+  project_type: string;
+}

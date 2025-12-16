@@ -13,14 +13,20 @@ import {
 
 import dynamic from "next/dynamic";
 import { useMutation } from "@tanstack/react-query";
-import { sendFormSpreee, storeRequest } from "@/lib/api/queries/request";
+import {
+  sendFormSpree,
+  sendFormSpreeDONI,
+  storeRequest,
+} from "@/lib/api/queries/request";
 import { toast } from "react-toastify";
 interface ContactPageProps {
   data: RequestResponse;
 }
+import SearchProduct from "../Input/SearchProduct";
 
 const DynamicClientSelect = dynamic(() => import("../Input/ClientSelect"), {
   ssr: false,
+
   loading: () => (
     <Input type="select" className="form-control" disabled defaultValue="">
       <option>Loading options...</option>
@@ -37,8 +43,8 @@ interface RequestFormFields extends FieldValues {
   address: string;
   company_name: string;
   product_requests: string;
-  description: string;
   banner_size: string;
+  products: [{ label: string; value: string }];
 }
 
 const Contactpage = ({ data }: ContactPageProps) => {
@@ -60,7 +66,12 @@ const Contactpage = ({ data }: ContactPageProps) => {
       address: "",
       company_name: "",
       product_requests: "",
-      description: "",
+      products: [
+        {
+          label: "",
+          value: "",
+        },
+      ],
     },
   });
 
@@ -69,10 +80,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
     name: "product_requests",
   });
 
-  const region = useWatch<any>({
-    control,
-    name: "region_id",
-  });
   const productOptions = data?.data?.product_requests.map((item) => ({
     label: item?.name,
     value: item?.name,
@@ -90,6 +97,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
     "region_id",
     "phone_number",
     "product_requests",
+    "products",
   ];
 
   const onSubmit = async (data: RequestFormFields) => {
@@ -100,15 +108,19 @@ const Contactpage = ({ data }: ContactPageProps) => {
     const regionLabel = regionOptions?.find(
       (find) => find?.value == region_id
     )?.label;
+    const joinedProducts = Array.isArray(data.products)
+      ? data.products.map((p) => p.label).join(", ")
+      : "";
 
     // 3. Gabungkan sisa data (restOfData) dengan properti region yang baru
     const dataFormSpree = {
       ...restOfData, // Semua data kecuali region_id
+      region_id,
       region: regionLabel, // Tambahkan properti 'region' dengan label yang benar
+      products: joinedProducts,
     };
 
-    console.log({ dataFormSpree });
-    mutate(data);
+    mutate(dataFormSpree);
   };
 
   // Helper untuk label dengan bintang merah
@@ -132,9 +144,9 @@ const Contactpage = ({ data }: ContactPageProps) => {
       if (response?.meta?.code == 200) {
         reset();
         toast.success("Successfully Send Request");
-
+        const { region_id, ...payload } = body;
         // TIDAK menggunakan await, agar tugas ini berjalan di latar belakang
-        sendFormSpreee(body).catch((err) => {
+        sendFormSpreeDONI(payload).catch((err) => {
           toast.error("Failed to send Gmail");
           console.error("Formspree failed:", err);
         });
@@ -334,44 +346,38 @@ const Contactpage = ({ data }: ContactPageProps) => {
                     )}
                   />
                 </FormGroup>
-                {productRequests == "Sample Product" && (
+                {productRequests === "Sample Product" && (
                   <FormGroup className="fullwidth">
                     {getLabel(
-                      "description",
-                      "Description (e.g., MR 1401 RK, 0.7 mm, 1220 x 2440 mm, 3 pcs (qty))"
+                      "products",
+                      "Select Product (Just 5 Maximum allowed)"
                     )}
+
                     <Controller
-                      name="description"
+                      name="products"
                       control={control}
                       rules={{
                         required:
                           "Please specify the required product details.",
-                        pattern: {
-                          value:
-                            /^[\w\s]{2,}\s?,\s?\d+(\.\d+)?\s?(mm|cm|m)\s?,\s?\d+(\.\d+)?\s?x\s?\d+(\.\d+)?\s?(mm|cm|m)\s?,\s?\d+\s?(pcs|unit|roll|lembar)\s?(\(qty\))?$/i,
-                          message:
-                            "Format must be: Code, Thickness/Spec, Dimension, Quantity. E.g., MR 1401 RK, 0.7 mm, 1220 x 2440 mm, 3 pcs (qty)",
-                        },
                       }}
                       render={({ field }) => (
-                        <Input
+                        <SearchProduct
                           {...field}
-                          className="form-control"
-                          placeholder="e.g MR 1401 RK, 0.7 mm, 1220 x 2440 mm, 3 pcs (qty)"
-                          id="description"
-                          invalid={!!errors.description}
+                          options={productOptions}
+                          hasError={!!errors.products}
+                          placeholder="Select Product"
+                          isClearable
                         />
                       )}
                     />
-                    {errors?.description && (
+
+                    {errors?.products && (
                       <FormFeedback style={{ display: "block" }}>
-                        {errors.description.message as React.ReactNode}
+                        {errors.products.message as React.ReactNode}
                       </FormFeedback>
                     )}
-                    {/* <FormFeedback>{errors.description?.message}</FormFeedback> */}
                   </FormGroup>
                 )}
-                {/* 10. Description (nullable - Full Width Textarea) */}
 
                 {/* Submit Area & Status Messages */}
                 <div className="submit-area">

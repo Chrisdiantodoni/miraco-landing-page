@@ -35,34 +35,46 @@ const LanguageSwitcher = () => {
   };
 
   const getTranslatedPath = (targetLocale: string) => {
-    // Decode pathname dulu untuk handle Chinese characters
-    const decodedPathname = decodeURIComponent(pathname);
-    let translatedPath = decodedPathname;
+    try {
+      const decodedPathname = decodeURIComponent(pathname);
+      let translatedPath = decodedPathname;
+      const segments = decodedPathname.split("/").filter(Boolean);
 
-    // Split path untuk cek setiap segment
-    const segments = decodedPathname.split("/").filter(Boolean);
+      // Track segments yang berhasil ditranslate
+      const translatedSegments: string[] = [];
 
-    segments.forEach((segment) => {
-      // Cari collection yang match dengan segment di CURRENT locale
-      const matchedCollection = findCollectionBySlug(segment, locale);
+      segments.forEach((segment) => {
+        const matchedCollection = findCollectionBySlug(segment, locale);
 
-      if (matchedCollection) {
-        // Ambil slug target locale
-        const targetName = matchedCollection[
-          `name_${targetLocale}` as keyof Collection
-        ] as string;
-        const targetSlug = nameToSlug(targetName);
+        if (matchedCollection) {
+          const targetName = matchedCollection[
+            `name_${targetLocale}` as keyof Collection
+          ] as string;
 
-        // Replace segment lama dengan segment baru
-        translatedPath = translatedPath.replace(
-          `/${segment}`,
-          `/${targetSlug}`
-        );
-      }
-    });
+          if (targetName) {
+            const targetSlug = nameToSlug(targetName);
+            translatedPath = translatedPath.replace(
+              `/${segment}`,
+              `/${targetSlug}`
+            );
+            translatedSegments.push(targetSlug);
+          } else {
+            // Kalau gak ada translation, keep original segment
+            console.warn(`No translation for segment: ${segment}`);
+            translatedSegments.push(segment);
+          }
+        } else {
+          // Segment bukan collection, keep as is
+          translatedSegments.push(segment);
+        }
+      });
 
-    // Encode kembali untuk URL (Next.js akan handle ini otomatis, tapi untuk safety)
-    return translatedPath;
+      return translatedPath;
+    } catch (error) {
+      console.error("Translation error:", error);
+      // Fallback: keep current pathname
+      return pathname;
+    }
   };
 
   useEffect(() => {

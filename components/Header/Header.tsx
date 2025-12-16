@@ -30,7 +30,7 @@ export default function Header(props: {
 }) {
   const pathname = usePathname();
 
-  const { handle } = createStore((state) => state);
+  const { handle } = createStore((state) => state) as any;
 
   const t = useTranslations("header");
 
@@ -196,24 +196,27 @@ export default function Header(props: {
       <CustomMUIDrawer open={menuActive} onClose={() => setMenuActive(false)} />
       <div className={"" + props.hclass}>
         <nav className="navigation navbar navbar-expand-lg navbar-light">
-          <div className="row align-items-center g-0">
-            <div className={"" + props.col1}>
+          <div className="row align-items-center g-lg-0 g-2">
+            <div className={"mx-3 " + props.col1}>
               <div className="mobail-menu">
                 <MobileMenu />
               </div>
             </div>
             <div className={"" + props.col2}>
-              <div className="navbar-header">
-                <Link
-                  onClick={ClickHandler}
-                  className="navbar-brand"
-                  href="/home"
-                >
+              <div className="navbar-header d-flex justify-content-start">
+                <Link onClick={ClickHandler} className="navbar-brand" href="/">
                   <Image
                     src={props.logo ?? image}
                     alt="Logo Perusahaan"
-                    width={400} // Ganti dengan ukuran yang sesuai
-                    height={200} // Ganti dengan ukuran yang sesuai
+                    // ✅ 2. Gunakan width/height yang lebih kecil untuk tampilan default
+                    width={150} // Ukuran lebih kecil untuk mobile
+                    height={75} // Sesuaikan rasio
+                    // ✅ Tambahkan style agar responsif, tetapi pastikan max-width tidak terlalu besar di mobile
+                    style={{
+                      width: "100%", // Agar mengisi container col2
+                      maxWidth: "150px", // Batasi ukuran maksimal di mobile
+                      height: "auto",
+                    }}
                     priority
                   />
                 </Link>
@@ -248,6 +251,26 @@ export default function Header(props: {
                   <div className="ms-lg-5 ms-2">
                     <LanguageSwitcher />
                   </div>
+                </div>
+              </div>
+              <div className="d-flex align-items-center pe-3">
+                {/* Search Button (Selalu Tampilkan, Sembunyikan di Desktop karena sudah ada di #navbar) */}
+                <div className="header-search-form-wrapper d-lg-none">
+                  <div className="cart-search-contact">
+                    <button
+                      onClick={() => setMenuActive(!menuActive)}
+                      className="search-toggle-btn"
+                      aria-label="Toggle Search"
+                    >
+                      <i className={`fi text-black flaticon-loupe`}></i>
+                      Search
+                    </button>
+                  </div>
+                </div>
+
+                {/* Language Switcher (Mobile) */}
+                <div className="d-lg-none">
+                  <LanguageSwitcher />
                 </div>
               </div>
             </div>

@@ -1,36 +1,43 @@
-// "use client";
-import { useRouter } from "next/router";
-import ContactForm from "@/components/Form/RequestForm";
-import Hero6 from "@/components/hero6/hero6";
-import PageTitle from "@/components/PageTitle/PageTitle";
-import ProjectSection from "@/components/Projects/ProjectSection";
-import RequestFormSection from "@/components/Section/RequestFormSection";
-import { Fragment } from "react/jsx-runtime";
+"use client";
+import Image from "next/image";
 import Projects from "@/api/projects";
 import Logo from "@/public/images/logo.svg";
-import Image from "next/image";
 import psi1 from "@/public/images/project-single/solve/1.jpg";
 import psi2 from "@/public/images/project-single/solve/2.jpg";
 import psi3 from "@/public/images/project-single/solve/3.jpg";
+import ProjectSection from "@/components/Projects/ProjectSection";
+import RequestFormSection from "@/components/Section/RequestFormSection";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { Project } from "@/lib/types";
 
-export default function page() {
-  const ProjectData = Projects[0];
+interface ProjectDetailProps {
+  project: Project;
+}
 
+const ProjectDetail = ({ project }: ProjectDetailProps) => {
+  const ProjectData = project;
   const ClickHandler = () => {
     window.scrollTo(10, 0);
   };
+  const projectThumbnail = project?.media?.find(
+    (find) => find?.type == "project_thumbnail"
+  )?.image_url;
   return (
-    <Fragment>
-      <PageTitle pageTitle={ProjectData?.title} pagesub={"Service Single"} />
-
+    <>
       <section className="project-single-page">
-        <div className="container-fluid">
+        <div className="container">
           <div
             className="project-image scroll-text-animation"
             data-animation="fade_from_bottom"
           >
-            <Image src={ProjectData?.sing} alt="" />
+            <Image
+              src={projectThumbnail!}
+              alt=""
+              width={1280}
+              height={720}
+              priority
+            />
           </div>
           <div className="row align-items-center">
             <div className="col-lg-8  col-12">
@@ -39,7 +46,7 @@ export default function page() {
                   className="scroll-text-animation"
                   data-animation="fade_from_bottom"
                 >
-                  {ProjectData?.title}
+                  {ProjectData?.project_name}
                 </h2>
                 <p>
                   <span>M</span>odern Buildings Ipsum is simply dummy text of
@@ -243,6 +250,8 @@ export default function page() {
           </div>
         </div>
       </section>
-    </Fragment>
+    </>
   );
-}
+};
+
+export default ProjectDetail;

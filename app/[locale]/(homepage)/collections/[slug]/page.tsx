@@ -7,6 +7,7 @@ import { getSiteData } from "@/lib/api/queries/settings";
 import { Collection } from "@/lib/types";
 import { ProductListResponse } from "@/lib/types/product/product";
 
+import { capitalizeFirstLetter } from "../../../../../lib/util";
 import {
   QueryClient,
   HydrationBoundary,
@@ -158,9 +159,11 @@ export default async function Page({ params, searchParams }: Props) {
     return (
       <Fragment>
         <PageTitle
-          pageTitle="Collections"
-          pagesub="Collections"
-          paddingTop={0}
+          pageTitle={capitalizeFirstLetter(collection)}
+          pagesub={`Here is our Collection of ${capitalizeFirstLetter(
+            collection
+          )}`}
+          paddingTop={50}
         />
         <HydrationBoundary state={dehydrate(queryClient)}>
           <CollectionProducts initialData={initialProductsData} />
