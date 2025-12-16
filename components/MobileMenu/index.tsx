@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { MenuItem } from "@/types/menu.types";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
-import { X } from "lucide-react";
+import { X, Menu } from "lucide-react";
 
 const MobileMenu = () => {
   const [openId, setOpenId] = useState(0);
@@ -97,7 +97,7 @@ const MobileMenu = () => {
                       timeout="auto"
                       unmountOnExit
                     >
-                      <List className="subMenu">
+                      <List className="subMenu" disablePadding>
                         <Fragment>
                           {item.submenu.map((submenu, i) => {
                             return (
@@ -131,10 +131,19 @@ const MobileMenu = () => {
         className="showmenu mobail-menu"
         onClick={() => setMenuState(!menuActive)}
       >
-        <button type="button" className="navbar-toggler open-btn">
-          <span className="icon-bar first-angle"></span>
+        <button
+          type="button"
+          className="navbar-toggler open-btn"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Menu className="text-white" />
+          {/* <span className="icon-bar first-angle"></span>
           <span className="icon-bar middle-angle"></span>
-          <span className="icon-bar last-angle"></span>
+          <span className="icon-bar last-angle"></span> */}
         </button>
       </div>
     </div>

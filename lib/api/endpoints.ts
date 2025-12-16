@@ -13,6 +13,7 @@ export const ENDPOINTS = {
   DOWNLOAD: (id: string | number) => `${API_URL}/media/download/${id}`,
   REQUESTS: `${API_URL}/sites/requests`,
   FORMSPREE: `https://formspree.io/f/xnneovpz`,
+  FORMSPREE_DONI: `https://formspree.io/f/xwpobnlr`,
   SUB_COLLECTION: `${API_URL}/sites/sub-collections`,
   COLLECTION_MASTER: `${API_URL}/sites/collections`,
 };

@@ -1,11 +1,11 @@
 "use client";
-import Link from "next/link";
 
 // images
-import Logo from "@/public/images/logo-2.svg";
+import Logo from "@/public/images/miraco/logo/logo-miraco-light.png";
 import Image from "next/image";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import { SocialWidget } from "./SocialWidget";
+import { Link } from "@/i18n/navigation";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -13,6 +13,8 @@ const ClickHandler = () => {
 
 const Footer = (props: { logo: string }) => {
   const data = useSiteSettings();
+
+  console.log({ props });
 
   return (
     <footer className="wpo-site-footer">
@@ -25,14 +27,7 @@ const Footer = (props: { logo: string }) => {
             >
               <div className="widget about-widget">
                 <div className="logo widget-title">
-                  {data?.site_settings?.logo_white_url && (
-                    <Image
-                      src={data.site_settings.logo_white_url}
-                      alt="blog"
-                      width={400}
-                      height={200}
-                    />
-                  )}
+                  <Image src={Logo} alt="blog" width={400} height={200} />
                 </div>
                 <p>
                   Miraco menghadirkan High Pressure Laminates berkualitas tinggi

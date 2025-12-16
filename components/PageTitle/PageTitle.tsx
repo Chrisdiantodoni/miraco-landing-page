@@ -10,17 +10,22 @@ const PageTitle = (props: {
     <section
       className={`wpo-page-title`}
       style={{
-        paddingTop: props.paddingTop ?? 100,
+        paddingTop: props.paddingTop ?? 120,
       }}
     >
+      {/* Minimal floating dots */}
+      <div className="minimal-dot"></div>
+      <div className="minimal-dot"></div>
+      <div className="minimal-dot"></div>
+
       <div className="container">
         <div className="row">
           <div className="col col-xs-12">
             <div className="wpo-breadcumb-wrap">
+              <h2 className="fade_bottom">{props.pageTitle}</h2>
               <ol>
                 <li>{props.pagesub}</li>
               </ol>
-              <h2 className="fade_bottom">{props.pageTitle}</h2>
             </div>
           </div>
         </div>

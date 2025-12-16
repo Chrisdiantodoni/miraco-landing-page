@@ -10,7 +10,10 @@ export type Media = {
     | "product_thumbnail"
     | "product_to_download"
     | "thumbnail"
-    | "additional_image_products";
+    | "additional_image_products"
+    | "project_thumbnail"
+    | "additional_image_projects"
+    | "content_image";
   order: number | null;
   meta: any | null;
   created_at: string;

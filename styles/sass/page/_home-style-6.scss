@@ -1021,6 +1021,7 @@
     // ----------------------------------------
     // 🚨 GAYA OVERLAY DAN JUDUL
     // ----------------------------------------
+
     .card-overlay {
       position: absolute;
       top: 0;
@@ -1029,44 +1030,65 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end; // Posisikan judul di bawah
+      justify-content: flex-end;
       padding: 20px;
 
       // 🚨 GRADIENT HITAM
       background: linear-gradient(
         to top,
         rgba($black, 0.7) 0%,
-        // Hitam pekat di bawah
         rgba($black, 0.1) 50%,
-        // Sedikit transparan di tengah
-        rgba($black, 0) 100% // Transparan total di atas
+        rgba($black, 0) 100%
       );
 
-      // Efek transisi untuk overlay (opsional)
       transition: background 0.3s ease-in-out;
 
       .card-title {
-        color: $white; // Warna judul putih
+        color: $white;
         font-size: 28px;
         font-weight: 400;
-        margin-bottom: 10px; // Jarak dari popup icon jika ada
-        opacity: 0; // Mulai tersembunyi
-        transition: opacity 0.3s ease-in-out 0.1s; // Tunda sedikit dari zoom
+        margin-bottom: 10px;
+
+        // ✅ MOBILE & TABLET: Selalu terlihat
+        opacity: 1;
+
+        // ✅ DESKTOP: Tersembunyi sampai hover
+        @media (min-width: 1025px) {
+          opacity: 0;
+          transition: opacity 0.3s ease-in-out 0.1s;
+        }
       }
     }
 
     // ----------------------------------------
-    // 🚨 HOVER EFFECTS
+    // 🚨 HOVER EFFECTS - HANYA UNTUK DESKTOP
     // ----------------------------------------
-    &:hover {
-      // 1. ZOOM / SCALING pada Gambar
+    @media (min-width: 1025px) {
+      &:hover {
+        // 1. ZOOM / SCALING pada Gambar
+        img {
+          transform: scale(1.1);
+        }
+
+        // 2. Tampilkan Judul
+        .card-overlay .card-title {
+          opacity: 1;
+        }
+      }
+    }
+
+    // ----------------------------------------
+    // 🚨 MOBILE & TABLET: Tidak ada zoom effect
+    // ----------------------------------------
+    @media (max-width: 1024px) {
+      // Hilangkan efek zoom di mobile/tablet
       img {
-        transform: scale(1.1); // Zoom 10%
+        transform: none !important;
       }
 
-      // 2. Tampilkan Judul
+      // Title selalu terlihat (sudah diatur di atas)
       .card-overlay .card-title {
-        opacity: 1;
+        opacity: 1 !important;
       }
     }
   }

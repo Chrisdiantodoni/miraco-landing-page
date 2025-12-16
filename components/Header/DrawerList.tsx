@@ -16,7 +16,8 @@ import Loading from "../Loader/loading";
 import { ProductListResponse } from "@/lib/types/product/product";
 import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
 import Pagination from "../Pagination/Pagination";
-import { useMutation } from "@tanstack/react-query";
+
+import { useEffect } from "react";
 
 const getProductFormattedCode = (p: Product) => {
   if (!p?.code) return "No code provided";
@@ -30,11 +31,13 @@ const getProductFormattedCode = (p: Product) => {
   );
   return parts.join(" ");
 };
-export const SearchDrawerContent: React.FC = () => {
+export const SearchDrawerContent: React.FC<{
+  onSearch: (value: any) => void;
+}> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
+  const hasSearchTerm = debouncedSearchTerm.trim().length > 0;
   const queryParamsForApi = useMemo(() => {
     const params: Record<string, any> = {
       search: debouncedSearchTerm || "",
@@ -42,21 +45,36 @@ export const SearchDrawerContent: React.FC = () => {
     };
     return params;
   }, [debouncedSearchTerm, page]);
-  const { data, isPending, isError } = useMutation<ProductListResponse>({
-    mutationKey: ["searchProducts", queryParamsForApi],
-    mutationFn: async () => {
+  const { data, isFetching, isError } = useQuery<ProductListResponse>({
+    queryKey: ["searchProducts", queryParamsForApi],
+    queryFn: async () => {
       const result = await getProductsAll(queryParamsForApi);
       return result;
     },
+    enabled: hasSearchTerm,
   });
-
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchTerm(value);
-  }, []);
-  const ICON_SIZE = 16;
 
   const dataProducts = data?.data;
   const products = dataProducts?.data || [];
+
+  useEffect(() => {
+    let heightState = "compact"; // Default: 15vh (Search Bar saja)
+
+    if (products.length > 0) {
+      // Ada banyak hasil, gunakan tinggi penuh
+      heightState = "full"; // 80vh
+    } else if (isFetching || hasSearchTerm) {
+      // Sedang mencari atau Not Found, gunakan tinggi Auto/Compact
+      heightState = "auto"; // Tinggi yang cukup untuk Loading/Pesan
+    }
+
+    onSearch(heightState);
+  }, [onSearch, isFetching, products.length, hasSearchTerm]);
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    setPage(1); // Reset halaman saat pencarian baru dimulai
+  }, []);
+  const ICON_SIZE = 16;
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -65,15 +83,15 @@ export const SearchDrawerContent: React.FC = () => {
   return (
     <div className={styles.container}>
       {/* Search Bar */}
-      <div className={`${styles.searchBarWrapper} container`}>
+      <div className={`${styles.searchBarWrapper} container-fluid mt-4`}>
         <SearchInput
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Cari Finishing, Texture, Sub Collection..."
         />
 
-        <div className="row g-5">
-          {isPending ? (
+        <div className="row g-5 mt-2">
+          {isFetching ? (
             <Loading />
           ) : products.length > 0 ? (
             products.map((product, index) => {

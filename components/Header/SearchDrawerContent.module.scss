@@ -12,8 +12,9 @@ $transition: 0.3s ease-in-out;
 // ============= Container =============
 .container {
   width: 100%;
-  min-height: 100vh;
-  background-color: $bg-light;
+  min-height: 15vh;
+  overflow-y: auto;
+  background-color: transparent;
   padding: 2rem 1rem;
 
   @media (max-width: 768px) {
@@ -25,7 +26,7 @@ $transition: 0.3s ease-in-out;
 .searchWrapper {
   width: 100%;
   margin: 0 auto 3rem;
-
+  height: auto;
   @media (max-width: 576px) {
     margin-bottom: 2rem;
   }

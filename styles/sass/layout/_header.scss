@@ -1,6 +1,389 @@
 /*--------------------------------------------------------------
 2. header
 --------------------------------------------------------------*/
+// Variables
+$primary-black: #000000;
+$white: #ffffff;
+$border-color: #e5e5e5;
+$hover-color: #000000;
+$transition-speed: 0.3s;
+
+/*--------------------------------------------------------------
+  HEADER STYLES - Modern & Responsive
+--------------------------------------------------------------*/
+
+// Variables
+$primary-black: #000000;
+$white: #ffffff;
+$border-color: #e5e5e5;
+$hover-color: #000000;
+$transition-speed: 0.3s;
+
+// Mixins
+@mixin transition($property: all, $duration: $transition-speed) {
+  transition: $property $duration ease;
+}
+
+@mixin media-query($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+/*--------------------------------------------------------------
+  1. HEADER CONTAINER
+--------------------------------------------------------------*/
+#header {
+  background: $white;
+  border-bottom: 1px solid $border-color;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  .navigation {
+    padding: 0;
+    margin: 0;
+
+    .navbar {
+      padding: 1rem 2rem;
+
+      @include media-query(991px) {
+        padding: 1rem 1.5rem;
+      }
+
+      @include media-query(575px) {
+        padding: 0.75rem 1rem;
+      }
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+  2. LAYOUT GRID
+--------------------------------------------------------------*/
+.navbar {
+  .row {
+    width: 100%;
+    margin: 0;
+
+    > div {
+      padding: 0;
+    }
+  }
+
+  // Desktop Layout: Logo Left, Menu Center-Right, Actions Right
+  @media (min-width: 992px) {
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  // Mobile Layout: Logo Left, Actions Right
+  @include media-query(991px) {
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+  3. LOGO SECTION
+--------------------------------------------------------------*/
+.navbar-header {
+  display: flex;
+  align-items: center;
+
+  .navbar-brand {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+
+    img {
+      display: block;
+      height: auto;
+      max-height: 60px;
+      width: auto;
+
+      @include media-query(991px) {
+        max-height: 50px;
+      }
+
+      @include media-query(575px) {
+        max-height: 40px;
+      }
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+  4. MOBILE MENU BUTTON
+--------------------------------------------------------------*/
+.mobail-menu {
+  display: none;
+
+  @include media-query(991px) {
+    display: block;
+  }
+
+  button {
+    background: $primary-black;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    @include transition(transform);
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+
+    span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: $white;
+      border-radius: 2px;
+      @include transition(all);
+
+      &:nth-child(2) {
+        width: 18px;
+      }
+    }
+
+    &:hover span {
+      width: 22px;
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+  5. NAVIGATION MENU (Desktop)
+--------------------------------------------------------------*/
+.navigation-holder {
+  display: none;
+
+  @media (min-width: 992px) {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+  }
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.5rem;
+
+  .nav-item {
+    position: relative;
+
+    .nav-link {
+      display: block;
+      padding: 0.75rem 1.25rem;
+      color: $primary-black;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      position: relative;
+      @include transition(color);
+
+      // Underline animation
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background: $primary-black;
+        @include transition(width, 0.3s);
+      }
+
+      &:hover {
+        color: $hover-color;
+
+        &::after {
+          width: 70%;
+        }
+      }
+
+      // Active state
+      &.active {
+        color: $hover-color;
+        font-weight: 600;
+
+        &::after {
+          width: 70%;
+        }
+      }
+    }
+
+    // Dropdown indicator
+  }
+}
+
+/*--------------------------------------------------------------
+  6. DROPDOWN SUBMENU
+--------------------------------------------------------------*/
+.sub-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: $white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem 0;
+  margin-top: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  @include transition(all, 0.3s);
+  z-index: 1000;
+  list-style: none;
+
+  li {
+    position: relative;
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      color: $primary-black;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      @include transition(all);
+
+      // &:hover {
+      //   background: rgba(0, 0, 0, 0.04);
+      //   color: $hover-color;
+      //   padding-left: 1.5rem;
+      // }
+
+      &.active {
+        background: rgba(0, 0, 0, 0.06);
+        color: $hover-color;
+        font-weight: 600;
+      }
+
+      // Icon spacing
+      .inner {
+        margin-right: 0.75rem;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    // Nested submenu
+    &.menu-item-has-children {
+      > a::after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: auto;
+        border-top: 4px solid transparent;
+        border-bottom: 4px solid transparent;
+        border-left: 4px solid;
+      }
+
+      > .sub-menu {
+        top: 0;
+        left: 100%;
+        margin-top: 0;
+        margin-left: 0.5rem;
+      }
+
+      &:hover > .sub-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+      }
+    }
+  }
+}
+
+.menu-item-has-children:hover > .sub-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/*--------------------------------------------------------------
+  7. IMAGE STYLE SUBMENU
+--------------------------------------------------------------*/
+.sub-menu.image-style {
+  min-width: 320px;
+  padding: 1.25rem;
+
+  li {
+    a {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1rem;
+      border-radius: 6px;
+
+      &:hover {
+        padding-left: 1rem;
+        background: rgba(0, 0, 0, 0.06);
+      }
+
+      .inner {
+        margin-bottom: 0.75rem;
+        margin-right: 0;
+
+        img {
+          width: 48px;
+          height: 48px;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}
+
+/*--------------------------------------------------------------
+  8. HEADER RIGHT ACTIONS
+--------------------------------------------------------------*/
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+
+  @include media-query(991px) {
+    gap: 0.5rem;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+}
+
+/*--------------------------------------------------------------
+  9. SEARCH BUTTON
+--------------------------------------------------------------*/
 .search-toggle-btn {
   background: transparent;
   border: none;
@@ -10,20 +393,134 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  @include transition(all);
+  border-radius: 6px;
+  min-height: 40px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
+  // Icon styling
+  .fi {
+    color: $primary-black;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    @include transition(all, 0.25s);
+  }
+
+  &:hover .fi {
+    color: $primary-black;
+    transform: scale(1.1);
+  }
+
+  // Hide text on mobile
+  @include media-query(575px) {
+    padding: 0.5rem;
+
+    .fi {
+      font-size: 20px;
+    }
+  }
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+
+  @include media-query(991px) {
+    gap: 0.5rem;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
 }
 
-/* Icon default */
-.search-toggle-btn .fi {
-  color: #000;
-  font-size: 18px;
-  transition: color 0.25s ease, transform 0.25s ease;
+/*--------------------------------------------------------------
+  9. SEARCH BUTTON
+--------------------------------------------------------------*/
+.header-search-form-wrapper {
+  .search-toggle-btn {
+    background: transparent;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $primary-black;
+    font-size: 14px;
+    font-weight: 500;
+    @include transition(all);
+    border-radius: 6px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateY(-1px);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .fi {
+      font-size: 18px;
+      @include transition(transform);
+    }
+
+    &:hover .fi {
+      transform: scale(1.1);
+    }
+
+    // Hide text on mobile
+    @include media-query(575px) {
+      gap: 0;
+      padding: 0.5rem;
+      font-size: 0;
+
+      .fi {
+        font-size: 20px;
+      }
+    }
+  }
+
+  // Desktop only (inside navbar)
+  &.d-lg-none {
+    display: none;
+
+    @include media-query(991px) {
+      display: flex;
+    }
+  }
 }
 
-/* Hover effect */
-.search-toggle-btn:hover .fi {
-  color: #000000;
-  transform: scale(1.1);
+/*--------------------------------------------------------------
+  10. LANGUAGE SWITCHER
+--------------------------------------------------------------*/
+.language-switcher-wrapper {
+  // Hide on mobile by default, show when needed
+  &.d-lg-none {
+    display: none;
+
+    @include media-query(991px) {
+      display: flex;
+    }
+  }
 }
+
 /*-- 2.1 topbar --*/
 .navbar-nav {
   .nav-item {
@@ -704,7 +1201,7 @@
 }
 
 .wpo-site-header .header-right .header-search-form-wrapper .fi:before {
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .wpo-site-header .header-right .search-toggle-btn,
@@ -1315,30 +1812,32 @@
       width: 100%;
     }
 
-    .mobail-menu button {
-      background-color: $black;
-      width: 40px;
-      height: 35px;
-      border: 0;
-      padding: 5px 10px;
-      outline: 0;
-      position: relative;
-      z-index: 20;
+    .mobail-menu {
+      button {
+        background-color: $black;
+        width: 40px;
+        height: 35px;
+        border: 0;
+        padding: 5px 10px;
+        outline: 0;
+        position: relative;
+        z-index: 20;
 
-      &:focus {
-        outline: none;
-        box-shadow: none;
-      }
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
 
-      span {
-        background-color: $white;
-        width: 20px;
-        display: block;
-        height: 2px;
-        margin-bottom: 5px;
+        span {
+          background-color: $white;
+          width: 20px;
+          display: block;
+          height: 2px;
+          margin-bottom: 5px;
 
-        &:last-child {
-          margin: 0;
+          &:last-child {
+            margin: 0;
+          }
         }
       }
     }
@@ -2174,7 +2673,7 @@
 .wpo-header-style-s10,
 .wpo-header-style-s11 {
   @media (min-width: 1200px) {
-    padding: 0 90px;
+    padding: 0 60px;
   }
 
   @media (max-width: 767px) {

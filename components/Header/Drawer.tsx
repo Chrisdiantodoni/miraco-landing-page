@@ -5,45 +5,49 @@
 import React from "react";
 import Drawer from "@mui/material/Drawer";
 import { SearchDrawerContent } from "./DrawerList"; // Import komponen konten pencarian Anda
+import { useState } from "react";
+import { useMemo } from "react";
 
 const CustomMUIDrawer = ({ open, onClose }: any) => {
+  const [heightState, setHeightState] = useState("compact");
+
+  const drawerHeight = useMemo(() => {
+    if (heightState === "full") {
+      return "80vh";
+    }
+    // Kita gunakan 'auto' untuk Loading/Not Found (agar hanya setinggi konten)
+    if (heightState === "auto") {
+      return "auto";
+    }
+    // Default / compact: Hanya untuk Search Bar (15vh)
+    return "15vh";
+  }, [heightState]);
   return (
     <Drawer
       open={open}
       onClose={onClose}
-      anchor="top" // Umumnya digunakan 'top' atau 'right' untuk overlay pencarian
-      // Properti untuk styling custom pada elemen kertas (latar belakang Drawer)
+      anchor="top"
+      transitionDuration={300} // Transisi untuk pembukaan/penutupan drawer
       slotProps={{
         paper: {
-          // Menargetkan elemen Paper (latar belakang Drawer)
           sx: {
-            // Atur agar Drawer mengambil seluruh tinggi viewport dan lebar viewport
-            height: "80%",
+            // Kontrol tinggi utama ada di sini
+            height: drawerHeight,
             width: "100%",
             maxWidth: "none",
             maxHeight: "none",
-            // Hilangkan bayangan default
             boxShadow: "none",
+            // ✅ Pastikan tidak ada padding di Paper yang menyebabkan gap
+            padding: 0,
+            // ✅ Transisi CSS untuk tinggi yang mulus
+            transition: "height 0.3s ease-in-out",
           },
         },
       }}
     >
-      {/* Gunakan div sebagai container pengganti Box. 
-        Terapkan gaya untuk mengatur dimensi dan scrolling.
-      */}
-      <div
-        role="presentation"
-        style={{
-          width: "100%",
-          height: "100%",
-          overflowY: "auto", // Mengizinkan scroll jika konten terlalu panjang
-          // Tambahkan styling latar belakang atau font jika diperlukan
-          backgroundColor: "white",
-        }}
-      >
-        {/* Konten Pencarian Anda. Pastikan menerima onClose */}
-        <SearchDrawerContent />
-      </div>
+      {/* Container Internal (role="presentation") */}
+
+      <SearchDrawerContent onSearch={(value) => setHeightState(value)} />
     </Drawer>
   );
 };

@@ -77,15 +77,15 @@ export default async function LocaleLayout({ children, params }: Props) {
                 collections={siteData.collections}
                 hclass={"wpo-site-header wpo-header-style-s9 my-4"}
                 Logo={siteData?.site_settings?.logo_dark_url ?? image}
-                col1={"col-lg-3 col-md-3 col-3 d-lg-none dl-block"}
+                col1={"col-md-1 col-1 d-lg-none dl-block"}
                 col2={"col-lg-2 col-md-6 col-6"}
                 col3={
-                  "col-lg-10 col-md-1 col-1 d-flex justify-content-end align-items-center"
+                  "col-lg-10 col-md-4 col-4 d-flex justify-content-end align-items-center"
                 }
               />
               {children}
 
-              <Footer logo={siteData?.site_settings?.logo_dark_url ?? image} />
+              <Footer logo={siteData?.site_settings?.logo_white_url ?? image} />
               <ToastContainer />
             </NextIntlClientProvider>
           </Providers>

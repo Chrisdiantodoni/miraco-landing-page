@@ -36,6 +36,10 @@ const nextConfig: NextConfig = {
         hostname: "your-domain.com",
         pathname: "/storage/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
     // dangerouslyAllowLocalIP: true,
   },

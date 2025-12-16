@@ -1,3 +1,5 @@
+import LoadingComponent from "@/components/Loader/loading";
+
 export default function Loading() {
-  return <div>Loading....</div>;
+  return <LoadingComponent fullScreen text="Loading Page" />;
 }
