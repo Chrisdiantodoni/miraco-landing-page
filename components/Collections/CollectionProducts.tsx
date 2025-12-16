@@ -10,30 +10,18 @@ import { ProductListResponse } from "@/lib/types/product/product";
 import Image from "next/image";
 import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
 import { useRouter } from "@/i18n/navigation";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useDebounce } from "../../lib/hooks/use-debounce";
 import Loading from "../Loader/loading";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/lib/api/queries/product";
+import { getProductFormattedCode } from "@/lib/util";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
   collection: string;
 }
-
-const getProductFormattedCode = (p: any) => {
-  if (!p?.code) return "No code provided";
-
-  const categoryCode = p.sub_collection?.category?.code || "";
-  const productCode = p.code;
-  const subCategoryCode = p.finishing?.code || "";
-
-  const parts = [categoryCode, productCode, subCategoryCode].filter(
-    (part) => part && part.trim()
-  );
-  return parts.join(" ");
-};
 
 // ✅ PERBAIKAN: Helper function untuk normalize query params (with UUID support)
 export const normalizeQueryParams = (params: Record<string, any>) => {
@@ -138,6 +126,7 @@ export const normalizeQueryParams = (params: Record<string, any>) => {
 
   // Page - selalu number minimal 1
   normalized.page = params.page ? Number(params.page) : 1;
+  normalized.collection = decodeURIComponent(params.collection ?? "");
 
   return normalized;
 };
@@ -151,7 +140,6 @@ const CollectionProducts = ({
   const category_id = searchParams.get("category_id");
   const initialSearchTerm = searchParams.get("search") || "";
   const currentPage = searchParams.get("page");
-
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -191,19 +179,21 @@ const CollectionProducts = ({
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
-  const STALE_TIME_MS = 30 * 1000;
+  // const STALE_TIME_MS = 30 * 1000;
   // ✅ Query dengan error handling
   const { data, isFetching, isError, error } = useQuery<ProductListResponse>({
     queryKey: ["products", queryParamsForApi],
     queryFn: async () => {
+      console.log("🔄 Fetching products for:", collection);
       const result = await getProducts(queryParamsForApi);
-
       return result;
     },
-    initialData: initialData,
-    staleTime: STALE_TIME_MS,
+    placeholderData: initialData, // ✅ Ganti initialData dengan placeholderData
+    // staleTime: 5000, // ✅ Data fresh selama 5 detik (kurangi fetch berlebihan)
+    staleTime: 0, // ✅ Selalu fetch fresh data saat queryKey berubah
+    gcTime: 5 * 60 * 1000, // Cache untuk performa
+    // enabled: !!collection,
   });
-
   // ✅ Effect untuk update URL search
   useEffect(() => {
     if (debouncedSearchTerm === initialSearchTerm) {
@@ -262,6 +252,8 @@ const CollectionProducts = ({
   const ICON_SIZE = 16;
   const dataProducts = data?.data;
   const products = dataProducts?.data || [];
+
+  console.log({ data });
 
   if (isError) {
     return (

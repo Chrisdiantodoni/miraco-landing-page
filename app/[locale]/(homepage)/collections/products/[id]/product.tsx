@@ -202,7 +202,7 @@ const Product = ({ data }: productDetailProps) => {
               </Slider>
             ) : (
               // =========================================================
-              <div className="placeholder">No Image Available</div>
+              <div className="placeholder-detail-shop"></div>
             )}
           </div>
         </div>
@@ -250,7 +250,7 @@ const Product = ({ data }: productDetailProps) => {
             </div>
             {activeProduct?.is_available_in_miraedge ? (
               <div className="d-flex gx-2">
-                <Check className="text-success" />
+                <Check className="text-success me-2" />
                 <div>MiraEdge</div>
               </div>
             ) : null}

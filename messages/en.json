@@ -29,5 +29,8 @@
   },
   "LocaleSwitcher": {
     "switchLocale": "Switch to {locale, select, id {Indonesia} en {English} other {China}}"
+  },
+  "collections": {
+    "collections_heading": "Here is our Collection of "
   }
 }

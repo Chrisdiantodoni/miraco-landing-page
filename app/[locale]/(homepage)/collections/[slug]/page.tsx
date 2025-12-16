@@ -6,8 +6,9 @@ import { getProducts } from "@/lib/api/queries/product";
 import { getSiteData } from "@/lib/api/queries/settings";
 import { Collection } from "@/lib/types";
 import { ProductListResponse } from "@/lib/types/product/product";
-
+import { getTranslations } from "next-intl/server";
 import { capitalizeFirstLetter } from "../../../../../lib/util";
+import { getLocale } from "next-intl/server";
 import {
   QueryClient,
   HydrationBoundary,
@@ -117,7 +118,7 @@ export default async function Page({ params, searchParams }: Props) {
   const { slug } = await params;
   const queryClient = new QueryClient();
   // ✅ Extract semua params
-  const collection = slug || "";
+  const locale = await getLocale();
   const search = resolvedSearchParams?.search || "";
   const page = resolvedSearchParams?.page || 1;
   const categoryId = resolvedSearchParams?.category_id || "";
@@ -126,7 +127,7 @@ export default async function Page({ params, searchParams }: Props) {
   console.log(categoryId, "search params");
   // ✅ Normalize params
   const initialParams = normalizeQueryParams({
-    collection: collection,
+    collection: decodeURIComponent(slug ?? ""),
     search: search,
     page: page,
     category_id: categoryId,
@@ -134,6 +135,13 @@ export default async function Page({ params, searchParams }: Props) {
   });
 
   console.log("Normalized Params:", initialParams);
+
+  const t = await getTranslations({
+    locale: locale, // Ambil locale dari params
+    namespace: "collections", // Namespace yang ingin diakses
+  });
+
+  const translatedPrefix = t("collections_heading");
 
   try {
     // ✅ Prefetch dengan params yang sudah dinormalisasi
@@ -159,14 +167,14 @@ export default async function Page({ params, searchParams }: Props) {
     return (
       <Fragment>
         <PageTitle
-          pageTitle={capitalizeFirstLetter(collection)}
-          pagesub={`Here is our Collection of ${capitalizeFirstLetter(
-            collection
-          )}`}
-          paddingTop={50}
+          pageTitle={capitalizeFirstLetter(slug)}
+          pagesub={`${translatedPrefix}${capitalizeFirstLetter(slug)}`}
         />
         <HydrationBoundary state={dehydrate(queryClient)}>
-          <CollectionProducts initialData={initialProductsData} />
+          <CollectionProducts
+            initialData={initialProductsData}
+            collection={slug}
+          />
         </HydrationBoundary>
       </Fragment>
     );
@@ -177,11 +185,7 @@ export default async function Page({ params, searchParams }: Props) {
     // ✅ Return page dengan error handling
     return (
       <Fragment>
-        <PageTitle
-          pageTitle="Collections"
-          pagesub="Collections"
-          paddingTop={0}
-        />
+        <PageTitle pageTitle="Collections" pagesub="Collections" />
         <div className="container py-5">
           <div className="alert alert-danger">
             <h4>Error Loading Products</h4>
