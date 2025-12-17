@@ -280,11 +280,11 @@ $transition-speed: 0.3s;
       //   padding-left: 1.5rem;
       // }
 
-      &.active {
-        background: rgba(0, 0, 0, 0.06);
-        color: $hover-color;
-        font-weight: 600;
-      }
+      // &.active {
+      //   background: rgba(0, 0, 0, 0.06);
+      //   color: $hover-color;
+      //   font-weight: 600;
+      // }
 
       // Icon spacing
       .inner {
@@ -3136,6 +3136,7 @@ $transition-speed: 0.3s;
 .responsivemenu ul.subMenu {
   padding-top: 0;
   padding-left: 15px;
+  padding-bottom: 0;
   padding-right: 0;
 }
 .responsivemenu ul.subMenu ul {

@@ -28,14 +28,14 @@ export default async function Index() {
         <PageTitle
           pageTitle="Collections"
           pagesub="Here is Our Collection"
-          paddingTop={0}
+          // paddingTop={0}
         />
         <CollectionSections />
 
         <PageTitle
           pageTitle="Projects"
           pagesub="See Our Projects"
-          paddingTop={100}
+          // paddingTop={100}
         />
         <ProjectSection
           hclass={"wpo-project-section section-padding"}

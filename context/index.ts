@@ -10,12 +10,14 @@ interface ZustandState {
     value: ZustandState[keyof ZustandState]
   ) => void;
   collections: Collection[];
+  isOpenDrawer: boolean;
 }
 
 // initial state
 const initialState: ZustandState = {
   expanded: true,
   collections: [],
+  isOpenDrawer: false,
 };
 
 // Make zustand state more concise and clear

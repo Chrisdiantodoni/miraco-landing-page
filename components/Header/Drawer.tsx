@@ -7,8 +7,10 @@ import Drawer from "@mui/material/Drawer";
 import { SearchDrawerContent } from "./DrawerList"; // Import komponen konten pencarian Anda
 import { useState } from "react";
 import { useMemo } from "react";
+import createStore from "../../context/index";
 
-const CustomMUIDrawer = ({ open, onClose }: any) => {
+const CustomMUIDrawer = () => {
+  const { isOpenDrawer, handle } = createStore((state) => state);
   const [heightState, setHeightState] = useState("compact");
 
   const drawerHeight = useMemo(() => {
@@ -24,8 +26,8 @@ const CustomMUIDrawer = ({ open, onClose }: any) => {
   }, [heightState]);
   return (
     <Drawer
-      open={open}
-      onClose={onClose}
+      open={isOpenDrawer}
+      onClose={() => handle!("isOpenDrawer", false)}
       anchor="top"
       transitionDuration={300} // Transisi untuk pembukaan/penutupan drawer
       slotProps={{

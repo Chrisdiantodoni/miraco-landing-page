@@ -39,5 +39,8 @@
   },
   "LocaleSwitcher": {
     "switchLocale": "Switch to {locale, select, de {German} en {English} other {Unknown}}"
+  },
+  "collections": {
+    "collections_heading": "Ini adalah Koleksi kami: "
   }
 }

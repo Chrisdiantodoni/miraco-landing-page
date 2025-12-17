@@ -18,7 +18,7 @@ export default async function page({
   const { data } = await getProjectById(id);
   return (
     <Fragment>
-      <PageTitle pageTitle={data?.project_name} pagesub={"Service Single"} />
+      {/* <PageTitle pageTitle={data?.project_name} pagesub={"Service Single"} /> */}
       <ProjectDetail project={data} />
     </Fragment>
   );

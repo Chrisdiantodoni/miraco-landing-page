@@ -38,6 +38,7 @@ export interface SiteSettings {
 export interface SidebarFilterProps {
   onFilterChange?: (filters: ActiveFilters) => void;
   collection_id?: string | number;
+  initialFilters: ActiveFilters;
 }
 
 export interface FilterBlockProps {

@@ -30,13 +30,12 @@ export default function Header(props: {
 }) {
   const pathname = usePathname();
 
-  const { handle } = createStore((state) => state) as any;
+  const { handle, isOpenDrawer } = createStore((state) => state);
 
   const t = useTranslations("header");
 
   const staticMenuData = t.raw("menu") as MenuItem[];
 
-  const [menuActive, setMenuActive] = useState(false);
   const settings = useSiteSettings();
 
   const collectionItems = settings?.collections?.map((item) => ({
@@ -56,7 +55,7 @@ export default function Header(props: {
     if (isSuccess) {
       const collections: Collection[] = data;
       console.log({ data });
-      handle("collections", collections);
+      handle!("collections", collections);
     }
   }, [isSuccess]);
 
@@ -193,7 +192,7 @@ export default function Header(props: {
   return (
     <header id="header">
       {/* {JSON.stringify(props.collections)} */}
-      <CustomMUIDrawer open={menuActive} onClose={() => setMenuActive(false)} />
+      <CustomMUIDrawer />
       <div className={"" + props.hclass}>
         <nav className="navigation navbar navbar-expand-lg navbar-light">
           <div className="row align-items-center g-lg-0 g-2">
@@ -238,7 +237,7 @@ export default function Header(props: {
                     <div className="header-search-form-wrapper">
                       <div className="cart-search-contact">
                         <button
-                          onClick={() => setMenuActive(!menuActive)}
+                          onClick={() => handle!("isOpenDrawer", true)}
                           className="search-toggle-btn"
                         >
                           <i className={`fi text-black flaticon-loupe`}></i>
@@ -258,7 +257,7 @@ export default function Header(props: {
                 <div className="header-search-form-wrapper d-lg-none">
                   <div className="cart-search-contact">
                     <button
-                      onClick={() => setMenuActive(!menuActive)}
+                      onClick={() => handle!("isOpenDrawer", true)}
                       className="search-toggle-btn"
                       aria-label="Toggle Search"
                     >
