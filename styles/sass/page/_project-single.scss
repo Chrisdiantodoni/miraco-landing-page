@@ -1,147 +1,197 @@
-/* 19. project-single-page */
+/* ===================================
+   PROJECT SINGLE PAGE - MODERN MINIMALIST
+   =================================== */
 
 .project-single-page {
-  padding-bottom: 110px;
+  padding-bottom: 120px;
 
-  .container-fluid {
-    margin: 0 auto;
-    max-width: 1720px;
-  }
+  // .container-fluid {
+  //   max-width: 1720px;
+  //   margin: 0 auto;
+  // }
 
   .project-image {
-    margin-bottom: 100px;
+    margin-bottom: 60px;
+    overflow: hidden;
+    border-radius: 4px;
+
     @media (max-width: 1199px) {
-      margin-bottom: 50px;
+      margin-bottom: 80px;
     }
-    /* img { width: 100%; } - Dihapus/dipindah ke inline style React */
+
+    @media (max-width: 767px) {
+      margin-bottom: 60px;
+      border-radius: 2px;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    // &:hover img {
+    //   transform: scale(1.02);
+    // }
   }
 
   .content {
-    max-width: 999px;
+    max-width: 900px;
 
     @media (max-width: 1199px) {
-      margin-bottom: 50px;
-    }
-
-    /* Caption content (untuk styling <div> yang memiliki dangerouslySetInnerHTML) */
-    .caption-content {
-      p {
-        color: #626b72;
-        font-size: 20px;
-        font-weight: 400;
-        line-height: 40px;
-
-        @media (max-width: 1399px) {
-          font-size: 18px;
-          line-height: 30px;
-        }
-      }
+      margin-bottom: 60px;
     }
 
     h2 {
       color: #1e3446;
-      font-size: 100px;
-      font-weight: 400;
-      line-height: 120px;
-      margin-bottom: 40px;
+      font-size: 80px;
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 32px;
+      letter-spacing: -0.02em;
 
       @media (max-width: 1399px) {
-        font-size: 80px;
-        line-height: 90px;
-        margin-bottom: 30px;
+        font-size: 64px;
+        margin-bottom: 28px;
       }
+
       @media (max-width: 1199px) {
-        font-size: 50px;
-        line-height: 70px;
+        font-size: 48px;
+        margin-bottom: 24px;
+      }
+
+      @media (max-width: 767px) {
+        font-size: 36px;
         margin-bottom: 20px;
       }
+    }
+
+    .caption-content {
+      color: #626b72;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.8;
+      opacity: 0.9;
+
+      @media (max-width: 1399px) {
+        font-size: 17px;
+      }
+
       @media (max-width: 767px) {
-        font-size: 40px;
-        line-height: 40px;
-        margin-bottom: 10px;
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      p {
+        margin-bottom: 1.2em;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
 
   .description {
-    border: 1px solid #c1c1c1;
     background: #fff;
+    border: 1px solid rgba(193, 193, 193, 0.3);
+    border-radius: 2px;
     margin-left: auto;
-    width: 100%; /* Memastikan box penuh di kolomnya */
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
 
     @media (max-width: 991px) {
       margin-left: 0;
-      max-width: 400px; /* Batasi lebar di mobile agar tidak terlalu lebar */
+      max-width: 480px;
+    }
+
+    &:hover {
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
     }
 
     h3 {
+      color: #1e3446;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.4;
       text-align: center;
-      color: #000;
-      font-size: 50px;
-      font-weight: 400;
-      line-height: 60px;
-      display: block;
-      border-bottom: 1px solid #c1c1c1;
-      padding: 20px 0;
+      padding: 28px 0;
       margin: 0;
+      border-bottom: 1px solid rgba(193, 193, 193, 0.2);
+      letter-spacing: -0.01em;
 
       @media (max-width: 1399px) {
-        font-size: 40px;
-        line-height: 50px;
-        padding: 15px 0;
+        font-size: 22px;
+        padding: 24px 0;
       }
+
       @media (max-width: 1199px) {
-        font-size: 30px;
-        line-height: 40px;
-        padding: 10px 0;
+        font-size: 20px;
+        padding: 20px 0;
       }
     }
 
     ul {
-      padding: 37px 60px;
+      padding: 40px 48px;
 
       @media (max-width: 1399px) {
-        padding: 25px 40px;
+        padding: 36px 40px;
       }
+
       @media (max-width: 1199px) {
-        padding: 20px 20px;
+        padding: 28px 24px;
       }
 
       li {
         display: flex;
         align-items: flex-start;
-        color: #666;
-        font-size: 20px;
+        color: #626b72;
+        font-size: 16px;
         font-weight: 400;
-        line-height: 60px;
+        line-height: 2.4;
+        border-bottom: 1px solid rgba(193, 193, 193, 0.1);
+        padding: 12px 0;
 
         @media (max-width: 1199px) {
-          font-size: 18px;
-          line-height: 40px;
+          font-size: 15px;
+          line-height: 2;
+          padding: 10px 0;
+        }
+
+        &:first-child {
+          padding-top: 0;
+        }
+
+        &:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
         }
 
         span {
           text-align: left;
-          width: 60%;
 
-          @media (max-width: 1399px) {
+          &:first-child {
             width: 40%;
+            color: #1e3446;
+            font-weight: 500;
+            opacity: 0.8;
           }
 
           &:last-child {
-            width: 40%;
-            text-align: right; /* ✅ Tambahkan right align untuk nilai */
+            width: 60%;
+            color: #626b72;
+          }
 
-            @media (max-width: 1399px) {
-              width: 60%;
-            }
+          a {
+            color: #1e3446;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
 
-            a {
-              color: #666; /* Pertahankan warna teks link */
-              text-decoration: none;
-              &:hover {
-                text-decoration: underline;
-              }
+            &:hover {
+              color: #000;
+              border-bottom-color: rgba(30, 52, 70, 0.3);
             }
           }
         }
@@ -150,223 +200,401 @@
   }
 }
 
+/* ===================================
+   PROJECT TITLE SECTION
+   =================================== */
+
 .project-title {
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 
   @media (max-width: 991px) {
+    margin-bottom: 60px;
     text-align: center;
-    margin-bottom: 40px;
+  }
+
+  @media (max-width: 767px) {
+    margin-bottom: 48px;
   }
 
   h2 {
     color: #1e3446;
-    font-size: 100px;
-    font-weight: 400;
-    line-height: 120px;
-    margin: 0;
+    font-size: 72px;
+    font-weight: 300;
+    line-height: 1.2;
     max-width: 700px;
-    margin-right: auto;
+    margin: 0 auto 0 0;
+    letter-spacing: -0.02em;
 
     @media (max-width: 1499px) {
-      font-size: 80px;
-      line-height: 100px;
+      font-size: 64px;
     }
+
     @media (max-width: 1199px) {
-      font-size: 60px;
-      line-height: 80px;
+      font-size: 52px;
     }
+
     @media (max-width: 991px) {
+      font-size: 44px;
       margin: 0 auto;
-      font-size: 50px;
-      line-height: 60px;
     }
-    @media (max-width: 757px) {
-      font-size: 40px;
-      line-height: 50px;
+
+    @media (max-width: 767px) {
+      font-size: 36px;
     }
   }
 
   p {
     color: #626b72;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 400;
-    line-height: 40px;
-    margin: 0;
-    max-width: 696px;
-    margin-left: auto;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 0 0 auto;
+    opacity: 0.9;
 
     @media (max-width: 1199px) {
-      font-size: 18px;
-      line-height: 30px;
+      font-size: 16px;
     }
+
     @media (max-width: 991px) {
       margin: 0 auto;
     }
   }
 }
 
-/* solve-section (Digunakan juga untuk Featured Products) */
+/* ===================================
+   GALLERY SECTION
+   =================================== */
+
 .solve-section {
-  background: #f9f9f9;
-  padding: 100px 0;
+  background: #fafafa;
+  padding: 120px 0;
 
   @media (max-width: 991px) {
-    padding: 90px 0;
-    padding-bottom: 60px;
+    padding: 80px 0;
+  }
+
+  @media (max-width: 767px) {
+    padding: 60px 0;
   }
 
   .container-fluid {
-    margin: 0 auto;
     max-width: 1720px;
+    margin: 0 auto;
   }
 
-  .image-wrap,
-  .item-wrap {
-    /* ✅ Menyatukan styling untuk image-wrap dan item-wrap (featured products) */
+  .image-wrap {
     .row {
-      margin: 0 -18px;
+      margin: 0 -12px;
     }
   }
 
-  .image,
-  .product-item {
-    /* ✅ Menyatukan margin untuk image dan product-item */
-    margin: 0 9px;
+  .image {
+    margin: 0 12px 24px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #fff;
 
     @media (max-width: 1399px) {
-      margin: 0;
+      margin: 0 0 24px;
     }
+
     @media (max-width: 991px) {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
-    /* img { width: 100%; } - Dihapus/dipindah ke inline style React */
-  }
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  /* Styling khusus untuk Featured Products */
-  .featured-products-section {
-    .product-item {
-      text-align: center;
-      .content h3 {
-        font-size: 22px;
-        color: #1e3446;
-        margin-top: 15px;
-      }
-      .image {
-        /* Styling khusus untuk container gambar produk jika diperlukan */
-      }
+    &:hover img {
+      transform: scale(1.05);
     }
   }
 }
 
-/* summery-section */
+/* ===================================
+   HIGHLIGHT SECTION
+   =================================== */
+
 .summery-section {
-  padding: 100px 0;
-  /* background: $white; - Menggunakan warna default, tidak ada variabel */
+  padding: 120px 0;
   background: #fff;
 
+  @media (max-width: 991px) {
+    padding: 80px 0;
+  }
+
+  @media (max-width: 767px) {
+    padding: 60px 0;
+  }
+
   .container-fluid {
-    margin: 0 auto;
     max-width: 1720px;
+    margin: 0 auto;
   }
 
   .wraper {
-    /* Background styles dipindahkan ke inline React style */
     position: relative;
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 650px;
+    height: 700px;
+    overflow: hidden;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    border-radius: 4px;
 
     @media (max-width: 1199px) {
-      height: 500px;
+      height: 560px;
+      border-radius: 3px;
     }
+
     @media (max-width: 991px) {
-      height: 400px;
+      height: 440px;
     }
+
     @media (max-width: 767px) {
-      height: 300px;
+      height: 320px;
+      border-radius: 2px;
     }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.1) 100%
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+
+  .video-btn {
+    display: inline;
+    border: 0;
   }
 }
 
-/* RelatedProject-section */
-.RelatedProject-section {
-  padding: 100px 0;
-  padding-top: 0;
+/* ===================================
+   FEATURED PRODUCTS SECTION
+   =================================== */
+
+.featured-products-section {
+  padding: 120px 0;
+  background: #fff;
 
   @media (max-width: 991px) {
-    padding-bottom: 60px;
-    padding-top: 0;
+    padding: 80px 0;
+  }
+
+  @media (max-width: 767px) {
+    padding: 60px 0;
   }
 
   .container-fluid {
-    margin: 0 auto;
     max-width: 1720px;
+    margin: 0 auto;
   }
 
   .item-wrap {
     .row {
-      margin: 0 -18px;
+      margin: 0 -12px;
+    }
+
+    .product-item {
+      margin: 0 12px 32px;
+      text-align: center;
+      transition: transform 0.3s ease;
+
+      @media (max-width: 1399px) {
+        margin: 0 0 32px;
+      }
+
+      @media (max-width: 991px) {
+        margin-bottom: 28px;
+      }
+
+      &:hover {
+        transform: translateY(-4px);
+      }
+
+      .image {
+        margin-bottom: 20px;
+        overflow: hidden;
+        border-radius: 2px;
+        background: #fafafa;
+
+        img {
+          width: 100%;
+          height: auto;
+          display: block;
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      }
+
+      &:hover .image img {
+        transform: scale(1.08);
+      }
+
+      .placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        color: #999;
+        font-size: 14px;
+        background: #f0f0f0;
+        border-radius: 2px;
+        margin-bottom: 20px;
+
+        &::before {
+          content: "No Image";
+        }
+      }
+
+      .content {
+        h3 {
+          color: #1e3446;
+          font-size: 20px;
+          font-weight: 500;
+          margin: 0;
+          letter-spacing: -0.01em;
+          transition: color 0.3s ease;
+
+          @media (max-width: 1199px) {
+            font-size: 18px;
+          }
+        }
+      }
+
+      &:hover .content h3 {
+        color: #000;
+      }
+    }
+  }
+}
+
+/* ===================================
+   RELATED PROJECTS SECTION
+   =================================== */
+
+.RelatedProject-section {
+  padding: 0 0 120px;
+
+  @media (max-width: 991px) {
+    padding: 0 0 80px;
+  }
+
+  @media (max-width: 767px) {
+    padding: 0 0 60px;
+  }
+
+  .container-fluid {
+    max-width: 1720px;
+    margin: 0 auto;
+  }
+
+  .item-wrap {
+    .row {
+      margin: 0 -12px;
     }
 
     .item {
-      margin: 0 9px;
+      margin: 0 12px;
+      transition: transform 0.3s ease;
 
       @media (max-width: 1399px) {
         margin: 0;
       }
+
       @media (max-width: 991px) {
-        margin-bottom: 30px;
+        margin-bottom: 40px;
+      }
+
+      &:hover {
+        transform: translateY(-6px);
       }
 
       .image {
-        /* img { width: 100%; } - Dihapus/dipindah ke inline style React */
+        overflow: hidden;
+        border-radius: 2px;
+        background: #fafafa;
+
+        img {
+          width: 100%;
+          height: auto;
+          display: block;
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      }
+
+      &:hover .image img {
+        transform: scale(1.05);
       }
 
       .content {
         text-align: center;
-        margin-top: 28px;
+        margin-top: 24px;
+        padding: 0 20px;
 
         h2 {
-          margin: 0;
+          margin: 0 0 8px;
 
           a {
-            color: #000;
-            text-align: center;
-            /* font-family: $heading-font-s2; - Perlu didefinisikan */
-            font-size: 45px;
+            color: #1e3446;
+            font-family: $heading-font-s2;
+            font-size: 32px;
             font-weight: 500;
-            text-decoration: none; /* ✅ Pastikan tidak ada underline default */
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: -0.01em;
+            transition: color 0.3s ease;
+            display: inline-block;
 
             @media (max-width: 1499px) {
-              font-size: 35px;
+              font-size: 28px;
             }
+
             @media (max-width: 1399px) {
-              font-size: 30px;
+              font-size: 26px;
             }
+
             @media (max-width: 1199px) {
-              font-size: 25px;
+              font-size: 24px;
             }
+
             &:hover {
-              text-decoration: underline;
+              color: #000;
             }
           }
         }
 
         span {
-          color: #666;
-          font-size: 22px;
+          color: #626b72;
+          font-size: 15px;
           font-weight: 400;
-          line-height: 30px;
-          margin-top: 10px;
+          line-height: 1.6;
           display: block;
+          opacity: 0.8;
 
           @media (max-width: 1199px) {
-            font-size: 18px;
-            line-height: 25px;
-            margin-top: 5px;
+            font-size: 14px;
           }
         }
       }

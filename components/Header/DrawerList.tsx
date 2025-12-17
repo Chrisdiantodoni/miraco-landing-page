@@ -18,23 +18,14 @@ import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
 import Pagination from "../Pagination/Pagination";
 
 import { useEffect } from "react";
+import { getProductFormattedCode } from "@/lib/util";
+import createStore from "../../context/index";
 
-const getProductFormattedCode = (p: Product) => {
-  if (!p?.code) return "No code provided";
-
-  const categoryCode = p.sub_collection?.category?.code || "";
-  const productCode = p.code;
-  const subCategoryCode = p.finishing?.code || "";
-
-  const parts = [categoryCode, productCode, subCategoryCode].filter(
-    (part) => part && part.trim()
-  );
-  return parts.join(" ");
-};
 export const SearchDrawerContent: React.FC<{
   onSearch: (value: any) => void;
 }> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { handle } = createStore();
   const [page, setPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const hasSearchTerm = debouncedSearchTerm.trim().length > 0;
@@ -80,6 +71,10 @@ export const SearchDrawerContent: React.FC<{
     setPage(page);
   };
 
+  const handleClickedProduct = () => {
+    handle!("isOpenDrawer", false);
+  };
+
   return (
     <div className={styles.container}>
       {/* Search Bar */}
@@ -104,7 +99,10 @@ export const SearchDrawerContent: React.FC<{
                   className="col col-lg-3 col-md-6 col-12 fade_bottom"
                   key={product?.id || index}
                 >
-                  <Link href={`/collections/products/${product?.id}`}>
+                  <Link
+                    href={`/collections/products/${product?.id}`}
+                    onClick={handleClickedProduct}
+                  >
                     <div className="shop-card">
                       <div className="image">
                         {productImage ? (

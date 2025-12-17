@@ -220,6 +220,11 @@ const CollectionProducts = ({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const initialFilters = {
+    categories: searchParams.get("category_id")?.split(",") || [],
+    subCollections: searchParams.get("sub_collection_id")?.split(",") || [],
+  };
+
   // ✅ Handler untuk filters - akan dipanggil dari SidebarFilter
   const handleFilters = useCallback(
     (filters: {
@@ -276,6 +281,7 @@ const CollectionProducts = ({
             <SidebarFilter
               collection_id={products[0]?.collection_id as string}
               onFilterChange={handleFilters}
+              initialFilters={initialFilters}
             />
           </div>
 

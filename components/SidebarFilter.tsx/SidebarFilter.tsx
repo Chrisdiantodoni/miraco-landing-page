@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -11,6 +12,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { ChevronDown, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import type {
   ActiveFilters,
   Category,
@@ -49,6 +51,13 @@ const getItemData = (
     id: item.id,
     name: name || `Unnamed ${filterType}`,
   };
+};
+const parseUrlParams = (param: string | null): (string | number)[] => {
+  if (!param) return [];
+  return param.split(",").map((item) => {
+    const num = Number(item);
+    return isNaN(num) ? item : num;
+  });
 };
 
 // --- Komponen Checkbox ---
@@ -124,19 +133,41 @@ const FilterBlock: React.FC<FilterBlockProps> = ({
 const SidebarFilter: React.FC<SidebarFilterProps> = ({
   onFilterChange,
   collection_id,
+  initialFilters, // <- Dari URL params parent
 }) => {
   const settings = useSiteSettings();
-
   const types = settings?.categories || [];
-  const subCollections =
-    settings?.sub_collections?.filter(
-      (filter) => filter?.collection_id == collection_id
-    ) || [];
+  const allSubCollections = settings?.sub_collections || [];
 
-  const [draftFilters, setDraftFilters] = useState<ActiveFilters>({
-    categories: [],
-    subCollections: [],
-  });
+  const [draftFilters, setDraftFilters] = useState<ActiveFilters>(
+    initialFilters || {
+      categories: [],
+      subCollections: [],
+    }
+  );
+
+  // // Update local state ketika initialFilters berubah (saat URL berubah dari luar)
+  // useEffect(() => {
+  //   if (initialFilters) {
+  //     setDraftFilters(initialFilters);
+  //   }
+  // }, [initialFilters]);
+
+  // Filter subCollections berdasarkan collection_id dan categories yang dipilih
+  const filteredSubCollections = useMemo(() => {
+    let filtered = allSubCollections.filter(
+      (sub) => sub?.collection_id == collection_id
+    );
+
+    // Jika ada categories yang dipilih, filter subCollections berdasarkan category_id
+    if (draftFilters.categories.length > 0) {
+      filtered = filtered.filter((sub) =>
+        draftFilters.categories.includes(sub.category_id)
+      );
+    }
+
+    return filtered;
+  }, [allSubCollections, collection_id, draftFilters.categories]);
 
   const activeFilterCount = useMemo(() => {
     return Object.values(draftFilters).reduce(
@@ -149,30 +180,51 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
   const handleCheckboxChange = useCallback(
     (filterType: FilterType, slug: string | number) => {
-      setDraftFilters((prev) => {
-        const currentList = prev[filterType];
-        const isChecked = currentList.includes(slug);
+      // Hitung filters baru di luar setState
+      const currentList = draftFilters[filterType];
+      const isChecked = currentList.includes(slug);
 
-        let newSelectedList: (string | number)[];
-        if (isChecked) {
-          newSelectedList = currentList.filter((itemSlug) => itemSlug !== slug);
-        } else {
-          newSelectedList = [...currentList, slug];
-        }
+      let newSelectedList: (string | number)[];
+      if (isChecked) {
+        newSelectedList = currentList.filter((itemSlug) => itemSlug !== slug);
+      } else {
+        newSelectedList = [...currentList, slug];
+      }
 
-        const newFilters: ActiveFilters = {
-          ...prev,
-          [filterType]: newSelectedList,
+      let newFilters: ActiveFilters = {
+        ...draftFilters,
+        [filterType]: newSelectedList,
+      };
+
+      // Jika categories berubah, reset subCollections yang tidak valid
+      if (filterType === "categories") {
+        const validSubCollections = draftFilters.subCollections.filter(
+          (subId) => {
+            const subCollection = allSubCollections.find(
+              (sub) => sub.id === subId
+            );
+            return (
+              subCollection &&
+              newSelectedList.includes(subCollection.category_id)
+            );
+          }
+        );
+
+        newFilters = {
+          ...newFilters,
+          subCollections: validSubCollections,
         };
+      }
 
-        if (onFilterChange) {
-          onFilterChange(newFilters);
-        }
+      // Update state
+      setDraftFilters(newFilters);
 
-        return newFilters;
-      });
+      // Callback ke parent untuk update URL - SETELAH setState
+      if (onFilterChange) {
+        onFilterChange(newFilters);
+      }
     },
-    [onFilterChange]
+    [draftFilters, onFilterChange, allSubCollections]
   );
 
   const resetFilters = () => {
@@ -237,7 +289,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
       <FilterBlock
         title="Sub Collections"
-        data={subCollections}
+        data={filteredSubCollections}
         filterType="subCollections"
         activeFilters={draftFilters}
         handleCheckboxChange={handleCheckboxChange}
