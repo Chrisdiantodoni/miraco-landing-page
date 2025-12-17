@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       // Production - Your actual domain
       {
         protocol: "https",
-        hostname: "your-domain.com",
+        hostname: "miracohpl.com",
         pathname: "/storage/**",
       },
       {
@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
     pagesBufferLength: 5,
   },
   reactStrictMode: false,
+  onError: (err: any) => {
+    if (err.message.includes("disconnected port")) {
+      return;
+    }
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
