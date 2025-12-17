@@ -167,6 +167,8 @@ export default async function Page({ params, searchParams }: Props) {
     return (
       <Fragment>
         <PageTitle
+          showTopLine={false}
+          paddingTop={80}
           pageTitle={capitalizeFirstLetter(slug)}
           pagesub={`${translatedPrefix}${capitalizeFirstLetter(slug)}`}
         />

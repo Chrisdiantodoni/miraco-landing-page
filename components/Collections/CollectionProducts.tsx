@@ -308,7 +308,7 @@ const CollectionProducts = ({
 
                   return (
                     <div
-                      className="col col-lg-3 col-md-6 col-12 fade_bottom"
+                      className="col col-lg-3 col-md-6 col-6 fade_bottom"
                       key={product?.id || index}
                     >
                       <Link

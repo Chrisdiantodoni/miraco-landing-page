@@ -115,13 +115,13 @@ $transition: all 0.3s ease;
 }
 
 .location-image-wrapper {
-  width: 280px;
+  width: 400px;
   min-width: 280px;
   height: auto;
   overflow: hidden;
   background: $light-gray;
   position: relative;
-  border-radius: 12px;
+  // border-radius: 12px;
 
   @media (max-width: 991px) {
     width: 240px;
