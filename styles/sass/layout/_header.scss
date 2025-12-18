@@ -211,7 +211,7 @@ $transition-speed: 0.3s;
       padding: 0.75rem 1.25rem;
       color: $primary-black;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 400;
       text-decoration: none;
       position: relative;
       @include transition(color);
@@ -231,6 +231,7 @@ $transition-speed: 0.3s;
 
       &:hover {
         color: $hover-color;
+        font-weight: 600;
 
         &::after {
           width: 70%;
@@ -540,9 +541,10 @@ $transition-speed: 0.3s;
       position: relative;
       padding: 0.5rem 1rem !important;
       margin: 0 0.5rem;
-      color: #2c2c2c !important;
+      color: #3c3c3c !important;
       text-decoration: none !important;
       transition: color 0.3s ease;
+      font-weight: 400;
 
       // Underline animation - HITAM
       &::after {
@@ -560,6 +562,7 @@ $transition-speed: 0.3s;
 
       &:hover {
         color: #000000 !important;
+        // font-weight: 500 !important;
 
         &::after {
           width: 80%;
@@ -569,12 +572,15 @@ $transition-speed: 0.3s;
       // ACTIVE STATE berdasarkan path
       &.active {
         color: #000000 !important;
-        font-weight: 600;
+        // font-weight: 500 !important;
 
         &::after {
           width: 80%;
           background-color: #000000 !important;
         }
+      }
+      @media (max-width: 1199px) {
+        margin: 0;
       }
     }
   }

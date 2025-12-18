@@ -158,6 +158,8 @@ const FilterBlock: React.FC<
     return `${itemHeight * maxVisibleItems}px`; // Enable scroll
   };
 
+  const shouldShowScroll = data.length > 7;
+
   return (
     <Accordion
       expanded={expanded}
@@ -179,9 +181,11 @@ const FilterBlock: React.FC<
         className="widget-details"
         sx={{
           padding: 0,
-          maxHeight: calculateMaxHeight(),
-          overflowY: data.length > 7 ? "auto" : "visible",
+          // Mobile: selalu tampilkan scroll jika item > 7
+          maxHeight: shouldShowScroll ? calculateMaxHeight() : "auto",
+          overflowY: shouldShowScroll ? "auto" : "visible",
           overflowX: "hidden",
+          // Styling scrollbar
           "&::-webkit-scrollbar": {
             width: "6px",
           },
@@ -192,6 +196,14 @@ const FilterBlock: React.FC<
           "&::-webkit-scrollbar-thumb": {
             backgroundColor: "#888",
             borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "#555",
+            },
+          },
+          // Desktop (≥1024px): hilangkan scroll, tampilkan semua item
+          "@media (min-width: 1024px)": {
+            maxHeight: "none !important",
+            overflowY: "visible !important",
           },
         }}
       >
@@ -229,7 +241,6 @@ const FilterBlock: React.FC<
     </Accordion>
   );
 };
-
 // --- Komponen Utama SidebarFilter ---
 const SidebarFilter: React.FC<SidebarFilterProps> = ({
   onFilterChange,
