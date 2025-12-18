@@ -129,7 +129,7 @@ const Hero6 = ({ hero }: HeroProps) => {
       {/* Dark Overlay */}
       <div className="hero-overlay" />
 
-      <div className="wrapper">
+      <div className="wrapper container container-sm">
         {/* Title */}
         {hero?.title && (
           <h2 className="">
