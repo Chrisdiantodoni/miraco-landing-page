@@ -34,12 +34,23 @@ $transition-speed: 0.3s;
   1. HEADER CONTAINER
 --------------------------------------------------------------*/
 #header {
-  background: $white;
+  // background: $white;
+  // background: linear-gradient(135deg, #fff 0%, #000 100%);
+  background: linear-gradient(to left, #f8f9fa 0%, #fefefe 30%, #ffffff 100%);
+  // background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f0f1f3 100%);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid $border-color;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Efek saat scroll
+  &.scrolled {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-bottom-color: rgba($border-color, 0.5);
+  }
 
   .navigation {
     padding: 0;
@@ -200,7 +211,7 @@ $transition-speed: 0.3s;
       padding: 0.75rem 1.25rem;
       color: $primary-black;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 400;
       text-decoration: none;
       position: relative;
       @include transition(color);
@@ -220,6 +231,7 @@ $transition-speed: 0.3s;
 
       &:hover {
         color: $hover-color;
+        font-weight: 600;
 
         &::after {
           width: 70%;
@@ -521,6 +533,7 @@ $transition-speed: 0.3s;
   }
 }
 
+// navbar yang harus diubah
 /*-- 2.1 topbar --*/
 .navbar-nav {
   .nav-item {
@@ -528,9 +541,10 @@ $transition-speed: 0.3s;
       position: relative;
       padding: 0.5rem 1rem !important;
       margin: 0 0.5rem;
-      color: #000 !important;
+      color: #3c3c3c !important;
       text-decoration: none !important;
       transition: color 0.3s ease;
+      font-weight: 400;
 
       // Underline animation - HITAM
       &::after {
@@ -548,6 +562,7 @@ $transition-speed: 0.3s;
 
       &:hover {
         color: #000000 !important;
+        // font-weight: 500 !important;
 
         &::after {
           width: 80%;
@@ -557,12 +572,15 @@ $transition-speed: 0.3s;
       // ACTIVE STATE berdasarkan path
       &.active {
         color: #000000 !important;
-        font-weight: 600;
+        // font-weight: 500 !important;
 
         &::after {
           width: 80%;
           background-color: #000000 !important;
         }
+      }
+      @media (max-width: 1199px) {
+        margin: 0;
       }
     }
   }
@@ -654,7 +672,7 @@ $transition-speed: 0.3s;
         a {
           padding: 8px 20px;
           font-size: 0.9rem;
-
+          // color: red;
           span::after {
             bottom: -3px;
             height: 1px;
@@ -889,22 +907,70 @@ $transition-speed: 0.3s;
 
 /* 2.2 navigation */
 
-.wpo-site-header {
-  /* navigation open and close btn hide for width screen */
-  /* style for navigation less than 992px */
-  /*navbar collaps less then 992px*/
-  /*** cart-search-contact ***/
+// .wpo-site-header {
+//   /* navigation open and close btn hide for width screen */
+//   /* style for navigation less than 992px */
+//   /*navbar collaps less then 992px*/
+//   /*** cart-search-contact ***/
+// }
+
+// .wpo-site-header .navigation {
+//   margin-bottom: 0;
+//   padding: 0;
+//   border: 0;
+//   -webkit-border-radius: 0;
+//   -moz-border-radius: 0;
+//   -o-border-radius: 0;
+//   -ms-border-radius: 0;
+//   border-radius: 0;
+// }
+/*--------------------------------------------------------------
+  STICKY NAVBAR - NO JUMP SOLUTION
+--------------------------------------------------------------*/
+
+.fixed-navbar {
+  position: fixed; // ALWAYS FIXED - ini kuncinya!
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: #ffce48;
+  // background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease-out;
+
+  // Default state - visible
+  transform: translateY(0);
+
+  // Hide state - saat di top page
+  &.hidden {
+    transform: translateY(-100%);
+    box-shadow: none;
+  }
+
+  // Sticky state - saat scroll
+  &.active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
 }
 
-.wpo-site-header .navigation {
-  margin-bottom: 0;
-  padding: 0;
-  border: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -o-border-radius: 0;
-  -ms-border-radius: 0;
-  border-radius: 0;
+// Reserve space untuk navbar agar content tidak tertutup
+body {
+  padding-top: 80px; // Sesuaikan dengan tinggi navbar
+
+  @media (max-width: 991px) {
+    padding-top: 70px;
+  }
+
+  @media (max-width: 575px) {
+    padding-top: 60px;
+  }
+}
+
+// Optional: Smooth scroll behavior
+html {
+  scroll-behavior: smooth;
 }
 
 .sticky-header {
@@ -1692,7 +1758,7 @@ $transition-speed: 0.3s;
         position: relative;
         overflow: hidden;
         font-weight: 400;
-        color: $black;
+        color: #2c2c2c !important;
       }
 
       > ul > li > .sub-menu .sub-menu {
@@ -1705,7 +1771,7 @@ $transition-speed: 0.3s;
         position: relative;
 
         &:before {
-          font-family: "themify";
+          font-family: "Poppins";
           content: "\e649";
           font-size: 11px;
           font-size: calc-rem-value(11);
@@ -3229,14 +3295,38 @@ $transition-speed: 0.3s;
     left: -260px;
     width: 260px;
   }
+
+  .menu-overlay {
+    left: 260px; // Sesuaikan dengan lebar drawer di mobile kecil
+    width: calc(100% - 260px);
+  }
+
   .responsivemenu li a,
   .responsivemenu li p {
     font-size: 14px;
     padding: 13px 25px;
   }
 }
-
 .responsivemenu a:not([href]):not([class]),
 .responsivemenu a:not([href]):not([class]):hover {
   color: #ddd;
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  width: 100%; // Menutupi sisa layar
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, left 0.3s ease;
+  pointer-events: none; // Tidak bisa diklik saat hidden
+}
+
+.menu-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto; // Bisa diklik saat visible
 }

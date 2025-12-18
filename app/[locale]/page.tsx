@@ -22,7 +22,7 @@ export default async function Index() {
   return (
     <Fragment>
       <Hero6 hero={data?.hero} />
-      <div className="container">
+      <div className="container container-sm">
         <ServiceSectionS6 hclass={"wpo-service-section-s6"} />
         {/* <PartnerSection hclass={"wpo-partners-section fade_bottom"} /> */}
         <PageTitle
@@ -35,6 +35,7 @@ export default async function Index() {
         <PageTitle
           pageTitle="Projects"
           pagesub="See Our Projects"
+          marginTop={100}
           // paddingTop={100}
         />
         <ProjectSection

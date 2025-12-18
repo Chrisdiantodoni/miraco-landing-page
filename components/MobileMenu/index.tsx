@@ -33,6 +33,11 @@ const MobileMenu = () => {
     }
     return item;
   });
+  // Handler untuk menutup menu
+  const closeMenu = () => {
+    setMenuState(false);
+  };
+
   return (
     <div>
       <div className={`mobileMenu ${menuActive ? "show" : ""}`}>
@@ -126,7 +131,10 @@ const MobileMenu = () => {
           })}
         </ul>
       </div>
-
+      <div
+        className={`menu-overlay ${menuActive ? "show" : ""}`}
+        onClick={closeMenu}
+      />
       <div
         className="showmenu mobail-menu"
         onClick={() => setMenuState(!menuActive)}
@@ -141,9 +149,6 @@ const MobileMenu = () => {
           }}
         >
           <Menu className="text-white" />
-          {/* <span className="icon-bar first-angle"></span>
-          <span className="icon-bar middle-angle"></span>
-          <span className="icon-bar last-angle"></span> */}
         </button>
       </div>
     </div>

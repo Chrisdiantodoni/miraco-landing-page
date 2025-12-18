@@ -75,7 +75,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               {/* <Topbar /> */}
               <Navbar
                 collections={siteData.collections}
-                hclass={"wpo-site-header wpo-header-style-s9 my-4"}
+                hclass={"wpo-site-header wpo-header-style-s9 py-4"}
                 Logo={siteData?.site_settings?.logo_dark_url ?? image}
                 col1={"col-md-1 col-1 d-lg-none dl-block"}
                 col2={"col-lg-2 col-md-6 col-6"}

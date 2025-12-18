@@ -38,6 +38,22 @@ const partners = [
     id: "06",
     pimg: pimg6,
   },
+  {
+    id: "07",
+    pimg: pimg6,
+  },
+  {
+    id: "08",
+    pimg: pimg6,
+  },
+  {
+    id: "09",
+    pimg: pimg6,
+  },
+  {
+    id: "10",
+    pimg: pimg6,
+  },
 ];
 
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
@@ -108,3 +124,30 @@ const PartnerSection = (props: { hclass: string }) => {
 };
 
 export default PartnerSection;
+<div className="wraper">
+  {settings?.collections
+    ?.filter((filter) => filter?.image_url != null)
+    .map((col, index) => (
+      <Link
+        className="instagram-card"
+        key={index}
+        href={`/collections/${col?.collection_name?.toLowerCase()}`}
+      >
+        {col?.image_url && (
+          <Image
+            src={col.image_url}
+            alt={col.collection_name || "Collection Image"} // Aksesibilitas
+            className="img img-responsive"
+            width={350}
+            priority
+            height={350}
+          />
+        )}
+        {/* Tempatkan tag Image di sini */}
+
+        <div className="card-overlay">
+          <span className="card-title">{col.collection_name}</span>
+        </div>
+      </Link>
+    ))}
+</div>;

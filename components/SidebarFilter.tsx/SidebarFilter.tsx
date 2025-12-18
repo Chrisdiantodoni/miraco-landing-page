@@ -72,22 +72,98 @@ const MonokromCheckbox: React.FC<React.ComponentProps<typeof Checkbox>> = (
 );
 
 // --- Komponen FilterBlock ---
-const FilterBlock: React.FC<FilterBlockProps> = ({
+// const FilterBlock: React.FC<FilterBlockProps> = ({
+//   title,
+//   data,
+//   filterType,
+//   activeFilters,
+//   handleCheckboxChange,
+// }) => {
+//   if (!data || data.length === 0) return null;
+
+//   // eslint-disable-next-line react-hooks/rules-of-hooks
+//   const [expanded, setExpanded] = useState<boolean>(true);
+
+//   return (
+//     <Accordion
+//       expanded={expanded}
+//       onChange={() => setExpanded(!expanded)}
+//       className={`widget ${filterType}-widget`}
+//     >
+//       <AccordionSummary
+//         expandIcon={<ChevronDown size={20} />}
+//         aria-controls={`panel-${filterType}-content`}
+//         id={`panel-${filterType}-header`}
+//         className="widget-header"
+//       >
+//         <Typography variant="h3" component="h3" className="filter-title">
+//           {title}
+//         </Typography>
+//       </AccordionSummary>
+
+//       <AccordionDetails className="widget-details">
+//         <List className="filter-list" disablePadding>
+//           {data.map((item) => {
+//             const { id: slug, name } = getItemData(item, filterType);
+//             const isChecked = activeFilters[filterType].includes(slug);
+
+//             return (
+//               <ListItem key={slug} className="filter-item">
+//                 <FormControlLabel
+//                   className="filter-item-content"
+//                   label={<span className="filter-label">{name}</span>}
+//                   control={
+//                     <MonokromCheckbox
+//                       checked={isChecked}
+//                       onChange={() => handleCheckboxChange(filterType, slug)}
+//                       name={name}
+//                     />
+//                   }
+//                 />
+//               </ListItem>
+//             );
+//           })}
+//         </List>
+//       </AccordionDetails>
+//     </Accordion>
+//   );
+// };
+
+const FilterBlock: React.FC<
+  FilterBlockProps & {
+    expanded: boolean;
+    onToggleExpanded: () => void;
+  }
+> = ({
   title,
   data,
   filterType,
   activeFilters,
   handleCheckboxChange,
+  expanded,
+  onToggleExpanded,
 }) => {
   if (!data || data.length === 0) return null;
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [expanded, setExpanded] = useState<boolean>(true);
+  // Hitung max height berdasarkan jumlah item
+  const calculateMaxHeight = () => {
+    const itemHeight = 40; // tinggi per item
+    const maxVisibleItems = 7; // maksimal item yang terlihat
+    const totalItems = data.length;
+
+    if (totalItems <= maxVisibleItems) {
+      return "auto"; // Tidak perlu scroll
+    }
+
+    return `${itemHeight * maxVisibleItems}px`; // Enable scroll
+  };
+
+  const shouldShowScroll = data.length > 7;
 
   return (
     <Accordion
       expanded={expanded}
-      onChange={() => setExpanded(!expanded)}
+      onChange={onToggleExpanded}
       className={`widget ${filterType}-widget`}
     >
       <AccordionSummary
@@ -97,18 +173,54 @@ const FilterBlock: React.FC<FilterBlockProps> = ({
         className="widget-header"
       >
         <Typography variant="h3" component="h3" className="filter-title">
-          {title}
+          {title} {data.length > 7 && `(${data.length})`}
         </Typography>
       </AccordionSummary>
 
-      <AccordionDetails className="widget-details">
+      <AccordionDetails
+        className="widget-details"
+        sx={{
+          padding: 0,
+          // Mobile: selalu tampilkan scroll jika item > 7
+          maxHeight: shouldShowScroll ? calculateMaxHeight() : "auto",
+          overflowY: shouldShowScroll ? "auto" : "visible",
+          overflowX: "hidden",
+          // Styling scrollbar
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "#f1f1f1",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#888",
+            borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "#555",
+            },
+          },
+          // Desktop (≥1024px): hilangkan scroll, tampilkan semua item
+          "@media (min-width: 1024px)": {
+            maxHeight: "none !important",
+            overflowY: "visible !important",
+          },
+        }}
+      >
         <List className="filter-list" disablePadding>
           {data.map((item) => {
             const { id: slug, name } = getItemData(item, filterType);
             const isChecked = activeFilters[filterType].includes(slug);
 
             return (
-              <ListItem key={slug} className="filter-item">
+              <ListItem
+                key={slug}
+                className="filter-item"
+                sx={{
+                  padding: "4px 16px",
+                  minHeight: "40px",
+                }}
+              >
                 <FormControlLabel
                   className="filter-item-content"
                   label={<span className="filter-label">{name}</span>}
@@ -119,6 +231,7 @@ const FilterBlock: React.FC<FilterBlockProps> = ({
                       name={name}
                     />
                   }
+                  sx={{ width: "100%", margin: 0 }}
                 />
               </ListItem>
             );
@@ -128,7 +241,6 @@ const FilterBlock: React.FC<FilterBlockProps> = ({
     </Accordion>
   );
 };
-
 // --- Komponen Utama SidebarFilter ---
 const SidebarFilter: React.FC<SidebarFilterProps> = ({
   onFilterChange,
@@ -137,7 +249,24 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 }) => {
   const settings = useSiteSettings();
   const types = settings?.categories || [];
-  const allSubCollections = settings?.sub_collections || [];
+  const [expandedSections, setExpandedSections] = useState<
+    Record<FilterType, boolean>
+  >({
+    categories: true, // Default terbuka
+    subCollections: true, // Default terbuka
+  });
+  // const allSubCollections =  settings?.sub_collections || [];
+  const toggleExpand = useCallback((filterType: FilterType) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [filterType]: !prev[filterType],
+    }));
+  }, []);
+
+  const allSubCollections = useMemo(() => {
+    const filter = settings?.sub_collections || [];
+    return filter;
+  }, [settings]);
 
   const [draftFilters, setDraftFilters] = useState<ActiveFilters>(
     initialFilters || {
@@ -284,6 +413,8 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         data={types}
         filterType="categories"
         activeFilters={draftFilters}
+        expanded={expandedSections.categories}
+        onToggleExpanded={() => toggleExpand("categories")}
         handleCheckboxChange={handleCheckboxChange}
       />
 
@@ -292,6 +423,8 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         data={filteredSubCollections}
         filterType="subCollections"
         activeFilters={draftFilters}
+        expanded={expandedSections.subCollections}
+        onToggleExpanded={() => toggleExpand("subCollections")}
         handleCheckboxChange={handleCheckboxChange}
       />
     </div>

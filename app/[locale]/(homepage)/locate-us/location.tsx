@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Meta } from "@/lib/types";
 import { LocationListResponse } from "@/lib/types/location/location";
-import { MapPin, PhoneCall } from "lucide-react";
+import { MapPin, PhoneCall, Navigation } from "lucide-react";
 import Image from "next/image";
 interface Location {
   id: string;
@@ -34,22 +34,6 @@ export default function LocationSection({ data }: locationSectionProps | any) {
           className={`location-card ${!location.image_url ? "no-image" : ""}`}
         >
           {/* Image */}
-          {location.image_url && (
-            <div className="location-image-wrapper">
-              <Image
-                width={400}
-                height={400}
-                src={location?.image_url}
-                className="location-image"
-                alt={`${location?.name_company} - foto`}
-              />
-              {/* <img
-                src={location.image_url}
-                alt={location.name_company}
-                className="location-image"
-              /> */}
-            </div>
-          )}
 
           {/* Content */}
           <div className="location-content">
@@ -74,10 +58,26 @@ export default function LocationSection({ data }: locationSectionProps | any) {
               rel="noopener noreferrer"
               className="location-button"
             >
-              <i className="fi-rr-navigation"></i>
+              <Navigation />
               View on Google Maps
             </a>
           </div>
+          {location.image_url && (
+            <div className="location-image-wrapper">
+              <Image
+                width={400}
+                height={400}
+                src={location?.image_url}
+                className="location-image"
+                alt={`${location?.name_company} - foto`}
+              />
+              {/* <img
+                src={location.image_url}
+                alt={location.name_company}
+                className="location-image"
+              /> */}
+            </div>
+          )}
         </div>
       ))}
     </div>

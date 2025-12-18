@@ -94,7 +94,7 @@ const Hero6 = ({ hero }: HeroProps) => {
   const backgroundImage =
     hero?.hero_section?.background_image_url ||
     hero?.hero_section?.background_image;
-  const ctaUrl = hero?.hero_section?.cta_url || "/collections";
+  const ctaUrl = hero?.hero_section?.cta_url || "/collections/woods";
   const ctaColor = hero?.hero_section?.cta_color || "#ffffff";
   const secondaryCtaUrl = hero?.hero_section?.secondary_cta_url;
   const secondaryCtaColor =
@@ -129,7 +129,7 @@ const Hero6 = ({ hero }: HeroProps) => {
       {/* Dark Overlay */}
       <div className="hero-overlay" />
 
-      <div className="wrapper">
+      <div className="wrapper container container-sm">
         {/* Title */}
         {hero?.title && (
           <h2 className="">

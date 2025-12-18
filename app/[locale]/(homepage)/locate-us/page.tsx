@@ -12,7 +12,8 @@ export default async function LocationPage() {
           <PageTitle
             pageTitle="Locate Us"
             pagesub="Visit us at our offices around Indonesia"
-            paddingTop={0}
+            showTopLine={false}
+            paddingTop={50}
           />
           {/* <div className="location-header">
             <h1 className="location-title">Our Locations</h1>

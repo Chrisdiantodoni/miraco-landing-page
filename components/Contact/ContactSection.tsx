@@ -66,12 +66,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
       address: "",
       company_name: "",
       product_requests: "",
-      products: [
-        {
-          label: "",
-          value: "",
-        },
-      ],
+      products: [],
     },
   });
 
@@ -144,6 +139,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
       if (response?.meta?.code == 200) {
         reset();
         toast.success("Successfully Send Request");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { region_id, ...payload } = body;
         // TIDAK menggunakan await, agar tugas ini berjalan di latar belakang
         sendFormSpreeDONI(payload).catch((err) => {
