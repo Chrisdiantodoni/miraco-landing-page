@@ -17,7 +17,7 @@ const ServiceSectionS6 = (props: { hclass: string }) => {
       <div className="container">
         <div className="service-wrap">
           <div className="title fade_bottom">
-            <h2>Our Services For You</h2>
+            <h2>Our Features</h2>
             <p>
               Blaze is a trailblazing architecture agency renowned for its
               innovative approach to design, where creativity meets
@@ -26,7 +26,7 @@ const ServiceSectionS6 = (props: { hclass: string }) => {
               endure.
             </p>
           </div>
-          <div className="row">
+          <div className="row ms-lg-3 ms-0">
             {Services.slice(0, 4).map((service, item) => (
               <div className="col-md-6 col-12 fade_bottom" key={item}>
                 <div className="service-card">

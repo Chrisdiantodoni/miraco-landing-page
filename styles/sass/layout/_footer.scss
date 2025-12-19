@@ -141,7 +141,8 @@
           color: $white;
 
           &:hover {
-            color: $theme-primary-color;
+            // color: $theme-primary-color;
+            font-weight: 600;
           }
         }
       }
@@ -194,6 +195,7 @@
 
   .social-widget {
     ul {
+      padding-left: 0px;
       li {
         a {
           display: inline-block;
@@ -202,7 +204,7 @@
           margin-right: 20px;
 
           &:hover {
-            color: $theme-primary-color;
+            color: #b6b6b6;
           }
         }
       }

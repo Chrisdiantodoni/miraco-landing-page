@@ -19,7 +19,7 @@ interface productDetailProps {
 const getProductFormattedCode = (p: ProductTypes | any) => {
   if (!p?.code) return "No code provided";
 
-  const categoryCode = p.sub_collection?.category?.code || "";
+  const categoryCode = p.category?.code || "";
   const productCode = p.code;
   const subCategoryCode = p.finishing?.code || "";
 
@@ -224,9 +224,7 @@ const Product = ({ data }: productDetailProps) => {
           <div className="product-specification">
             <div className="product-spec-row">
               <div>Category</div>
-              <div>
-                {activeProduct?.sub_collection?.category?.category_name}
-              </div>
+              <div>{activeProduct?.category?.category_name}</div>
             </div>
             <div className="product-spec-row">
               <div>Collection</div>
@@ -249,11 +247,17 @@ const Product = ({ data }: productDetailProps) => {
               <div>{activeProduct?.thickness}</div>
             </div>
             {activeProduct?.is_available_in_miraedge ? (
-              <div className="d-flex gx-2">
-                <Check className="text-success me-2" />
-                <div>MiraEdge</div>
+              <div className="product-spec-row">
+                <div>MIRAEDGE</div>
+                <div>
+                  <Check />
+                </div>
               </div>
             ) : null}
+            {/* <div className="d-flex gx-2">
+                <Check className="text-success me-2" />
+                <div>MiraEdge</div>
+              </div> */}
           </div>
           {allPillProducts && allPillProducts.length > 0 && (
             <div className="related-products-pills">
