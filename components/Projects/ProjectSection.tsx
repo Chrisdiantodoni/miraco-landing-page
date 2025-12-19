@@ -6,6 +6,7 @@ import Shape from "@/public/images/right-arrow-2.svg";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Project } from "@/lib/types";
+import { ArrowRight } from "lucide-react";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -65,10 +66,20 @@ const ProjectSection = (props: ProjectProps) => {
           );
         })}
       </div>
-      <div className="project-allBtn fade_bottom">
-        <Link onClick={ClickHandler} href="/projects" className="theme-btn">
+      <div
+        className="project-allBtn fade_bottom d-flex justify-content-center align-items-center"
+        style={{ minHeight: "200px" }}
+      >
+        <Link
+          onClick={ClickHandler}
+          href="/projects"
+          className="theme-btn"
+          style={{
+            border: "1px solid #000",
+          }}
+        >
           <span>See All Projects</span>
-          <Image src={Shape} alt="" />
+          {/* <span className="read-more-icon">→</span> */}
         </Link>
       </div>
     </section>

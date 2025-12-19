@@ -598,6 +598,8 @@
   .project-allBtn {
     text-align: center;
     margin-top: 75px;
+    display: flex;
+    justify-content: center; // tambahkan ini
 
     .theme-btn {
       border-radius: 35px;
@@ -605,14 +607,17 @@
       color: $black;
       padding: 16px 40px 12px;
       text-transform: none;
-
-      &:after {
-        background: linear-gradient(
-          to right,
-          rgba(94, 93, 93, 0.1) 0%,
-          rgba(255, 255, 255, 0.1) 100%
-        );
+      &:hover {
+        background-color: $black;
+        color: #fff;
       }
+      // &:after {
+      //   background: linear-gradient(
+      //     to right,
+      //     rgba(94, 93, 93, 0.1) 0%,
+      //     rgba(255, 255, 255, 0.1) 100%
+      //   );
+      // }
 
       @include media-query(991px) {
         font-size: 18px;
@@ -636,6 +641,18 @@
         @include media-query(767px) {
           height: 29px;
           line-height: 34px;
+        }
+      }
+      .read-more-icon {
+        margin-left: 6px;
+        font-size: 20px;
+        display: inline-block;
+        transform: scaleX(1.5); // Panjangkan horizontal
+        transform: scaleY(1.2); // Panjangkan horizontal
+        transform-origin: left; // Mulai stretch dari kiri
+
+        @media (min-width: 1025px) {
+          transition: transform 0.3s ease;
         }
       }
     }
@@ -687,14 +704,14 @@
   }
 
   // Hover effect pada overlay
-  &:hover::before {
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.9) 0%,
-      rgba(0, 0, 0, 0.5) 50%,
-      rgba(0, 0, 0, 0.1) 100%
-    );
-  }
+  // &:hover::before {
+  //   background: linear-gradient(
+  //     to top,
+  //     rgba(0, 0, 0, 0.9) 0%,
+  //     rgba(0, 0, 0, 0.5) 50%,
+  //     rgba(0, 0, 0, 0.1) 100%
+  //   );
+  // }
 
   img {
     width: 100%;
@@ -945,7 +962,7 @@
 
       h2 {
         color: $white;
-        font-size: 80px;
+        font-size: 72px;
         font-weight: 400;
         line-height: 100px;
 
@@ -1008,7 +1025,7 @@
 }
 
 .service-card {
-  border: 1px solid #e3e3e3;
+  // border: 1px solid #e3e3e3;
   background: $white;
   padding: 40px;
   margin-bottom: 30px;
@@ -1031,12 +1048,12 @@
   h2 {
     a {
       color: $black;
-      font-size: 35px;
+      font-size: 22px;
       font-weight: 400;
       line-height: 50px;
 
       @media (max-width: 1399px) {
-        font-size: 25px;
+        font-size: 20px;
         line-height: 35px;
       }
     }

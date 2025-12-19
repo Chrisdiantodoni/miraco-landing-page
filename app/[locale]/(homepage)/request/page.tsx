@@ -12,9 +12,13 @@ export default async function page() {
 
   return (
     <Fragment>
-      {/* <PageTitle pagesub="Request Something from Us" /> */}
       {/* <RequestFormSection hclass={"wpo-consultaForm-section"} />
       <Con */}
+      <PageTitle
+        pageTitle="Request From Us"
+        pagesub="Request Something from Us"
+      />
+
       <Contactpage data={data} />
     </Fragment>
   );

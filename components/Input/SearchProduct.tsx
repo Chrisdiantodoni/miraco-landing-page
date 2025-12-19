@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 const getProductFormattedCode = (p: Product | any) => {
   if (!p?.code) return "No code provided";
 
-  const categoryCode = p.sub_collection?.category?.code || "";
+  const categoryCode = p.category?.code || "";
   const productCode = p.code;
   const subCategoryCode = p.finishing?.code || "";
 

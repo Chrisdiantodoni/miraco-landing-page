@@ -158,12 +158,12 @@ const Contactpage = ({ data }: ContactPageProps) => {
       <div className="container">
         <div className="row">
           <div className="col col-lg-10 offset-lg-1">
-            <div className="wpo-contact-title">
+            {/* <div className="wpo-contact-title">
               <h2>Request From Us</h2>
               <p>
                 Tell us what you need, and our team will get in touch shortly.
               </p>
-            </div>
+            </div> */}
             <div className="wpo-contact-form-area">
               {/* Menggunakan Form dari Reactstrap dan RHF handleSubmit */}
               <Form
