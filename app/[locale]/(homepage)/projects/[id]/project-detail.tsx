@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { Project } from "@/lib/types";
 import { getProductFormattedCode } from "@/lib/util";
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
 
 interface ProjectDetailProps {
   project: Project;
@@ -13,11 +14,7 @@ interface ProjectDetailProps {
 const ProjectDetail = ({ project }: ProjectDetailProps) => {
   const router = useRouter();
 
-  const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // Helper function untuk mendapatkan media berdasarkan type
+  // Get all images (thumbnail + additional)
   const getMediaByType = (type: string) => {
     return project?.media?.find((media) => media?.type === type)?.image_url;
   };
@@ -28,259 +25,248 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
       (media) => media?.type === "additional_image_projects"
     ) || [];
 
-  // Render project info item
-  const renderInfoItem = (label: string, value: string | any) => (
-    <li>
-      <span>{label}</span>
-      <span>{value}</span>
-    </li>
-  );
+  // Combine thumbnail and additional images
+  const allImages = [
+    ...(projectThumbnail
+      ? [
+          {
+            id: "thumbnail",
+            type: "project_thumbnail",
+            image_url: projectThumbnail,
+          },
+        ]
+      : []),
+    ...additionalImages,
+  ];
 
-  // Render link atau text biasa
-  const renderLinkOrText = (text: string, link?: string) => {
-    if (link) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? allImages.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === allImages.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const renderLinkOrText = (text: string, link: string | null) => {
+    if (link && link !== "#") {
       return (
-        <a href={link} target="_blank" rel="noopener noreferrer">
+        <Link
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="credit-link"
+        >
           {text}
-        </a>
+        </Link>
       );
     }
     return <>{text}</>;
   };
-
+  const handleBack = () => {
+    router.back();
+  };
   return (
-    <>
-      {/* Hero Section */}
-      <section className="project-single-page mt-5">
-        <div className="container-fluid">
-          <div
-            className="project-image scroll-text-animation"
-            data-animation="fade_from_bottom"
-          >
-            {projectThumbnail && (
+    <div className="project-detail-page">
+      {/* Hero Section with Gallery */}
+      <section className="hero-section">
+        <div className="max-width-container">
+          <h1 className="project-title">{project?.project_name}</h1>
+
+          {/* Main Image with Navigation */}
+          {allImages.length > 0 && (
+            <div className="main-image-wrapper">
               <Image
-                src={projectThumbnail}
+                src={allImages[currentImageIndex]?.image_url}
                 alt={project?.project_name || "Project"}
-                width={1280}
-                height={720}
+                width={1400}
+                height={788}
                 priority
+                style={{ width: "100%", height: "auto" }}
+              />
+
+              {allImages.length > 1 && (
+                <>
+                  <button
+                    onClick={handlePrevImage}
+                    className="nav-button nav-button-left"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={32} />
+                  </button>
+                  <button
+                    onClick={handleNextImage}
+                    className="nav-button nav-button-right"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={32} />
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Thumbnail Gallery */}
+          {allImages.length > 1 && (
+            <div className="thumbnail-gallery">
+              {allImages.map((img, index) => (
+                <div
+                  key={img.id}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`thumbnail-item ${
+                    currentImageIndex === index ? "active" : ""
+                  }`}
+                >
+                  <Image
+                    src={img.image_url}
+                    alt={`Thumbnail ${index + 1}`}
+                    width={120}
+                    height={80}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="product-back-btn">
+            <Link href={`/projects`}>Back to Projects</Link>
+          </div>
+          {/* Caption */}
+
+          {/* Project Info - Center Aligned */}
+          <div className="project-info">
+            <div className="info-item">
+              <span className="info-label">Project</span>
+              <span className="info-value">{project?.project_name}</span>
+            </div>
+            {project?.caption && (
+              <div
+                className="project-caption"
+                dangerouslySetInnerHTML={{ __html: project.caption }}
               />
             )}
-          </div>
 
-          <div className="row">
-            {/* Project Content */}
-            <div className="col-lg-8 col-12">
-              <div className="content">
-                <h2
-                  className="scroll-text-animation"
-                  data-animation="fade_from_bottom"
-                >
-                  {project?.project_name}
-                </h2>
-                {project?.caption && (
-                  <div
-                    dangerouslySetInnerHTML={{ __html: project.caption }}
-                    className="caption-content"
-                  />
-                )}
+            {project?.project_type?.project_type && (
+              <div className="info-item">
+                <span className="info-label">Type</span>
+                <span className="info-value">
+                  {project.project_type.project_type}
+                </span>
               </div>
-            </div>
+            )}
 
-            {/* Project Info Sidebar */}
-            <div
-              className="col-lg-4 col-12 scroll-text-animation"
-              data-animation="fade_from_bottom"
-            >
-              <div className="description">
-                <h3>Project Info:</h3>
-                <ul>
-                  {renderInfoItem("Project", project?.project_name)}
-
-                  {project?.project_type?.project_type &&
-                    renderInfoItem("Type", project.project_type.project_type)}
-
-                  {project?.designed_by &&
-                    renderInfoItem(
-                      "Designed By",
-                      renderLinkOrText(
-                        project.designed_by,
-                        project.link_designed_by ?? "#"
-                      )
-                    )}
-
-                  {project?.photos_by &&
-                    renderInfoItem(
-                      "Photos By",
-                      renderLinkOrText(
-                        project.photos_by,
-                        project?.link_photos_by ?? "#"
-                      )
-                    )}
-
-                  {renderInfoItem("Location", project?.country)}
-                </ul>
-              </div>
+            <div className="info-item">
+              <span className="info-label">Location</span>
+              <span className="info-value">{project?.country}</span>
             </div>
           </div>
+
+          {/* Credits Section with Separator */}
+          {(project?.designed_by || project?.photos_by) && (
+            <div className="credits-section">
+              {project?.designed_by && (
+                <div className="credit-item">
+                  <span className="credit-label">Designed By</span>
+                  <span className="credit-value">
+                    {renderLinkOrText(
+                      project.designed_by,
+                      project.link_designed_by
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {project?.designed_by && project?.photos_by && (
+                <span className="separator">|</span>
+              )}
+
+              {project?.photos_by && (
+                <div className="credit-item">
+                  <span className="credit-label">Photos By</span>
+                  <span className="credit-value">
+                    {renderLinkOrText(
+                      project.photos_by,
+                      project.link_photos_by
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Project Gallery */}
-      {additionalImages.length > 0 && (
-        <section className="solve-section">
-          <div className="container-fluid">
-            <div className="project-title">
-              <div className="row align-items-center">
-                <div className="col-lg-6 col-12">
-                  <h2
-                    className="scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                  >
-                    Project Gallery
-                  </h2>
-                </div>
-                {/* <div className="col-lg-6 col-12">
-                  <p
-                    className="scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                  >
-                    Explore more details and perspectives of this project
-                    through our carefully curated gallery.
-                  </p>
-                </div> */}
-              </div>
-            </div>
-
-            <div className="image-wrap">
-              <div className="row">
-                {additionalImages.slice(0, 6).map((media, index) => (
-                  <div
-                    className="col-lg-4 col-md-6 col-12 scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                    key={media.id}
-                  >
-                    <div className="image">
-                      <Image
-                        src={media.image_url}
-                        alt={`${project.project_name} - Image ${index + 1}`}
-                        width={600}
-                        height={400}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Project Highlight */}
-      {/* {contentImage && (
-        <section className="summery-section">
-          <div className="container-fluid">
-            <div className="project-title">
-              <div className="row align-items-center">
-                <div className="col-lg-6 col-12">
-                  <h2
-                    className="scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                  >
-                    Project Highlight
-                  </h2>
-                </div>
-                <div className="col-lg-6 col-12">
-                  <p
-                    className="scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                  >
-                    Featured view showcasing the key aspects and design elements
-                    of this project.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="wraper"
-              style={{ backgroundImage: `url(${contentImage})` }}
-            >
-              <div className="video-wrap">
-                <div className="video-holder"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )} */}
-
       {/* Featured Products */}
-      {project?.featured_products && project.featured_products.length > 0 && (
-        <section className="featured-products-section">
-          <div className="container-fluid">
-            <div className="project-title">
-              <div className="row align-items-center">
-                <div className="col-lg-6 col-12">
-                  <h2
-                    className="scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                  >
-                    Featured Products
-                  </h2>
-                </div>
-                <div className="col-lg-6 col-12">
-                  <p
-                    className="scroll-text-animation"
-                    data-animation="fade_from_bottom"
-                  >
-                    Products and materials used in this project.
-                  </p>
-                </div>
-              </div>
-            </div>
+      {project?.featured_project_products &&
+        project.featured_project_products.length > 0 && (
+          <section className="products-section">
+            <div className="max-width-container">
+              <h2 className="section-title">Featured Products</h2>
+              <p className="section-subtitle">
+                Products and materials used in this project
+              </p>
 
-            <div className="item-wrap">
-              <div className="row">
-                {project.featured_products.map((featured) => {
+              <div className="products-grid">
+                {project.featured_project_products.map((featured) => {
                   const thumbnailProduct = featured?.media?.find(
-                    (find) => find?.type == "product_thumbnail"
+                    (find) => find?.type === "product_thumbnail"
                   )?.image_url;
                   return (
-                    <div
-                      className="col-lg-3 col-md-4 col-6 scroll-text-animation"
-                      data-animation="fade_from_bottom"
-                      key={featured.id}
-                    >
-                      <div className="product-item">
+                    <div className="product-card-projects" key={featured.id}>
+                      <div className="product-image-wrapper-projects">
                         {thumbnailProduct ? (
-                          <div className="image">
-                            <Image
-                              src={thumbnailProduct}
-                              alt={featured?.name || "Product"}
-                              width={300}
-                              height={300}
-                            />
-                          </div>
+                          <Image
+                            src={thumbnailProduct}
+                            alt={featured?.name || "Product"}
+                            width={300}
+                            height={300}
+                            className="product-image"
+                            style={{ width: "100%", height: "auto" }}
+                          />
                         ) : (
-                          <div className="placeholder-image-project"></div>
+                          <div className="product-placeholder"></div>
                         )}
-                        <div className="content">
-                          <h3>
+                      </div>
+                      <div className="product-info">
+                        <div className="product-text">
+                          <h3 className="product-name">{featured?.name}</h3>
+                          <h3 className="product-code">
                             {getProductFormattedCode(featured) || "Product"}
                           </h3>
                         </div>
+                        {featured?.is_available_in_miraedge == 1 && (
+                          <div className="product-icon">
+                            <Image
+                              src={miraedge}
+                              alt="Product Icon"
+                              width={16}
+                              height={16}
+                              className="product-icon"
+                              style={{
+                                objectFit: "contain",
+                                flexShrink: 0,
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
                 })}
               </div>
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* Related Projects */}
-    </>
+          </section>
+        )}
+    </div>
   );
 };
 

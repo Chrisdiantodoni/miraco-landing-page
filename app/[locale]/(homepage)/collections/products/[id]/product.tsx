@@ -8,6 +8,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import "react-medium-image-zoom/dist/styles.css";
 import Slider from "react-slick";
+import { getProductFormattedCode } from "@/lib/util";
 
 interface productDetailProps {
   data: {
@@ -15,19 +16,6 @@ interface productDetailProps {
     data: ProductTypes;
   };
 }
-
-const getProductFormattedCode = (p: ProductTypes | any) => {
-  if (!p?.code) return "No code provided";
-
-  const categoryCode = p.category?.code || "";
-  const productCode = p.code;
-  const subCategoryCode = p.finishing?.code || "";
-
-  const parts = [categoryCode, productCode, subCategoryCode].filter(
-    (part) => part && part.trim()
-  );
-  return parts.join(" ");
-};
 
 const Product = ({ data }: productDetailProps) => {
   const settings = {
@@ -216,11 +204,11 @@ const Product = ({ data }: productDetailProps) => {
             <span className="current">{item.price}</span>
             <span className="old">{item.delPrice}</span>
           </div> */}
-          <div
+          {/* <div
             dangerouslySetInnerHTML={{
               __html: activeProduct?.description ?? <p></p>,
             }}
-          />
+          /> */}
           <div className="product-specification">
             <div className="product-spec-row">
               <div>Category</div>
