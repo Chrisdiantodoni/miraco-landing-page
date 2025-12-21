@@ -67,22 +67,22 @@ const Footer = (props: { logo: string }) => {
                 <ul>
                   <li>
                     <Link onClick={ClickHandler} href="/request">
-                      <span className="rolling-text">Request</span>{" "}
+                      Request
                     </Link>
                   </li>
                   <li>
                     <Link onClick={ClickHandler} href="/projects">
-                      <span className="rolling-text">Projects</span>
+                      Projects
                     </Link>
                   </li>
                   <li>
                     <Link onClick={ClickHandler} href="/locate-us">
-                      <span className="rolling-text">Locate Us</span>{" "}
+                      Locate Us
                     </Link>
                   </li>
                   <li>
                     <Link onClick={ClickHandler} href="/e-catalogue">
-                      <span className="rolling-text">E-Catalogue</span>
+                      E-Catalogue
                     </Link>
                   </li>
                 </ul>
