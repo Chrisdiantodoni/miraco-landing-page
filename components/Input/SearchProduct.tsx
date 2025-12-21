@@ -11,19 +11,8 @@ import { Product } from "@/lib/types/product/product";
 import { useCallback } from "react";
 import { StylesConfig } from "react-select";
 import { toast } from "react-toastify";
+import { getProductFormattedCode } from "@/lib/util";
 
-const getProductFormattedCode = (p: Product | any) => {
-  if (!p?.code) return "No code provided";
-
-  const categoryCode = p.category?.code || "";
-  const productCode = p.code;
-  const subCategoryCode = p.finishing?.code || "";
-
-  const parts = [categoryCode, productCode, subCategoryCode].filter(
-    (part) => part && part.trim()
-  );
-  return parts.join(" ");
-};
 interface OptionType {
   label: string;
   value: string | number; // ID produk

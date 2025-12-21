@@ -20,7 +20,7 @@ export type Project = {
   gallery?: string[];
   project_type: ProjectType;
   media: Media[];
-  featured_products: Product[];
+  featured_project_products: Product[];
 };
 
 interface ProjectType {
