@@ -21,3 +21,16 @@ export async function getProductsAll(params?: Record<string, any>) {
     revalidate: 60,
   });
 }
+
+export async function downloads(
+  id: string | number,
+  body: {
+    image_path: string;
+    type: string;
+    download_type: string;
+  }
+) {
+  return api.post(ENDPOINTS.DOWNLOAD(id), {
+    body,
+  });
+}

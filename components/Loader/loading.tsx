@@ -7,7 +7,7 @@ const Loading = ({
   fullScreen = false,
   text = "",
   image = null,
-  imageSize = 80,
+  imageSize = 60,
 }) => {
   const sizeClass = `loading-spinner--${size}`;
 
@@ -15,32 +15,20 @@ const Loading = ({
     return (
       <div className="loading-overlay">
         <div className="loading-container">
-          {image ? (
-            <div className="loading-image-container">
+          {image && (
+            <div className="loading-logo">
               <Image
                 src={image}
                 alt="Loading"
-                className="loading-image"
                 width={imageSize}
                 height={imageSize}
-                priority
+                className="logo-image"
               />
-              <div
-                className={`loading-spinner ${sizeClass} spinner-with-image`}
-              >
-                <div className="spinner-ring"></div>
-                <div className="spinner-ring"></div>
-                <div className="spinner-ring"></div>
-              </div>
-            </div>
-          ) : (
-            <div className={`loading-spinner ${sizeClass}`}>
-              <div className="spinner-ring"></div>
-              <div className="spinner-ring"></div>
-              <div className="spinner-ring"></div>
-              <div className="spinner-core"></div>
             </div>
           )}
+          <div className={`loading-spinner ${sizeClass}`}>
+            <div className="spinner-ring"></div>
+          </div>
           {text && <p className="loading-text">{text}</p>}
         </div>
       </div>
@@ -49,37 +37,26 @@ const Loading = ({
 
   return (
     <div className="loading-inline">
-      {image ? (
-        <div className="loading-image-container">
+      {image && (
+        <div className="loading-logo">
           <Image
             src={image}
             alt="Loading"
-            className="loading-image"
             width={imageSize}
             height={imageSize}
-            priority
+            className="logo-image"
           />
-          <div className={`loading-spinner ${sizeClass} spinner-with-image`}>
-            <div className="spinner-ring"></div>
-            <div className="spinner-ring"></div>
-            <div className="spinner-ring"></div>
-          </div>
-        </div>
-      ) : (
-        <div className={`loading-spinner ${sizeClass}`}>
-          <div className="spinner-ring"></div>
-          <div className="spinner-ring"></div>
-          <div className="spinner-ring"></div>
-          <div className="spinner-core"></div>
         </div>
       )}
+      <div className={`loading-spinner ${sizeClass}`}>
+        <div className="spinner-ring"></div>
+      </div>
       {text && <p className="loading-text">{text}</p>}
     </div>
   );
 };
 
 export default Loading;
-// Demo Component
 // const LoadingDemo = () => {
 //   const [showFullScreen, setShowFullScreen] = React.useState(false);
 //   const [showWithImage, setShowWithImage] = React.useState(false);
