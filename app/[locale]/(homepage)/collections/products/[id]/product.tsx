@@ -189,7 +189,14 @@ const Product = ({ data }: productDetailProps) => {
     },
   });
 
-  const handleWhatsAppClick = (phoneNumber: string, message: string) => {
+  const handleWhatsAppClick = (phoneNumber: string) => {
+    const currentLink = window.location.href;
+    const message = `Selamat siang,
+Order HPL dengan kode: ${getProductFormattedCode(activeProduct)}
+Link produk:
+${currentLink}
+Mohon info ketersediaan, harga, dan estimasi pengiriman.
+Terima kasih.`;
     const cleanPhone = phoneNumber.replace(/[^0-9]/g, "");
     const encodedMessage = encodeURIComponent(message);
     const url = `https://wa.me/${cleanPhone}${
@@ -377,8 +384,7 @@ const Product = ({ data }: productDetailProps) => {
                 className="theme-btn2"
                 onClick={() =>
                   handleWhatsAppClick(
-                    site_settings?.site_settings?.whatsapp ?? "",
-                    "Hallo sya mau mesan ini"
+                    site_settings?.site_settings?.whatsapp ?? ""
                   )
                 }
               >

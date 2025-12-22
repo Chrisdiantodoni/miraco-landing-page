@@ -43,7 +43,10 @@ export function SocialWidget({ social = {}, onClick }: Props) {
           {social.whatsapp && (
             <Link
               onClick={() =>
-                handleWhatsAppClick(social.whatsapp ?? "", "HALLO")
+                handleWhatsAppClick(
+                  social.whatsapp ?? "",
+                  "Hallo saya mau bertanya soal "
+                )
               }
               href={`#`}
               target="_blank"
