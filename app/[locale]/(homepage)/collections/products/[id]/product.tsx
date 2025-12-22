@@ -19,6 +19,7 @@ import Slider from "react-slick";
 import { getProductFormattedCode } from "@/lib/util";
 import { useMutation } from "@tanstack/react-query";
 import { downloads } from "@/lib/api/queries/product";
+import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 
 interface productDetailProps {
   data: {
@@ -35,6 +36,7 @@ const Product = ({ data }: productDetailProps) => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+  const site_settings = useSiteSettings();
   const product = data?.data;
   const relatedProducts = product?.related_products;
   const currentProduct = product;
@@ -131,16 +133,70 @@ const Product = ({ data }: productDetailProps) => {
     setCurrentZoomImage(null);
   };
 
+  // const testingDownload = activeProduct?.media?.find(
+  //   (find) => find?.type == "additional_image_products"
+  // )?.path;
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async () => {
-      const response = await downloads(activeProduct?.id, {
-        image_path: productDownload?.path ?? "",
+      const body = {
+        image_path: productDownload?.path,
         type: "product",
         download_type: "product",
-      });
+      };
+      const response = await downloads(activeProduct?.id, body);
       return response;
     },
+    onSuccess: (response) => {
+      console.log("Response:", response); // ✅ Debug
+
+      const blob = response.blob;
+      const contentDisposition = response.contentDisposition; // ✅ Udah string langsung
+      console.log({ response });
+      // Ekstrak filename
+      let filename = "download.jpg";
+
+      if (contentDisposition) {
+        console.log("Content-Disposition:", contentDisposition); // ✅ Debug
+
+        // Match pattern: filename="..." atau filename=...
+        const match = contentDisposition.match(
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+        );
+
+        if (match && match[1]) {
+          filename = match[1].replace(/['"]/g, ""); // Remove quotes
+          console.log("Extracted filename:", filename); // ✅ Debug
+        }
+      }
+
+      // Trigger download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      console.log(`✅ File "${filename}" berhasil didownload!`);
+    },
+    onError: (error: any) => {
+      console.error("❌ Download gagal:", error);
+    },
   });
+
+  const handleWhatsAppClick = (phoneNumber: string, message: string) => {
+    const cleanPhone = phoneNumber.replace(/[^0-9]/g, "");
+    const encodedMessage = encodeURIComponent(message);
+    const url = `https://wa.me/${cleanPhone}${
+      message ? `?text=${encodedMessage}` : ""
+    }`;
+    window.open(url, "_blank");
+  };
 
   return (
     <div className="row mt-5">
@@ -317,15 +373,30 @@ const Product = ({ data }: productDetailProps) => {
           )}
           <div className="product-option">
             <div className="product-row">
-              <button className="theme-btn2">Order</button>
-              <button className="theme-btn ms-2 " onClick={() => mutateAsync()}>
-                {isPending ? (
-                  <Loader className="loadingSpinner" />
-                ) : (
-                  <LucideDownload />
-                )}
-                Download
+              <button
+                className="theme-btn2"
+                onClick={() =>
+                  handleWhatsAppClick(
+                    site_settings?.site_settings?.whatsapp ?? "",
+                    "Hallo sya mau mesan ini"
+                  )
+                }
+              >
+                Order
               </button>
+              {productDownload && (
+                <button
+                  className="theme-btn ms-2 "
+                  onClick={() => mutateAsync()}
+                >
+                  {isPending ? (
+                    <Loader className="loadingSpinner" />
+                  ) : (
+                    <LucideDownload />
+                  )}
+                  Download
+                </button>
+              )}
             </div>
           </div>
           <div className="product-back-btn">

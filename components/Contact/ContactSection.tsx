@@ -142,7 +142,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { region_id, ...payload } = body;
         // TIDAK menggunakan await, agar tugas ini berjalan di latar belakang
-        sendFormSpreeDONI(payload).catch((err) => {
+        sendFormSpree(payload).catch((err) => {
           toast.error("Failed to send Gmail");
           console.error("Formspree failed:", err);
         });

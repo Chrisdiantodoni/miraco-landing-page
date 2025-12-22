@@ -20,6 +20,7 @@ type ApiOptions = {
   token?: string;
   revalidate?: number;
   params?: Record<string, any>;
+  responseType?: "json" | "blob"; // ✅ Tambahkan ini
 };
 
 // ========================================
@@ -34,7 +35,14 @@ function buildUrl(url: string, params?: Record<string, any>) {
 
 async function baseFetch<T>(url: string, options?: ApiOptions): Promise<any> {
   try {
-    const { method = "GET", body, token, revalidate, params } = options || {};
+    const {
+      method = "GET",
+      body,
+      token,
+      revalidate,
+      params,
+      responseType = "json",
+    } = options || {};
     const isFormData = body instanceof FormData;
     // Validate URL
     if (!url) {
@@ -61,7 +69,28 @@ async function baseFetch<T>(url: string, options?: ApiOptions): Promise<any> {
       body: isFormData ? body : body ? JSON.stringify(body) : undefined,
       next: revalidate ? { revalidate } : undefined,
     });
+    if (responseType === "blob") {
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || `API Error ${res.status}`);
+      }
 
+      const blob = await res.blob();
+
+      // ✅ FIX: Ambil header pakai .get() method
+      const contentDisposition = res.headers.get("content-disposition");
+      console.log(res);
+      // ✅ Debug - lihat semua headers yang ada
+      console.log("All headers:");
+      res.headers.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
+
+      return {
+        blob,
+        contentDisposition, // ✅ Langsung return string-nya
+      };
+    }
     // Parse response
     const responseData = await res.json();
 
@@ -118,7 +147,8 @@ export const api = {
     const response = await baseFetch<T>(url, { method: "POST", body, token });
     return response.data;
   },
-
+  postBlob: (url: string, body: any, token?: string) =>
+    baseFetch(url, { method: "POST", body, token, responseType: "blob" }),
   put: <T>(url: string, body: any, token?: string) =>
     baseFetch<T>(url, { method: "PUT", body, token }),
 

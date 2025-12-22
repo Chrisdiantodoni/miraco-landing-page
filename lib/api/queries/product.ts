@@ -24,13 +24,7 @@ export async function getProductsAll(params?: Record<string, any>) {
 
 export async function downloads(
   id: string | number,
-  body: {
-    image_path: string;
-    type: string;
-    download_type: string;
-  }
+  body?: Record<string, any>
 ) {
-  return api.post(ENDPOINTS.DOWNLOAD(id), {
-    body,
-  });
+  return api.postBlob(ENDPOINTS.DOWNLOAD(id), body);
 }
