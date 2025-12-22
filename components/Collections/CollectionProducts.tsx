@@ -299,7 +299,7 @@ const CollectionProducts = ({
 
             <div className="row g-5">
               {isFetching ? (
-                <Loading />
+                <Loading size="small" />
               ) : products.length > 0 ? (
                 products.map((product, index) => {
                   const productImage = product?.media?.find(

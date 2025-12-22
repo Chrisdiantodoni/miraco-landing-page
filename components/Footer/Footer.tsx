@@ -14,8 +14,6 @@ const ClickHandler = () => {
 const Footer = (props: { logo: string }) => {
   const data = useSiteSettings();
 
-  console.log({ props });
-
   return (
     <footer className="wpo-site-footer">
       <div className="wpo-upper-footer">

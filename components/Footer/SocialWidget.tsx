@@ -15,6 +15,14 @@ type Props = {
 };
 
 export function SocialWidget({ social = {}, onClick }: Props) {
+  const handleWhatsAppClick = (phoneNumber: string, message: string) => {
+    const cleanPhone = phoneNumber.replace(/[^0-9]/g, "");
+    const encodedMessage = encodeURIComponent(message);
+    const url = `https://wa.me/${cleanPhone}${
+      message ? `?text=${encodedMessage}` : ""
+    }`;
+    window.open(url, "_blank");
+  };
   return (
     <div className="social-widget">
       <ul>
@@ -34,8 +42,13 @@ export function SocialWidget({ social = {}, onClick }: Props) {
           {/* WhatsApp */}
           {social.whatsapp && (
             <Link
-              onClick={onClick}
-              href={`https://wa.me/${social.whatsapp}`}
+              onClick={() =>
+                handleWhatsAppClick(
+                  social.whatsapp ?? "",
+                  "Hallo saya mau bertanya soal "
+                )
+              }
+              href={`#`}
               target="_blank"
               rel="noopener noreferrer"
             >

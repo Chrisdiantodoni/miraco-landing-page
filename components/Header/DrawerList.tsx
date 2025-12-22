@@ -16,6 +16,7 @@ import Loading from "../Loader/loading";
 import { ProductListResponse } from "@/lib/types/product/product";
 import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
 import Pagination from "../Pagination/Pagination";
+import image from "@/public/images/miraco/logo/logo-miraco.png";
 
 import { useEffect } from "react";
 import { getProductFormattedCode } from "@/lib/util";
@@ -87,7 +88,13 @@ export const SearchDrawerContent: React.FC<{
 
         <div className="row g-5 mt-2">
           {isFetching ? (
-            <Loading />
+            <Loading
+              size="medium"
+              // fullScreen={true}
+              text="Memuat..."
+              image={image}
+              imageSize={100}
+            />
           ) : products.length > 0 ? (
             products.map((product, index) => {
               const productImage = product?.media?.find(
