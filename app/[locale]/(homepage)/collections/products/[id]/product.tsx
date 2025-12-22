@@ -3,12 +3,22 @@
 import { Link } from "@/i18n/navigation";
 import { Meta } from "@/lib/types";
 import { Product as ProductTypes } from "@/lib/types/product/product";
-import { BadgeCheck, Check, LucideDownload, Maximize, X } from "lucide-react";
+import {
+  BadgeCheck,
+  Check,
+  LucideDownload,
+  Maximize,
+  X,
+  Loader,
+  Loader2,
+} from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import "react-medium-image-zoom/dist/styles.css";
 import Slider from "react-slick";
 import { getProductFormattedCode } from "@/lib/util";
+import { useMutation } from "@tanstack/react-query";
+import { downloads } from "@/lib/api/queries/product";
 
 interface productDetailProps {
   data: {
@@ -120,6 +130,17 @@ const Product = ({ data }: productDetailProps) => {
     setLightboxOpen(false);
     setCurrentZoomImage(null);
   };
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async () => {
+      const response = await downloads(activeProduct?.id, {
+        image_path: productDownload?.path ?? "",
+        type: "product",
+        download_type: "product",
+      });
+      return response;
+    },
+  });
 
   return (
     <div className="row mt-5">
@@ -297,8 +318,12 @@ const Product = ({ data }: productDetailProps) => {
           <div className="product-option">
             <div className="product-row">
               <button className="theme-btn2">Order</button>
-              <button className="theme-btn ms-2">
-                <LucideDownload />
+              <button className="theme-btn ms-2 " onClick={() => mutateAsync()}>
+                {isPending ? (
+                  <Loader className="loadingSpinner" />
+                ) : (
+                  <LucideDownload />
+                )}
                 Download
               </button>
             </div>

@@ -110,6 +110,15 @@ img {
   width: 100%;
 }
 
+.loadingSpinner {
+  font-size: 30px;
+  font-size: calc-rem-value(30);
+  color: inherit;
+  display: inline-block;
+  -webkit-animation: rotating linear 2s infinite;
+  animation: rotating linear 2s infinite;
+}
+
 /*** contact form error handling ***/
 .contact-validation-active {
   .error-handling-messages {
