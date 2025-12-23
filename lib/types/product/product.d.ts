@@ -23,7 +23,7 @@ export type Product = {
   collection_id: string | null;
   sub_collection_id: string | null;
   barcode_url: string | null;
-
+  is_new: 1 | 0;
   // Relationships
   collection: Collection | null;
   category: Category | null;

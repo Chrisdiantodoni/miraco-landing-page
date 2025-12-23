@@ -248,6 +248,9 @@ Terima kasih.`;
                   return (
                     <div key={index}>
                       <div className="product-image-wrapper">
+                        {product?.is_new && (
+                          <span className="new-badge">NEW</span>
+                        )}
                         <Image
                           src={mediaItem?.image_url}
                           alt={mediaItem.alt}
@@ -274,7 +277,11 @@ Terima kasih.`;
               </Slider>
             ) : (
               // =========================================================
-              <div className="placeholder-detail-shop"></div>
+              <div className="placeholder-detail-shop">
+                {product?.is_new == 1 && (
+                  <span className="new-badge-pill">NEW</span>
+                )}
+              </div>
             )}
           </div>
         </div>

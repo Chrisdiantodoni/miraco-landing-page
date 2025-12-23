@@ -317,6 +317,14 @@ const CollectionProducts = ({
                       >
                         <div className="shop-card">
                           <div className="image">
+                            {/* <span className="new-badge">NEW</span> */}
+                            {/* ATAU */}
+                            {product?.is_new == 1 && (
+                              <span className="new-badge-pill">NEW</span>
+                            )}
+                            {/* <span className="new-ribbon">NEW</span> */}
+                            {/* <span className="new-circle">NEW</span> */}
+                            {/* <span className="new-outline">NEW</span> */}
                             {productImage ? (
                               <Image
                                 src={productImage}
