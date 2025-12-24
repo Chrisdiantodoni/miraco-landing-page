@@ -33,5 +33,33 @@
   "collections": {
     "collections_heading": "Here is our Collection of ",
     "disclaimer": "Digital colour displays may vary from actual colours.\n for accurate reference, please contact Miraco to request a physical catalogue."
+  },
+  "home": {
+    "key_features": {
+      "title": "Our Features",
+      "description": "We combine anti-bacterial protection and anti-fingerprint performance with a refined soft-touch feel, while MIRACORE technology delivers a color-matched core that eliminates harsh joint lines—creating cleaner, more hygienic, and seamlessly elegant surfaces built for modern interiors."
+    },
+    "features": [
+      {
+        "id": "anti-bacteria",
+        "title": "Anti Bacteria",
+        "description": "Anti-bacterial protection helps inhibit microbial growth on the surface, promoting a cleaner, safer environment for everyday living."
+      },
+      {
+        "id": "anti-fingerprint",
+        "title": "Anti Fingerprint",
+        "description": "Anti-fingerprint technology reduces visible marks and smudges, keeping surfaces clean, refined, and effortlessly elegant."
+      },
+      {
+        "id": "soft-touch",
+        "title": "Soft Touch",
+        "description": "Soft-touch finish delivers a smooth, velvety feel that enhances comfort while adding a refined, premium character to the surface."
+      },
+      {
+        "id": "miracore",
+        "title": "MIRACORE",
+        "description": "MIRACORE features a color-matched core that eliminates dark joint lines, creating a seamless, solid, and architecturally refined surface."
+      }
+    ]
   }
 }

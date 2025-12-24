@@ -43,5 +43,33 @@
   "collections": {
     "collections_heading": "这是我们的系列：",
     "disclaimer": "数字展示的颜色可能与实际颜色不同，如需准确参考，请联系 Miraco 索取 实体目录。"
+  },
+  "home": {
+    "key_features": {
+      "title": "我们的特色",
+      "description": "我们将抗菌保护和防指纹性能与精致的柔软触感相结合,而MIRACORE技术提供了颜色匹配的芯材,消除了刺眼的接缝线——打造更清洁、更卫生、无缝优雅的表面,专为现代室内设计而生。"
+    },
+    "features": [
+      {
+        "id": "anti-bacteria",
+        "title": "抗菌",
+        "description": "抗菌保护有助于抑制表面微生物的生长,促进日常生活中更清洁、更安全的环境。"
+      },
+      {
+        "id": "anti-fingerprint",
+        "title": "防指纹",
+        "description": "防指纹技术减少可见的痕迹和污渍,保持表面清洁、精致和轻松优雅。"
+      },
+      {
+        "id": "soft-touch",
+        "title": "柔软触感",
+        "description": "柔软触感饰面提供光滑、天鹅绒般的触感,增强舒适感,同时为表面增添精致、高端的特性。"
+      },
+      {
+        "id": "miracore",
+        "title": "MIRACORE",
+        "description": "MIRACORE采用颜色匹配的芯材,消除深色接缝线,打造无缝、坚固且建筑精致的表面。"
+      }
+    ]
   }
 }

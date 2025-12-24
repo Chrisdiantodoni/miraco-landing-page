@@ -43,5 +43,33 @@
   "collections": {
     "collections_heading": "Ini adalah Koleksi kami: ",
     "disclaimer": "Tampilan warna digital dapat berbeda dari warna asli.\n untuk referensi yang lebih akurat, silakan menghubungi Miraco untuk mendapatkan katalog fisik."
+  },
+  "home": {
+    "key_features": {
+      "title": "Fitur Kami",
+      "description": "Kami menggabungkan perlindungan anti-bakteri dan performa anti-sidik jari dengan sentuhan lembut yang halus, sementara teknologi MIRACORE menghadirkan inti yang sesuai warna untuk menghilangkan garis sambungan yang kasar—menciptakan permukaan yang lebih bersih, higienis, dan elegan sempurna untuk interior modern."
+    },
+    "features": [
+      {
+        "id": "anti-bacteria",
+        "title": "Anti Bakteri",
+        "description": "Perlindungan anti-bakteri membantu menghambat pertumbuhan mikroba pada permukaan, mendorong lingkungan yang lebih bersih dan aman untuk kehidupan sehari-hari."
+      },
+      {
+        "id": "anti-fingerprint",
+        "title": "Anti Sidik Jari",
+        "description": "Teknologi anti-sidik jari mengurangi bekas dan noda yang terlihat, menjaga permukaan tetap bersih, halus, dan elegan tanpa usaha."
+      },
+      {
+        "id": "soft-touch",
+        "title": "Sentuhan Lembut",
+        "description": "Lapisan sentuhan lembut menghadirkan nuansa halus seperti beludru yang meningkatkan kenyamanan sekaligus menambah karakter premium yang halus pada permukaan."
+      },
+      {
+        "id": "miracore",
+        "title": "MIRACORE",
+        "description": "MIRACORE menampilkan inti yang sesuai warna untuk menghilangkan garis sambungan gelap, menciptakan permukaan yang mulus, solid, dan halus secara arsitektural."
+      }
+    ]
   }
 }
