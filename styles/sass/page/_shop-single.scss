@@ -103,7 +103,7 @@
 .product-image-wrapper {
   position: relative; /* Wajib untuk Image fill */
   width: 100%; /* Mengambil lebar penuh dari col-lg-5 */
-
+  cursor: zoom-in;
   /* Teknik untuk Rasio Aspek 5:7 (Tinggi/Lebar = 700/500 = 1.4 = 140%) */
   /* Ini akan membuat tinggi wadah selalu 140% dari lebarnya */
   padding-bottom: 140%;
@@ -340,6 +340,7 @@
     text-transform: uppercase;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     animation: pulse-badge 2s ease-in-out infinite;
+    opacity: 0.7;
 
     @media (max-width: 575px) {
       top: 8px;
