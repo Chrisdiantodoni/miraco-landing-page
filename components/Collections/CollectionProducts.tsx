@@ -17,6 +17,7 @@ import Loading from "../Loader/loading";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/lib/api/queries/product";
 import { getProductFormattedCode } from "@/lib/util";
+import MobileSidebar from "../MobileMenu/filter-menu";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
@@ -290,12 +291,19 @@ const CollectionProducts = ({
   }
 
   return (
-    <section className="section-padding pt-4">
+    <section className="section-padding pt-5">
       <div className="container">
         <div className="row g-5">
           {/* Sidebar - Col 3 */}
-          <div className="col col-lg-3 col-12 mb-lg-0 mb-3">
+          <div className="col col-lg-3 col-12 mb-lg-0 d-none d-lg-block">
             <SidebarFilter
+              collection_id={products[0]?.collection_id as string}
+              onFilterChange={handleFilters}
+              initialFilters={initialFilters}
+            />
+          </div>
+          <div className="col col-lg-3 col-12 mb-lg-0 d-block d-lg-none">
+            <MobileSidebar
               collection_id={products[0]?.collection_id as string}
               onFilterChange={handleFilters}
               initialFilters={initialFilters}
