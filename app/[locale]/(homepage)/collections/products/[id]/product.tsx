@@ -255,7 +255,7 @@ Terima kasih.`;
                     <div key={index}>
                       <div className="product-image-wrapper">
                         {product?.is_new && (
-                          <span className="new-badge">NEW</span>
+                          <span className="new-badge-pill">NEW</span>
                         )}
                         <Image
                           src={mediaItem?.image_url}

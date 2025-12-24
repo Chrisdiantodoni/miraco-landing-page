@@ -365,18 +365,12 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
   );
 
   const filteredSubCollections = useMemo(() => {
-    let filtered = allSubCollections.filter(
+    const filtered = allSubCollections.filter(
       (sub) => sub?.collection_id == collection_id
     );
 
-    if (draftFilters.categories.length > 0) {
-      filtered = filtered.filter((sub) =>
-        draftFilters.categories.includes(sub.category_id)
-      );
-    }
-
     return filtered;
-  }, [allSubCollections, collection_id, draftFilters.categories]);
+  }, [allSubCollections, collection_id]);
 
   const activeFilterCount = useMemo(() => {
     let count =
