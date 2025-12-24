@@ -253,7 +253,12 @@ Terima kasih.`;
                 {sliderMedia.map((mediaItem, index) => {
                   return (
                     <div key={index}>
-                      <div className="product-image-wrapper">
+                      <div
+                        className="product-image-wrapper"
+                        onClick={() =>
+                          handleZoomClick(mediaItem.image_url, mediaItem.alt)
+                        }
+                      >
                         {product?.is_new && (
                           <span className="new-badge-pill">NEW</span>
                         )}
@@ -265,17 +270,14 @@ Terima kasih.`;
                           style={{ objectFit: "cover" }}
                         />
                         {/* Icon Zoom Overlay */}
-                        <button
+                        {/* <button
                           className="zoom-icon-btn"
                           // Ganti `handleZoomClick` dengan fungsi yang sebenarnya memicu modal/fungsi zoom Anda
-                          onClick={() =>
-                            handleZoomClick(mediaItem.image_url, mediaItem.alt)
-                          }
+
                           aria-label="Perbesar Gambar"
                         >
                           <Maximize size={24} />{" "}
-                          {/* Ganti dengan ikon pilihan Anda */}
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   );
