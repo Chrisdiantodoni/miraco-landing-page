@@ -41,6 +41,7 @@
     "switchLocale": "Switch to {locale, select, de {German} en {English} other {Unknown}}"
   },
   "collections": {
-    "collections_heading": "Ini adalah Koleksi kami: "
+    "collections_heading": "Ini adalah Koleksi kami: ",
+    "disclaimer": "Tampilan warna digital dapat berbeda dari warna asli.\n untuk referensi yang lebih akurat, silakan menghubungi Miraco untuk mendapatkan katalog fisik."
   }
 }

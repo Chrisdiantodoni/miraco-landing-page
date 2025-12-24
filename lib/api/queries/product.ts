@@ -28,3 +28,10 @@ export async function downloads(
 ) {
   return api.postBlob(ENDPOINTS.DOWNLOAD(id), body);
 }
+
+export async function downloadAll(
+  id: string | number,
+  body?: Record<string, any>
+) {
+  return api.postBlob(ENDPOINTS.DOWNLOAD_ALL(id), body);
+}

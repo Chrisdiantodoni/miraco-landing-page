@@ -127,7 +127,7 @@ export const normalizeQueryParams = (params: Record<string, any>) => {
   // Page - selalu number minimal 1
   normalized.page = params.page ? Number(params.page) : 1;
   normalized.collection = decodeURIComponent(params.collection ?? "");
-
+  normalized.sort_by = params.sort_by;
   return normalized;
 };
 const CollectionProducts = ({
@@ -138,6 +138,7 @@ const CollectionProducts = ({
   const router = useRouter();
   const sub_collection_id = searchParams.get("sub_collection_id");
   const category_id = searchParams.get("category_id");
+  const sort_by = searchParams.get("sort_by");
   const initialSearchTerm = searchParams.get("search") || "";
   const currentPage = searchParams.get("page");
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -154,6 +155,7 @@ const CollectionProducts = ({
       collection: collection || "",
       search: debouncedSearchTerm || "",
       page: currentPage || "1",
+      sort_by: sort_by || "",
     };
 
     // ✅ Hanya tambahkan jika ada value
@@ -165,10 +167,15 @@ const CollectionProducts = ({
       params.sub_collection_id = sub_collection_id;
     }
 
+    if (sort_by) {
+      params.sort_by = sort_by;
+    }
+
     const normalized = normalizeQueryParams(params);
 
     return normalized;
   }, [
+    sort_by,
     collection,
     category_id,
     sub_collection_id,
@@ -220,16 +227,22 @@ const CollectionProducts = ({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const rawSortBy = searchParams.get("sort_by");
+
+  const sortByFilter: "new" | "" = rawSortBy === "new" ? "new" : "";
   const initialFilters = {
     categories: searchParams.get("category_id")?.split(",") || [],
     subCollections: searchParams.get("sub_collection_id")?.split(",") || [],
+    sort_by: sortByFilter,
   };
 
+  // ✅ Handler untuk filters - akan dipanggil dari SidebarFilter
   // ✅ Handler untuk filters - akan dipanggil dari SidebarFilter
   const handleFilters = useCallback(
     (filters: {
       categories: (string | number)[];
       subCollections: (string | number)[];
+      sort_by: "new" | ""; // ✅ Tambahkan sort_by
     }) => {
       const params = new URLSearchParams(searchParams.toString());
 
@@ -239,6 +252,7 @@ const CollectionProducts = ({
       // Clear old filters
       params.delete("category_id");
       params.delete("sub_collection_id");
+      params.delete("sort_by");
 
       // Set new filters (comma-separated)
       if (filters?.categories?.length > 0) {
@@ -249,6 +263,11 @@ const CollectionProducts = ({
         params.set("sub_collection_id", filters.subCollections.join(","));
       }
 
+      // ✅ Set sort_by jika ada dan tidak kosong
+      if (filters?.sort_by && filters.sort_by.trim()) {
+        params.set("sort_by", filters.sort_by);
+      }
+
       router.push(`?${params.toString()}`, { scroll: false });
     },
     [searchParams, router]
@@ -257,8 +276,6 @@ const CollectionProducts = ({
   const ICON_SIZE = 16;
   const dataProducts = data?.data;
   const products = dataProducts?.data || [];
-
-  console.log({ data });
 
   if (isError) {
     return (

@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -11,8 +10,9 @@ import Button from "@mui/material/Button";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
 import { ChevronDown, X } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import type {
   ActiveFilters,
   Category,
@@ -24,10 +24,19 @@ import type {
   FilterBlockProps,
 } from "@/lib/types/filter";
 
-// --- Variabel Warna ---
+// --- Color Variables ---
 const $black = "#000000";
 
-// --- Fungsi Pembantu ---
+// --- Extended Types ---
+type SortOption = "latest" | "oldest";
+
+interface ExtendedActiveFilters extends ActiveFilters {
+  sortBy: SortOption;
+  sort_by: "new" | "";
+  newOnly: boolean;
+}
+
+// --- Helper Functions ---
 const getItemData = (
   item: Category | Collection | SubCollection,
   filterType: FilterType
@@ -52,15 +61,8 @@ const getItemData = (
     name: name || `Unnamed ${filterType}`,
   };
 };
-const parseUrlParams = (param: string | null): (string | number)[] => {
-  if (!param) return [];
-  return param.split(",").map((item) => {
-    const num = Number(item);
-    return isNaN(num) ? item : num;
-  });
-};
 
-// --- Komponen Checkbox ---
+// --- Checkbox Component ---
 const MonokromCheckbox: React.FC<React.ComponentProps<typeof Checkbox>> = (
   props
 ) => (
@@ -71,64 +73,15 @@ const MonokromCheckbox: React.FC<React.ComponentProps<typeof Checkbox>> = (
   />
 );
 
-// --- Komponen FilterBlock ---
-// const FilterBlock: React.FC<FilterBlockProps> = ({
-//   title,
-//   data,
-//   filterType,
-//   activeFilters,
-//   handleCheckboxChange,
-// }) => {
-//   if (!data || data.length === 0) return null;
+// --- Radio Component ---
+const MonokromRadio: React.FC<React.ComponentProps<typeof Radio>> = (props) => (
+  <Radio
+    {...props}
+    sx={{ color: $black, "&.Mui-checked": { color: $black } }}
+  />
+);
 
-//   // eslint-disable-next-line react-hooks/rules-of-hooks
-//   const [expanded, setExpanded] = useState<boolean>(true);
-
-//   return (
-//     <Accordion
-//       expanded={expanded}
-//       onChange={() => setExpanded(!expanded)}
-//       className={`widget ${filterType}-widget`}
-//     >
-//       <AccordionSummary
-//         expandIcon={<ChevronDown size={20} />}
-//         aria-controls={`panel-${filterType}-content`}
-//         id={`panel-${filterType}-header`}
-//         className="widget-header"
-//       >
-//         <Typography variant="h3" component="h3" className="filter-title">
-//           {title}
-//         </Typography>
-//       </AccordionSummary>
-
-//       <AccordionDetails className="widget-details">
-//         <List className="filter-list" disablePadding>
-//           {data.map((item) => {
-//             const { id: slug, name } = getItemData(item, filterType);
-//             const isChecked = activeFilters[filterType].includes(slug);
-
-//             return (
-//               <ListItem key={slug} className="filter-item">
-//                 <FormControlLabel
-//                   className="filter-item-content"
-//                   label={<span className="filter-label">{name}</span>}
-//                   control={
-//                     <MonokromCheckbox
-//                       checked={isChecked}
-//                       onChange={() => handleCheckboxChange(filterType, slug)}
-//                       name={name}
-//                     />
-//                   }
-//                 />
-//               </ListItem>
-//             );
-//           })}
-//         </List>
-//       </AccordionDetails>
-//     </Accordion>
-//   );
-// };
-
+// --- FilterBlock Component ---
 const FilterBlock: React.FC<
   FilterBlockProps & {
     expanded: boolean;
@@ -145,17 +98,16 @@ const FilterBlock: React.FC<
 }) => {
   if (!data || data.length === 0) return null;
 
-  // Hitung max height berdasarkan jumlah item
   const calculateMaxHeight = () => {
-    const itemHeight = 40; // tinggi per item
-    const maxVisibleItems = 7; // maksimal item yang terlihat
+    const itemHeight = 40;
+    const maxVisibleItems = 7;
     const totalItems = data.length;
 
     if (totalItems <= maxVisibleItems) {
-      return "auto"; // Tidak perlu scroll
+      return "auto";
     }
 
-    return `${itemHeight * maxVisibleItems}px`; // Enable scroll
+    return `${itemHeight * maxVisibleItems}px`;
   };
 
   const shouldShowScroll = data.length > 7;
@@ -181,11 +133,9 @@ const FilterBlock: React.FC<
         className="widget-details"
         sx={{
           padding: 0,
-          // Mobile: selalu tampilkan scroll jika item > 7
           maxHeight: shouldShowScroll ? calculateMaxHeight() : "auto",
           overflowY: shouldShowScroll ? "auto" : "visible",
           overflowX: "hidden",
-          // Styling scrollbar
           "&::-webkit-scrollbar": {
             width: "6px",
           },
@@ -200,7 +150,6 @@ const FilterBlock: React.FC<
               backgroundColor: "#555",
             },
           },
-          // Desktop (≥1024px): hilangkan scroll, tampilkan semua item
           "@media (min-width: 1024px)": {
             maxHeight: "none !important",
             overflowY: "visible !important",
@@ -241,54 +190,150 @@ const FilterBlock: React.FC<
     </Accordion>
   );
 };
-// --- Komponen Utama SidebarFilter ---
+
+// --- Sort Block Component ---
+const SortBlock: React.FC<{
+  sortBy: SortOption;
+  onSortChange: (value: SortOption) => void;
+  expanded: boolean;
+  onToggleExpanded: () => void;
+}> = ({ sortBy, onSortChange, expanded, onToggleExpanded }) => {
+  return (
+    <Accordion
+      expanded={expanded}
+      onChange={onToggleExpanded}
+      className="widget sort-widget"
+    >
+      <AccordionSummary
+        expandIcon={<ChevronDown size={20} />}
+        aria-controls="panel-sort-content"
+        id="panel-sort-header"
+        className="widget-header"
+      >
+        <Typography variant="h3" component="h3" className="filter-title">
+          Sort By
+        </Typography>
+      </AccordionSummary>
+
+      <AccordionDetails className="widget-details" sx={{ padding: 0 }}>
+        <List className="filter-list" disablePadding>
+          <RadioGroup
+            value={sortBy}
+            onChange={(e) => onSortChange(e.target.value as SortOption)}
+            sx={{ width: "100%" }}
+          >
+            <ListItem sx={{ padding: "4px 16px", minHeight: "40px" }}>
+              <FormControlLabel
+                value="latest"
+                control={<MonokromRadio />}
+                label={<span className="filter-label">Latest</span>}
+                sx={{ width: "100%", margin: 0 }}
+              />
+            </ListItem>
+            <ListItem sx={{ padding: "4px 16px", minHeight: "40px" }}>
+              <FormControlLabel
+                value="oldest"
+                control={<MonokromRadio />}
+                label={<span className="filter-label">Oldest</span>}
+                sx={{ width: "100%", margin: 0 }}
+              />
+            </ListItem>
+          </RadioGroup>
+        </List>
+      </AccordionDetails>
+    </Accordion>
+  );
+};
+
+// --- New Only Block Component ---
+const NewOnlyBlock: React.FC<{
+  newOnly: boolean;
+  onNewOnlyChange: (checked: boolean) => void;
+  expanded: boolean;
+  onToggleExpanded: () => void;
+}> = ({ newOnly, onNewOnlyChange, expanded, onToggleExpanded }) => {
+  return (
+    <Accordion
+      expanded={expanded}
+      onChange={onToggleExpanded}
+      className="widget new-only-widget"
+    >
+      <AccordionSummary
+        expandIcon={<ChevronDown size={20} />}
+        aria-controls="panel-new-only-content"
+        id="panel-new-only-header"
+        className="widget-header"
+      >
+        <Typography variant="h3" component="h3" className="filter-title">
+          Display Order
+        </Typography>
+      </AccordionSummary>
+
+      <AccordionDetails className="widget-details" sx={{ padding: 0 }}>
+        <List className="filter-list" disablePadding>
+          <ListItem sx={{ padding: "4px 16px", minHeight: "40px" }}>
+            <FormControlLabel
+              control={
+                <MonokromCheckbox
+                  checked={newOnly}
+                  onChange={(e) => onNewOnlyChange(e.target.checked)}
+                />
+              }
+              label={<span className="filter-label">New Only</span>}
+              sx={{ width: "100%", margin: 0 }}
+            />
+          </ListItem>
+        </List>
+      </AccordionDetails>
+    </Accordion>
+  );
+};
+
+// --- Main SidebarFilter Component ---
 const SidebarFilter: React.FC<SidebarFilterProps> = ({
   onFilterChange,
   collection_id,
-  initialFilters, // <- Dari URL params parent
+  initialFilters,
 }) => {
   const settings = useSiteSettings();
   const types = settings?.categories || [];
+
   const [expandedSections, setExpandedSections] = useState<
-    Record<FilterType, boolean>
+    Record<FilterType | "sort" | "newOnly", boolean>
   >({
-    categories: true, // Default terbuka
-    subCollections: true, // Default terbuka
+    categories: true,
+    subCollections: true,
+    sort: true,
+    newOnly: true,
   });
-  // const allSubCollections =  settings?.sub_collections || [];
-  const toggleExpand = useCallback((filterType: FilterType) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [filterType]: !prev[filterType],
-    }));
-  }, []);
 
   const allSubCollections = useMemo(() => {
-    const filter = settings?.sub_collections || [];
-    return filter;
+    return settings?.sub_collections || [];
   }, [settings]);
 
-  const [draftFilters, setDraftFilters] = useState<ActiveFilters>(
-    initialFilters || {
-      categories: [],
-      subCollections: [],
-    }
+  const [draftFilters, setDraftFilters] = useState<ExtendedActiveFilters>({
+    categories: initialFilters?.categories || [],
+    subCollections: initialFilters?.subCollections || [],
+    sortBy: "latest",
+    newOnly: false,
+    sort_by: "",
+  });
+
+  const toggleExpand = useCallback(
+    (section: FilterType | "sort" | "newOnly") => {
+      setExpandedSections((prev) => ({
+        ...prev,
+        [section]: !prev[section],
+      }));
+    },
+    []
   );
 
-  // // Update local state ketika initialFilters berubah (saat URL berubah dari luar)
-  // useEffect(() => {
-  //   if (initialFilters) {
-  //     setDraftFilters(initialFilters);
-  //   }
-  // }, [initialFilters]);
-
-  // Filter subCollections berdasarkan collection_id dan categories yang dipilih
   const filteredSubCollections = useMemo(() => {
     let filtered = allSubCollections.filter(
       (sub) => sub?.collection_id == collection_id
     );
 
-    // Jika ada categories yang dipilih, filter subCollections berdasarkan category_id
     if (draftFilters.categories.length > 0) {
       filtered = filtered.filter((sub) =>
         draftFilters.categories.includes(sub.category_id)
@@ -299,17 +344,17 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
   }, [allSubCollections, collection_id, draftFilters.categories]);
 
   const activeFilterCount = useMemo(() => {
-    return Object.values(draftFilters).reduce(
-      (count, list) => count + list.length,
-      0
-    );
+    let count =
+      draftFilters.categories.length + draftFilters.subCollections.length;
+    if (draftFilters.sortBy !== "latest") count++;
+    if (draftFilters.newOnly) count++;
+    return count;
   }, [draftFilters]);
 
   const hasActiveFilters = activeFilterCount > 0;
 
   const handleCheckboxChange = useCallback(
     (filterType: FilterType, slug: string | number) => {
-      // Hitung filters baru di luar setState
       const currentList = draftFilters[filterType];
       const isChecked = currentList.includes(slug);
 
@@ -320,12 +365,11 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         newSelectedList = [...currentList, slug];
       }
 
-      let newFilters: ActiveFilters = {
+      let newFilters: ExtendedActiveFilters = {
         ...draftFilters,
         [filterType]: newSelectedList,
       };
 
-      // Jika categories berubah, reset subCollections yang tidak valid
       if (filterType === "categories") {
         const validSubCollections = draftFilters.subCollections.filter(
           (subId) => {
@@ -345,10 +389,8 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         };
       }
 
-      // Update state
       setDraftFilters(newFilters);
 
-      // Callback ke parent untuk update URL - SETELAH setState
       if (onFilterChange) {
         onFilterChange(newFilters);
       }
@@ -356,10 +398,41 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     [draftFilters, onFilterChange, allSubCollections]
   );
 
+  const handleSortChange = useCallback(
+    (sortBy: SortOption) => {
+      const newFilters = { ...draftFilters, sortBy };
+      setDraftFilters(newFilters);
+      if (onFilterChange) {
+        onFilterChange(newFilters);
+      }
+    },
+    [draftFilters, onFilterChange]
+  );
+
+  const handleNewOnlyChange = useCallback(
+    (newOnly: boolean) => {
+      const newFilters: ExtendedActiveFilters = {
+        ...draftFilters,
+        newOnly,
+        sort_by: newOnly ? "new" : "",
+      };
+
+      setDraftFilters(newFilters);
+
+      if (onFilterChange) {
+        onFilterChange(newFilters);
+      }
+    },
+    [draftFilters, onFilterChange]
+  );
+
   const resetFilters = () => {
-    const emptyFilters: ActiveFilters = {
+    const emptyFilters: ExtendedActiveFilters = {
       categories: [],
       subCollections: [],
+      sort_by: "",
+      sortBy: "latest",
+      newOnly: false,
     };
     setDraftFilters(emptyFilters);
     if (onFilterChange) {
@@ -369,16 +442,11 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
   return (
     <div className="blog-sidebar">
-      {/* Tombol Reset di Atas */}
+      {/* Reset Button at Top */}
       <div className="filter-reset-top">
         <p className="active-filter-count" style={{ fontWeight: "bold" }}>
           {activeFilterCount} Active Filters
         </p>
-        {/* <Typography
-          variant="body2"
-          component="p"
-          className="active-filter-count"
-        ></Typography> */}
         <Button
           onClick={resetFilters}
           variant="text"
@@ -406,6 +474,14 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
           Clear All
         </Button>
       </div>
+
+      {/* New Only Block */}
+      <NewOnlyBlock
+        newOnly={draftFilters.newOnly}
+        onNewOnlyChange={handleNewOnlyChange}
+        expanded={expandedSections.newOnly}
+        onToggleExpanded={() => toggleExpand("newOnly")}
+      />
 
       {/* Filter Blocks */}
       <FilterBlock

@@ -31,6 +31,7 @@
     "switchLocale": "Switch to {locale, select, id {Indonesia} en {English} other {China}}"
   },
   "collections": {
-    "collections_heading": "Here is our Collection of "
+    "collections_heading": "Here is our Collection of ",
+    "disclaimer": "Digital colour displays may vary from actual colours.\n for accurate reference, please contact Miraco to request a physical catalogue."
   }
 }
