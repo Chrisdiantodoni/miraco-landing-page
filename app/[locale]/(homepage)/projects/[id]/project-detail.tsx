@@ -76,7 +76,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
       {/* Hero Section with Gallery */}
       <section className="hero-section">
         <div className="max-width-container">
-          <h1 className="project-title">{project?.project_name}</h1>
+          {/* <h1 className="project-title">{project?.project_name}</h1> */}
 
           {/* Main Image with Navigation */}
           {allImages.length > 0 && (
@@ -137,7 +137,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
               ))}
             </div>
           )}
-          <div className="product-back-btn">
+          <div className="project-back-btn">
             <Link href={`/projects`}>Back to Projects</Link>
           </div>
           {/* Caption */}
