@@ -7,10 +7,12 @@ import {
   BadgeCheck,
   Check,
   LucideDownload,
+  ChevronDown,
   Maximize,
   X,
   Loader,
   Loader2,
+  Info,
 } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -20,6 +22,8 @@ import { getProductFormattedCode } from "@/lib/util";
 import { useMutation } from "@tanstack/react-query";
 import { downloads } from "@/lib/api/queries/product";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
+import Dropdown from "../../../../../../components/ui/dropdown";
+import { useTranslations } from "next-intl";
 
 interface productDetailProps {
   data: {
@@ -29,6 +33,8 @@ interface productDetailProps {
 }
 
 const Product = ({ data }: productDetailProps) => {
+  const t = useTranslations("collections");
+
   const settings = {
     dots: true,
     infinite: true,
@@ -248,6 +254,9 @@ Terima kasih.`;
                   return (
                     <div key={index}>
                       <div className="product-image-wrapper">
+                        {product?.is_new && (
+                          <span className="new-badge">NEW</span>
+                        )}
                         <Image
                           src={mediaItem?.image_url}
                           alt={mediaItem.alt}
@@ -274,7 +283,11 @@ Terima kasih.`;
               </Slider>
             ) : (
               // =========================================================
-              <div className="placeholder-detail-shop"></div>
+              <div className="placeholder-detail-shop">
+                {product?.is_new == 1 && (
+                  <span className="new-badge-pill">NEW</span>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -403,16 +416,68 @@ Terima kasih.`;
                   Download
                 </button>
               )}
+              {/* <Dropdown
+                triggerClassName="theme-btn ms-2"
+                trigger={
+                  <>
+                    <LucideDownload />
+                  </>
+                }
+              >
+                <button
+                  className="theme-btn-dropdown bg-none d-flex w-100"
+                  onClick={() => mutateAsync()}
+                >
+                  {isPending ? (
+                    <Loader className="loadingSpinner" />
+                  ) : (
+                    <LucideDownload />
+                  )}
+                  Download
+                </button>
+                <button
+                  className="theme-btn-dropdown bg-none  d-flex  w-100 "
+                  onClick={() => mutateAsync()}
+                >
+                  {isPending ? (
+                    <Loader className="loadingSpinner" />
+                  ) : (
+                    <LucideDownload />
+                  )}
+                  Download All
+                </button>
+              </Dropdown> */}
+              {/* <button className="theme-btn ms-2 " onClick={() => mutateAsync()}>
+                {isPending ? (
+                  <Loader className="loadingSpinner" />
+                ) : (
+                  <LucideDownload />
+                )}
+                Download
+              </button> */}
+            </div>
+          </div>
+          <div className="product-disclaimer">
+            {/* <Info className="product-disclaimer__icon" /> */}
+            <div className="product-disclaimer__text">
+              {t("disclaimer")
+                .split("\n")
+                .map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    {index < t("disclaimer").split("\n").length - 1 && <br />}
+                  </React.Fragment>
+                ))}
             </div>
           </div>
           <div className="product-back-btn">
             <Link
               href={`/collections/${
-                product?.collection?.collection_name || ""
+                activeProduct?.collection?.name_en?.toLowerCase() || ""
               }`}
             >
-              Back to {product?.collection?.collection_name} /{" "}
-              {product?.collection?.collection_name} CORE
+              Back to {activeProduct?.collection?.name_en} /{" "}
+              {activeProduct?.collection?.name_en} CORE
             </Link>
           </div>
           {/* <div className="tg-btm">

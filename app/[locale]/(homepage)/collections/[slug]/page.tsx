@@ -105,6 +105,10 @@ const normalizeQueryParams = (params: Record<string, any>) => {
     normalized.collection = params.collection;
   }
 
+  if (params.sort_by) {
+    normalized.sort_by = params.sort_by;
+  }
+
   // Page
   normalized.page = params.page ? Number(params.page) : 1;
 
@@ -123,6 +127,7 @@ export default async function Page({ params, searchParams }: Props) {
   const page = resolvedSearchParams?.page || 1;
   const categoryId = resolvedSearchParams?.category_id || "";
   const subCollectionId = resolvedSearchParams?.sub_collection_id || "";
+  const sort_by = resolvedSearchParams?.sort_by || "";
 
   console.log(categoryId, "search params");
   // ✅ Normalize params
@@ -132,6 +137,7 @@ export default async function Page({ params, searchParams }: Props) {
     page: page,
     category_id: categoryId,
     sub_collection_id: subCollectionId,
+    sort_by: sort_by,
   });
 
   console.log("Normalized Params:", initialParams);

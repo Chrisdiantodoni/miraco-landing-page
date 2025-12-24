@@ -41,6 +41,7 @@
     "switchLocale": "Switch to {locale, select, de {German} en {English} other {Unknown}}"
   },
   "collections": {
-    "collections_heading": "这是我们的系列："
+    "collections_heading": "这是我们的系列：",
+    "disclaimer": "数字展示的颜色可能与实际颜色不同，如需准确参考，请联系 Miraco 索取 实体目录。"
   }
 }

@@ -25,6 +25,7 @@ export type FilterType = "categories" | "subCollections";
 
 export interface ActiveFilters {
   categories: (string | number)[];
+  sort_by: "new" | "";
   //   types: (string | number)[];
   subCollections: (string | number)[];
 }

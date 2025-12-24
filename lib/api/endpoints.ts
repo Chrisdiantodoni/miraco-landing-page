@@ -11,6 +11,7 @@ export const ENDPOINTS = {
   PROJECT_BY_ID: (id: string | number) => `${API_URL}/sites/projects/${id}`,
   LOCATE_US: `${API_URL}/sites/locate-us`,
   DOWNLOAD: (id: string | number) => `${API_URL}/media/download/${id}`,
+  DOWNLOAD_ALL: (id: string | number) => `${API_URL}/media/bulk-download/${id}`,
   REQUESTS: `${API_URL}/sites/requests`,
   FORMSPREE: `https://formspree.io/f/xnneovpz`,
   FORMSPREE_DONI: `https://formspree.io/f/xwpobnlr`,
