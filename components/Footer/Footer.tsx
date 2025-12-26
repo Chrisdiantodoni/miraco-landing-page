@@ -6,6 +6,9 @@ import Image from "next/image";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import { SocialWidget } from "./SocialWidget";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { MenuItem } from "@/types/menu.types";
+import { usePathname } from "next/navigation";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -13,6 +16,48 @@ const ClickHandler = () => {
 
 const Footer = (props: { logo: string }) => {
   const data = useSiteSettings();
+  const t = useTranslations("Footer");
+  const tH = useTranslations("header");
+  const pathname = usePathname();
+
+  const staticMenuData = tH.raw("menu") as MenuItem[];
+
+  const isActive = (link: string) => {
+    // 1. --- BERSIHKAN CLEAN PATHNAME (PATH SAAT INI) ---
+    const pathWithoutQuery = pathname.split("?")[0];
+
+    // Perbaikan Regex: Mencocokkan ^/ diikuti (en|id|zh) diikuti (secara opsional) oleh /
+    // Diganti dengan '/', sehingga /id atau /en/collections menjadi / atau /collections
+    const pathWithoutLocale = pathWithoutQuery.replace(/^\/(en|id|zh)\/?/, "/");
+
+    // Pastikan hasil akhirnya '/'. Tidak perlu normalisasi ekstra jika regex di atas sudah benar.
+    const cleanPathname = pathWithoutLocale;
+
+    // 2. --- BERSIHKAN LINK TARGET (MENU ITEM) ---
+    const targetLinkWithoutQuery = link.split("?")[0];
+
+    // 3. --- PERBANDINGAN BERKONDISI ---
+
+    // Kondisi 1: Home (Link target adalah '/')
+    if (targetLinkWithoutQuery === "/") {
+      // Halaman Home hanya aktif jika Clean Path benar-benar '/' (bukan '/collections/kayu')
+      return cleanPathname === "/";
+    }
+
+    // Kondisi 2: Halaman Non-Home
+    // a. Cocok persis (e.g., /about === /about)
+    const isExactMatch = cleanPathname === targetLinkWithoutQuery;
+
+    // b. Cocok sebagai prefix (e.g., /collections/kayu/detail... mulai dengan /collections/kayu/)
+    // Tambahkan '/' di akhir link target untuk memastikan itu adalah folder/path, bukan string acak.
+    const prefix = targetLinkWithoutQuery + "/";
+    const isPrefixMatch = cleanPathname.startsWith(prefix);
+
+    // console.log(`Clean Path: ${cleanPathname}, Target Link: ${targetLinkWithoutQuery}`);
+    // console.log(`Is Exact Match: ${isExactMatch}, Is Prefix Match: ${isPrefixMatch}`);
+
+    return isExactMatch || isPrefixMatch;
+  };
 
   return (
     <footer className="wpo-site-footer">
@@ -27,12 +72,7 @@ const Footer = (props: { logo: string }) => {
                 <div className="logo widget-title">
                   <Image src={Logo} alt="blog" width={400} height={200} />
                 </div>
-                <p>
-                  Miraco menghadirkan High Pressure Laminates berkualitas tinggi
-                  dengan standar arsitektur modern. Dibuat dengan presisi untuk
-                  menghadirkan ketahanan, estetika, dan nilai jangka panjang
-                  pada setiap ruang.
-                </p>
+                <p>{t("content")}</p>
                 <SocialWidget
                   social={data?.site_settings}
                   onClick={ClickHandler}
@@ -45,7 +85,7 @@ const Footer = (props: { logo: string }) => {
             >
               <div className="widget link-widget">
                 <div className="widget-title">
-                  <h3>Contact</h3>
+                  <h3>{t("contact")}</h3>
                 </div>
                 <ul>
                   <li>{data?.site_settings?.email_contacts}</li>
@@ -60,15 +100,17 @@ const Footer = (props: { logo: string }) => {
             >
               <div className="widget link-widget">
                 <div className="widget-title">
-                  <h3>Quick Link</h3>
+                  <h3>{t("quick_link")}</h3>
                 </div>
                 <ul>
-                  <li>
-                    <Link onClick={ClickHandler} href="/request">
-                      Request
-                    </Link>
-                  </li>
-                  <li>
+                  {staticMenuData?.map((item, index) => (
+                    <li key={index}>
+                      <Link onClick={ClickHandler} href={item?.link}>
+                        {item?.title}
+                      </Link>
+                    </li>
+                  ))}
+                  {/* <li>
                     <Link onClick={ClickHandler} href="/projects">
                       Projects
                     </Link>
@@ -82,7 +124,7 @@ const Footer = (props: { logo: string }) => {
                     <Link onClick={ClickHandler} href="/e-catalogue">
                       E-Catalogue
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -107,6 +149,7 @@ const Footer = (props: { logo: string }) => {
           </div>
         </div>
       </div>
+      {/*
       <div className="wpo-lower-footer">
         <div className="container-fluid">
           <div className="row g-0">
@@ -116,7 +159,7 @@ const Footer = (props: { logo: string }) => {
                 Copyright &copy; 2025 Miraco. All Rights Reserved.
               </p>
             </div>
-            {/* <div className="col col-lg-6 col-12">
+            <div className="col col-lg-6 col-12">
               <ul className="right">
                 <li>
                   <Link onClick={ClickHandler} href="/privacy">
@@ -139,10 +182,11 @@ const Footer = (props: { logo: string }) => {
                   </Link>
                 </li>
               </ul>
-            </div> */}
+            </div> 
           </div>
         </div>
       </div>
+      */}
     </footer>
   );
 };

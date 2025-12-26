@@ -270,14 +270,14 @@ Terima kasih.`;
                           style={{ objectFit: "cover" }}
                         />
                         {/* Icon Zoom Overlay */}
-                        {/* <button
-                          className="zoom-icon-btn"
+                        <button
+                          className="zoom-icon-btn d-block d-lg-none"
                           // Ganti `handleZoomClick` dengan fungsi yang sebenarnya memicu modal/fungsi zoom Anda
 
                           aria-label="Perbesar Gambar"
                         >
                           <Maximize size={24} />{" "}
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   );
