@@ -22,6 +22,39 @@ const Footer = (props: { logo: string }) => {
 
   const staticMenuData = tH.raw("menu") as MenuItem[];
 
+  const certificates = [
+    {
+      id: 1,
+      image: "/images/certification/blue-angel.png",
+      name: "Blue Angel",
+    },
+    {
+      id: 2,
+      image: "/images/certification/fsc.png",
+      name: "FSC",
+    },
+    {
+      id: 3,
+      image: "/images/certification/green-label.png",
+      name: "Green Label",
+    },
+    {
+      id: 4,
+      image: "/images/certification/greenguard-gold.png",
+      name: "Greenguard Gold",
+    },
+    {
+      id: 5,
+      image: "/images/certification/greenguard.png",
+      name: "Greenguard",
+    },
+    {
+      id: 6,
+      image: "/images/certification/pefc.png",
+      name: "PEFC",
+    },
+  ];
+
   const isActive = (link: string) => {
     // 1. --- BERSIHKAN CLEAN PATHNAME (PATH SAAT INI) ---
     const pathWithoutQuery = pathname.split("?")[0];
@@ -65,14 +98,14 @@ const Footer = (props: { logo: string }) => {
         <div className="container-fluid">
           <div className="row">
             <div
-              className="col col-lg-4 col-md-6 col-sm-12 col-12 scroll-text-animation"
+              className="col col-lg-3 col-md-6 col-sm-12 col-12 scroll-text-animation"
               data-animation="fade_from_bottom"
             >
               <div className="widget about-widget">
-                <div className="logo widget-title">
+                <div className="logo">
                   <Image src={Logo} alt="blog" width={400} height={200} />
                 </div>
-                <p>{t("content")}</p>
+                <p className="content">{t("content")}</p>
                 <SocialWidget
                   social={data?.site_settings}
                   onClick={ClickHandler}
@@ -80,7 +113,7 @@ const Footer = (props: { logo: string }) => {
               </div>
             </div>
             <div
-              className="col col-lg-4 col-md-6 col-sm-12 col-12 scroll-text-animation"
+              className="col col-lg-3 col-md-6 col-sm-12 col-12 scroll-text-animation"
               data-animation="fade_from_bottom"
             >
               <div className="widget link-widget">
@@ -95,7 +128,7 @@ const Footer = (props: { logo: string }) => {
               </div>
             </div>
             <div
-              className="col col-lg-4 col-md-6 col-sm-12 col-12 scroll-text-animation"
+              className="col col-lg-3 col-md-6 col-sm-12 col-12 scroll-text-animation"
               data-animation="fade_from_bottom"
             >
               <div className="widget link-widget">
@@ -105,7 +138,11 @@ const Footer = (props: { logo: string }) => {
                 <ul>
                   {staticMenuData?.map((item, index) => (
                     <li key={index}>
-                      <Link onClick={ClickHandler} href={item?.link}>
+                      <Link
+                        onClick={ClickHandler}
+                        href={item?.link}
+                        prefetch={true}
+                      >
                         {item?.title}
                       </Link>
                     </li>
@@ -128,24 +165,29 @@ const Footer = (props: { logo: string }) => {
                 </ul>
               </div>
             </div>
-            {/* <div
+            <div
               className="col col-lg-3 col-md-6 col-sm-12 col-12 scroll-text-animation"
               data-animation="fade_from_bottom"
             >
-              <div className="widget newsletter-widget">
+              <div className="widget certification-widget">
                 <div className="widget-title">
-                  <h3>Newsletter</h3>
+                  <h3>Certification</h3>
                 </div>
-                <form>
-                  <input
-                    type="email"
-                    className="input-fild"
-                    placeholder="Your Email..."
-                  />
-                  <button>Subscribe</button>
-                </form>
+                <div className="certification-grid">
+                  {certificates.map((cert) => (
+                    <div key={cert.id} className="certification-item">
+                      <Image
+                        src={cert.image}
+                        alt={cert.name}
+                        width={80}
+                        height={80}
+                        className="certification-logo"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

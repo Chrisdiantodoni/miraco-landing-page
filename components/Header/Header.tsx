@@ -38,60 +38,40 @@ export default function Header(props: {
 
   const settings = useSiteSettings();
 
-  const collectionItems = settings?.collections?.map((item) => ({
+  console.log(props.collections);
+
+  const collectionItems = props?.collections?.map((item) => ({
     title: item?.collection_name,
     link: `/collections/${item?.collection_name?.toLowerCase()}`,
   }));
 
-  const { data, isSuccess, isError } = useQuery({
-    queryKey: ["getCollections"],
-    queryFn: async () => {
-      const response = await getCollection();
-      return response;
-    },
-  });
+  // const { data, isSuccess, isError } = useQuery({
+  //   queryKey: ["getCollections"],
+  //   queryFn: async () => {
+  //     const response = await getCollection();
+  //     return response;
+  //   },
+  // });
 
-  useEffect(() => {
-    if (isSuccess) {
-      const collections: Collection[] = data;
-      console.log({ data });
-      handle!("collections", collections);
-    }
-  }, [isSuccess]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     const collections: Collection[] = data;
+  //     console.log("testing");
+  //     handle!("collections", collections);
+  //   }
+  // }, [isSuccess]);
 
   const isActive = (link: string) => {
-    // 1. --- BERSIHKAN CLEAN PATHNAME (PATH SAAT INI) ---
     const pathWithoutQuery = pathname.split("?")[0];
-
-    // Perbaikan Regex: Mencocokkan ^/ diikuti (en|id|zh) diikuti (secara opsional) oleh /
-    // Diganti dengan '/', sehingga /id atau /en/collections menjadi / atau /collections
     const pathWithoutLocale = pathWithoutQuery.replace(/^\/(en|id|zh)\/?/, "/");
-
-    // Pastikan hasil akhirnya '/'. Tidak perlu normalisasi ekstra jika regex di atas sudah benar.
     const cleanPathname = pathWithoutLocale;
-
-    // 2. --- BERSIHKAN LINK TARGET (MENU ITEM) ---
     const targetLinkWithoutQuery = link.split("?")[0];
-
-    // 3. --- PERBANDINGAN BERKONDISI ---
-
-    // Kondisi 1: Home (Link target adalah '/')
     if (targetLinkWithoutQuery === "/") {
-      // Halaman Home hanya aktif jika Clean Path benar-benar '/' (bukan '/collections/kayu')
       return cleanPathname === "/";
     }
-
-    // Kondisi 2: Halaman Non-Home
-    // a. Cocok persis (e.g., /about === /about)
     const isExactMatch = cleanPathname === targetLinkWithoutQuery;
-
-    // b. Cocok sebagai prefix (e.g., /collections/kayu/detail... mulai dengan /collections/kayu/)
-    // Tambahkan '/' di akhir link target untuk memastikan itu adalah folder/path, bukan string acak.
     const prefix = targetLinkWithoutQuery + "/";
     const isPrefixMatch = cleanPathname.startsWith(prefix);
-
-    // console.log(`Clean Path: ${cleanPathname}, Target Link: ${targetLinkWithoutQuery}`);
-    // console.log(`Is Exact Match: ${isExactMatch}, Is Prefix Match: ${isPrefixMatch}`);
 
     return isExactMatch || isPrefixMatch;
   };
@@ -115,6 +95,7 @@ export default function Header(props: {
       >
         {/* Main Menu Link */}
         <Link
+          prefetch
           onClick={ClickHandler}
           href={item.link}
           className={`nav-link position-relative px-3 ${
@@ -137,6 +118,7 @@ export default function Header(props: {
                 }
               >
                 <Link
+                  prefetch
                   onClick={ClickHandler}
                   href={subitem.link}
                   className={`d-flex align-items-center w-100 ${
@@ -163,6 +145,7 @@ export default function Header(props: {
                       (thirditem: any, thirdindex: number) => (
                         <li key={thirdindex}>
                           <Link
+                            prefetch
                             onClick={ClickHandler}
                             href={thirditem.link}
                             className={`d-block w-100 ${

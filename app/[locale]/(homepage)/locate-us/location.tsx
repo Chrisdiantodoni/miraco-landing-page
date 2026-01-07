@@ -65,10 +65,15 @@ export default function LocationSection({ data }: locationSectionProps | any) {
           {location.image_url && (
             <div className="location-image-wrapper">
               <Image
-                width={400}
-                height={400}
+                width={300}
+                height={300}
                 src={location?.image_url}
                 className="location-image"
+                style={{
+                  objectFit: "cover",
+                  width: "100%",
+                  height: "100%",
+                }}
                 alt={`${location?.name_company} - foto`}
               />
               {/* <img

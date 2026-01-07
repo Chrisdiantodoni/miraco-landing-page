@@ -667,34 +667,34 @@
 
   .product-details {
     .product-specification {
-      width: 100%; // Pastikan ini 100% dari parent (col-lg-7)
-      max-width: 350px; // Opsional: Batasi lebar maksimum agar tidak terlalu melebar di layar besar
+      width: 100%;
+      max-width: 425px;
       margin-top: 20px;
       margin-bottom: 20px;
     }
 
     .product-spec-row {
       display: flex;
-      justify-content: space-between; /* Memisahkan div:first-child (Label) dan div:last-child (Value) */
+      justify-content: space-between;
       align-items: center;
       padding: 10px 0;
       margin-bottom: 5px;
       border-bottom: 1px solid #eee;
-      width: 100%; /* Penting untuk Flexbox */
+      width: 100%;
 
       div:first-child {
         font-weight: 500;
-        // Memberi sedikit lebar minimal/preferred untuk label
-        flex-basis: 85%;
-        min-width: 200px;
-        color: #333; // Sesuaikan warna jika perlu
+        flex-basis: 45%; // Sesuaikan persentase label
+        min-width: 100px;
+        color: #333;
       }
 
       div:last-child {
         font-weight: 400;
         color: #555;
-        text-align: left; // Pastikan nilai spesifikasi rata kanan
-        flex-basis: 65%; // Sisanya untuk nilai
+        text-align: left; // Tetap rata kiri untuk teks di dalam value
+        flex-basis: 55%;
+        // Pastikan konten dimulai dari kiri dalam container-nya sendiri
       }
     }
     padding: 15px 30px 80px;
@@ -711,12 +711,12 @@
     @include media-query(767px) {
       padding: 0;
     }
-    span {
-      font-size: 25px;
-      margin: 0 0 0.33em;
-      font-weight: 400;
-      color: #333333;
-    }
+    // span {
+    //   font-size: 25px;
+    //   margin: 0 0 0.33em;
+    //   font-weight: 400;
+    //   color: #333333;
+    // }
 
     h2 {
       font-size: 35px;
@@ -992,7 +992,7 @@
       padding: 15px;
       border: 1px solid #d4d4d4;
       border-radius: 8px;
-      max-width: 530px;
+      max-width: 700px;
       margin-top: 24px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
@@ -1082,6 +1082,85 @@
         }
       }
     }
+    // .related-products-pills {
+    //   margin-top: 25px;
+    //   margin-bottom: 25px;
+
+    //   h3 {
+    //     font-size: 18px;
+    //     font-weight: 400;
+    //     color: $black;
+    //     margin-bottom: 10px;
+    //   }
+
+    //   .pills-container {
+    //     display: flex;
+    //     flex-wrap: wrap; // Memungkinkan pills pindah baris
+    //     gap: 10px; // Jarak antar pills
+    //   }
+
+    //   .product-pill {
+    //     // Mengubah dari inline-block menjadi flex untuk menampung dot
+    //     display: inline-flex;
+    //     align-items: center; // Sejajarkan dot dan teks di tengah
+    //     padding: 6px 15px;
+    //     border-radius: 20px;
+    //     font-size: 14px;
+    //     font-weight: 500;
+    //     text-decoration: none;
+    //     transition: all 0.3s ease-in-out;
+    //     cursor: pointer;
+
+    //     background-color: transparent;
+    //     color: #666;
+    //     border: 1px solid #ddd;
+
+    //     &:hover {
+    //       background-color: #ececec;
+    //       color: $black;
+    //     }
+
+    //     &.active-pill {
+    //       background-color: $black;
+    //       color: $white;
+    //       border-color: $black;
+    //       cursor: default;
+    //       pointer-events: none;
+    //     }
+    //   }
+
+    //   .color-dot {
+    //     width: 15px;
+    //     height: 15px;
+    //     border-radius: 50%; // Bentuk bulat
+    //     margin-right: 8px; // Jarak antara dot dan teks kode
+    //     // Menambahkan border agar terlihat kontras jika warnanya putih
+    //     // border: 1px solid black;
+    //     flex-shrink: 0; // Pastikan dot tidak menyusut
+    //   }
+
+    //   .color-dot-image {
+    //     width: 15px;
+    //     height: 15px;
+    //     border-radius: 50%;
+    //     overflow: hidden;
+    //     border: 2px solid #ddd;
+    //     flex-shrink: 0;
+    //     position: relative;
+    //     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    //     transition: all 0.3s ease;
+
+    //     img {
+    //       border-radius: 50%;
+    //     }
+
+    //     &:hover {
+    //       transform: scale(1.1);
+    //       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    //     }
+    //   }
+    // }
+
     .related-products-pills {
       margin-top: 25px;
       margin-bottom: 25px;
@@ -1126,19 +1205,52 @@
           border-color: $black;
           cursor: default;
           pointer-events: none;
+
+          // Update border color untuk image dot saat active
+          .color-dot-image {
+            border-color: #fff;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+          }
         }
       }
 
       .color-dot {
-        width: 15px;
-        height: 15px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%; // Bentuk bulat
         margin-right: 8px; // Jarak antara dot dan teks kode
         // Menambahkan border agar terlihat kontras jika warnanya putih
-        // border: 1px solid black;
+        border: 2px solid #ddd;
+
         flex-shrink: 0; // Pastikan dot tidak menyusut
       }
+
+      .color-dot-image {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #ddd;
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-right: 8px;
+
+        // Tambahkan ini untuk centering
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%; // Pastikan image juga rounded
+        }
+      }
     }
+
+    // Responsive styles untuk mobile
 
     .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-up,
     .bootstrap-touchspin .input-group-btn-vertical .bootstrap-touchspin-down {

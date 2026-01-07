@@ -65,8 +65,14 @@ const ProjectList = (props: ProjectProps) => {
           );
         })}
       </div>
+      {/* display none */}
       <div className="project-allBtn fade_bottom">
-        <Link onClick={ClickHandler} href="/projects" className="theme-btn">
+        <Link
+          onClick={ClickHandler}
+          href="/projects"
+          className="theme-btn"
+          prefetch
+        >
           <span>See All Projects</span>
           <Image src={Shape} alt="" />
         </Link>

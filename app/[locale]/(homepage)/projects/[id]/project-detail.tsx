@@ -57,6 +57,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
     if (link && link !== "#") {
       return (
         <Link
+          prefetch
           href={link}
           target="_blank"
           rel="noopener noreferrer"
@@ -138,7 +139,9 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
             </div>
           )}
           <div className="project-back-btn">
-            <Link href={`/projects`}>Back to Projects</Link>
+            <Link href={`/projects`} prefetch>
+              Back to Projects
+            </Link>
           </div>
           {/* Caption */}
 
@@ -221,45 +224,51 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
                     (find) => find?.type === "product_thumbnail"
                   )?.image_url;
                   return (
-                    <div className="product-card-projects" key={featured.id}>
-                      <div className="product-image-wrapper-projects">
-                        {thumbnailProduct ? (
-                          <Image
-                            src={thumbnailProduct}
-                            alt={featured?.name || "Product"}
-                            width={300}
-                            height={300}
-                            className="product-image"
-                            style={{ width: "100%", height: "auto" }}
-                          />
-                        ) : (
-                          <div className="product-placeholder"></div>
-                        )}
-                      </div>
-                      <div className="product-info">
-                        <div className="product-text">
-                          <h3 className="product-name">{featured?.name}</h3>
-                          <h3 className="product-code">
-                            {getProductFormattedCode(featured) || "Product"}
-                          </h3>
-                        </div>
-                        {featured?.is_available_in_miraedge == 1 && (
-                          <div className="product-icon">
+                    <Link
+                      prefetch
+                      href={`/collections/products/${featured?.id}`}
+                      key={featured.id}
+                    >
+                      <div className="product-card-projects">
+                        <div className="product-image-wrapper-projects">
+                          {thumbnailProduct ? (
                             <Image
-                              src={miraedge}
-                              alt="Product Icon"
-                              width={16}
-                              height={16}
-                              className="product-icon"
-                              style={{
-                                objectFit: "contain",
-                                flexShrink: 0,
-                              }}
+                              src={thumbnailProduct}
+                              alt={featured?.name || "Product"}
+                              width={300}
+                              height={300}
+                              className="product-image"
+                              style={{ width: "100%", height: "auto" }}
                             />
+                          ) : (
+                            <div className="product-placeholder"></div>
+                          )}
+                        </div>
+                        <div className="product-info">
+                          <div className="product-text">
+                            <h3 className="product-name">{featured?.name}</h3>
+                            <h3 className="product-code">
+                              {getProductFormattedCode(featured) || "Product"}
+                            </h3>
                           </div>
-                        )}
+                          {featured?.is_available_in_miraedge == 1 && (
+                            <div className="product-icon">
+                              <Image
+                                src={miraedge}
+                                alt="Product Icon"
+                                width={16}
+                                height={16}
+                                className="product-icon"
+                                style={{
+                                  objectFit: "contain",
+                                  flexShrink: 0,
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

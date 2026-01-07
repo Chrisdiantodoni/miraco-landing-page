@@ -1,5 +1,5 @@
 import { Category } from "./product/category";
-import { SubCollection } from "./product/collection";
+import { Type, Finishing, Thickness } from "./master/master.d";
 
 export interface SiteSettings {
   id?: string;
@@ -28,6 +28,5 @@ export interface Collection {
 export interface SiteData {
   site_settings: SiteSettings;
   collections: Collection[];
-  sub_collections: SubCollection[];
   categories: Category[];
 }

@@ -83,7 +83,7 @@ export const SearchDrawerContent: React.FC<{
         <SearchInput
           value={searchTerm}
           onChange={handleSearchChange}
-          placeholder="Cari Finishing, Texture, Sub Collection..."
+          placeholder="Search Here..."
         />
 
         <div className="row g-5 mt-2">
@@ -107,6 +107,7 @@ export const SearchDrawerContent: React.FC<{
                   key={product?.id || index}
                 >
                   <Link
+                    prefetch
                     href={`/collections/products/${product?.id}`}
                     onClick={handleClickedProduct}
                   >

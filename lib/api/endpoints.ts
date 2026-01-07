@@ -4,6 +4,7 @@ export const ENDPOINTS = {
   SITE_SETTINGS: `${API_URL}/sites/settings`,
   HOME: `${API_URL}/sites/home`,
   HERO: `${API_URL}/sites/hero`,
+  COLLECTION_PAGE: `${API_URL}/sites/collection-page`,
   COLLECTION: `${API_URL}/sites/products/list`,
   COLLECTION_ALL: `${API_URL}/products/list`,
   COLLECTION_BY_ID: (id: string | number) => `${API_URL}/sites/products/${id}`,

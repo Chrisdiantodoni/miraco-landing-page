@@ -20,7 +20,6 @@ export type RelatedProduct = {
   is_available_in_miraedge: 0 | 1;
   category_id: string | null;
   collection_id: string | null;
-  sub_collection_id: string | null;
   barcode_url: string | null;
   pivot: RelatedProductPivot;
 };

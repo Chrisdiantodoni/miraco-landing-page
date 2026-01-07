@@ -9,6 +9,8 @@ import { ProductListResponse } from "@/lib/types/product/product";
 import { getTranslations } from "next-intl/server";
 import { capitalizeFirstLetter } from "../../../../../lib/util";
 import { getLocale } from "next-intl/server";
+import { getCollection } from "@/lib/api/queries/product";
+import { normalizeQueryParams } from "../../../../../lib/util";
 import {
   QueryClient,
   HydrationBoundary,
@@ -20,14 +22,10 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-// app/[locale]/collections/[slug]/page.tsx
-
 export async function generateStaticParams() {
-  // ✅ Definisikan semua locale yang didukung
   const locales = ["en", "id", "zh"];
   const allParams: { slug: string; locale: string }[] = [];
 
-  // ✅ Loop melalui setiap locale untuk mengambil data
   for (const locale of locales) {
     try {
       const { collections } = (await getSiteData({ locale })) as {
@@ -50,164 +48,93 @@ export async function generateStaticParams() {
   return allParams;
 }
 
-const normalizeQueryParams = (params: Record<string, any>) => {
-  const normalized: Record<string, any> = {};
-
-  // ✅ Category ID - parse comma-separated atau array
-  if (params.category_id) {
-    if (typeof params.category_id === "string" && params.category_id.trim()) {
-      // Parse "1,2,3" menjadi [1, 2, 3]
-      const ids = params.category_id.split(",").map((id: string) => id);
-
-      if (ids.length > 0) {
-        normalized.category_id = ids;
-      }
-    } else if (Array.isArray(params.category_id)) {
-      // Jika sudah array, normalize ke number[]
-      const ids = params.category_id.map((id: any) => id);
-
-      if (ids.length > 0) {
-        normalized.category_id = ids;
-      }
-    }
-  }
-
-  // ✅ Sub Collection ID - parse comma-separated atau array
-  if (params.sub_collection_id) {
-    if (
-      typeof params.sub_collection_id === "string" &&
-      params.sub_collection_id.trim()
-    ) {
-      const ids = params.sub_collection_id
-        .split(",")
-        .map((id: string) => Number(id.trim()))
-        .filter((id: number) => !isNaN(id) && id > 0);
-
-      if (ids.length > 0) {
-        normalized.sub_collection_id = ids;
-      }
-    } else if (Array.isArray(params.sub_collection_id)) {
-      const ids = params.sub_collection_id
-        .map((id: any) => Number(id))
-        .filter((id: number) => !isNaN(id) && id > 0);
-
-      if (ids.length > 0) {
-        normalized.sub_collection_id = ids;
-      }
-    }
-  }
-
-  // Search
-  if (params.search && params.search.trim()) {
-    normalized.search = params.search.trim();
-  }
-  if (params.collection) {
-    normalized.collection = params.collection;
-  }
-
-  if (params.sort_by) {
-    normalized.sort_by = params.sort_by;
-  }
-
-  // Page
-  normalized.page = params.page ? Number(params.page) : 1;
-
-  return normalized;
-};
-
 export const dynamicParams = false;
-
 export default async function Page({ params, searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
   const { slug } = await params;
   const queryClient = new QueryClient();
-  // ✅ Extract semua params
   const locale = await getLocale();
-  const search = resolvedSearchParams?.search || "";
-  const page = resolvedSearchParams?.page || 1;
-  const categoryId = resolvedSearchParams?.category_id || "";
-  const subCollectionId = resolvedSearchParams?.sub_collection_id || "";
-  const sort_by = resolvedSearchParams?.sort_by || "";
 
-  console.log(categoryId, "search params");
-  // ✅ Normalize params
-  const initialParams = normalizeQueryParams({
-    collection: decodeURIComponent(slug ?? ""),
-    search: search,
-    page: page,
-    category_id: categoryId,
-    sub_collection_id: subCollectionId,
-    sort_by: sort_by,
+  // ✅ Extract params dengan safe handling
+  const rawParams: Record<string, any> = {
+    collection: slug,
+    page: resolvedSearchParams?.page || 1,
+  };
+
+  // Helper untuk add param hanya jika ada
+  const addIfExists = (key: string, value: string | string[] | undefined) => {
+    if (value) {
+      rawParams[key] = value;
+    }
+  };
+
+  addIfExists("search", resolvedSearchParams?.search as string);
+  addIfExists("category_id", resolvedSearchParams?.category_id as string);
+
+  addIfExists("types", resolvedSearchParams?.types as string);
+  addIfExists("finishing", resolvedSearchParams?.finishing as string);
+  addIfExists("features", resolvedSearchParams?.features as string);
+  addIfExists("complementary", resolvedSearchParams?.complementary as string);
+  addIfExists("sizes", resolvedSearchParams?.sizes as string);
+  addIfExists("thicknesses", resolvedSearchParams?.thicknesses as string);
+  addIfExists("sort_by", resolvedSearchParams?.sort_by as string);
+  addIfExists("is_soft_touch", resolvedSearchParams?.is_soft_touch as string);
+  addIfExists(
+    "is_anti_fingerprint",
+    resolvedSearchParams?.is_anti_fingerprint as string
+  );
+  addIfExists("is_miraedge", resolvedSearchParams?.is_miraedge as string);
+
+  // ✅ Normalize semua params
+  const normalizedParams = normalizeQueryParams(rawParams);
+
+  console.log("🔍 Server Side Params:", {
+    raw: rawParams,
+    normalized: normalizedParams,
   });
 
-  console.log("Normalized Params:", initialParams);
-
+  // ✅ Get translations
   const t = await getTranslations({
-    locale: locale, // Ambil locale dari params
-    namespace: "collections", // Namespace yang ingin diakses
+    locale: locale,
+    namespace: "collections",
   });
-
   const translatedPrefix = t("collections_heading");
 
-  try {
-    // ✅ Prefetch dengan params yang sudah dinormalisasi
-    await queryClient.prefetchQuery({
-      queryKey: ["products", initialParams],
-      queryFn: async () => {
-        const result = await getProducts(initialParams);
+  // ✅ Fetch sidebar data
+  const { data: sideBarData } = await getCollection();
 
-        return result;
-      },
-    });
+  // ✅ Prefetch products dengan normalized params
+  await queryClient.prefetchQuery({
+    queryKey: ["products", normalizedParams],
+    queryFn: async () => {
+      const result = await getProducts(normalizedParams);
+      return result;
+    },
+  });
 
-    const initialProductsData = queryClient.getQueryData([
-      "products",
-      initialParams,
-    ]) as ProductListResponse;
+  // ✅ Get initial data
+  const initialProductsData = queryClient.getQueryData([
+    "products",
+    normalizedParams,
+  ]) as ProductListResponse;
 
-    console.log("Initial products data loaded:", {
-      hasData: !!initialProductsData,
-      productsCount: initialProductsData?.data?.data?.length || 0,
-    });
-
-    return (
-      <Fragment>
-        <PageTitle
-          showTopLine={false}
-          paddingTop={80}
-          pageTitle={capitalizeFirstLetter(slug)}
-          pagesub={`${translatedPrefix}${capitalizeFirstLetter(slug)}`}
+  return (
+    <Fragment>
+      <PageTitle
+        showTopLine={false}
+        paddingTop={80}
+        pageTitle={capitalizeFirstLetter(slug)}
+        pagesub={`${translatedPrefix}${capitalizeFirstLetter(slug)}`}
+      />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <CollectionProducts
+          sidebar_data={sideBarData}
+          initialData={initialProductsData}
+          collection={slug}
         />
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <CollectionProducts
-            initialData={initialProductsData}
-            collection={slug}
-          />
-        </HydrationBoundary>
-      </Fragment>
-    );
-  } catch (error) {
-    console.error("=== Server Side Error ===");
-    console.error(error);
-
-    // ✅ Return page dengan error handling
-    return (
-      <Fragment>
-        <PageTitle pageTitle="Collections" pagesub="Collections" />
-        <div className="container py-5">
-          <div className="alert alert-danger">
-            <h4>Error Loading Products</h4>
-            <p>
-              {error instanceof Error
-                ? error.message
-                : "Unknown error occurred"}
-            </p>
-            <small>Check console for details</small>
-          </div>
-        </div>
-      </Fragment>
-    );
-  }
+      </HydrationBoundary>
+    </Fragment>
+  );
 }
 
 // ========================================
