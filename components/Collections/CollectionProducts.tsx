@@ -18,128 +18,37 @@ import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/lib/api/queries/product";
 import { getProductFormattedCode } from "@/lib/util";
 import MobileSidebar from "../MobileMenu/filter-menu";
+import { normalizeQueryParams } from "../../lib/util";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
   collection: string;
+  sidebar_data: any;
+}
+
+interface FilterParams {
+  categories?: (string | number)[];
+  types?: (string | number)[];
+  finishing?: (string | number)[];
+  features?: (string | number)[];
+  complementary?: (string | number)[];
+  sizes?: (string | number)[];
+  thicknesses?: (string | number)[];
+  is_soft_touch?: boolean;
+  is_anti_fingerprint?: boolean;
+  is_miraedge?: boolean;
+  sort_by?: string;
 }
 
 // ✅ PERBAIKAN: Helper function untuk normalize query params (with UUID support)
-export const normalizeQueryParams = (params: Record<string, any>) => {
-  const normalized: Record<string, any> = {};
 
-  // Collection ID - could be number or UUID
-  if (params.collection_id) {
-    // Check if it's a number or UUID
-    const isNumber = !isNaN(Number(params.collection_id));
-    normalized.collection_id = isNumber
-      ? Number(params.collection_id)
-      : params.collection_id;
-  }
-
-  // ✅ Category ID - parse dari comma-separated string (UUID or number)
-  if (params.category_id) {
-    if (typeof params.category_id === "string" && params.category_id.trim()) {
-      // Decode URL encoded string (%2C -> ,)
-      const decoded = decodeURIComponent(params.category_id);
-
-      // Split by comma
-      const ids = decoded
-        .split(",")
-        .map((id: string) => id.trim())
-        .filter((id: string) => id.length > 0);
-
-      if (ids.length > 0) {
-        // ✅ PENTING: Jangan convert ke number kalau UUID!
-        // Check if first ID looks like a UUID (has dashes)
-        const firstId = ids[0];
-        const looksLikeUUID = firstId.includes("-") && firstId.length > 20;
-
-        if (looksLikeUUID) {
-          // Keep as string array for UUIDs
-          normalized.category_id = ids;
-        } else {
-          // Convert to numbers for integer IDs
-          const numericIds = ids
-            .map((id) => Number(id))
-            .filter((id) => !isNaN(id) && id > 0);
-          if (numericIds.length > 0) {
-            normalized.category_id = numericIds;
-          }
-        }
-      }
-    } else if (Array.isArray(params.category_id)) {
-      // Already array, just filter empty values
-      const filtered = params.category_id.filter(
-        (id: any) => id && String(id).trim()
-      );
-      if (filtered.length > 0) {
-        normalized.category_id = filtered;
-      }
-    }
-  }
-
-  // ✅ Sub Collection ID - parse dari comma-separated string (UUID or number)
-  if (params.sub_collection_id) {
-    if (
-      typeof params.sub_collection_id === "string" &&
-      params.sub_collection_id.trim()
-    ) {
-      // Decode URL encoded string
-      const decoded = decodeURIComponent(params.sub_collection_id);
-
-      // Split by comma
-      const ids = decoded
-        .split(",")
-        .map((id: string) => id.trim())
-        .filter((id: string) => id.length > 0);
-
-      if (ids.length > 0) {
-        // Check if first ID looks like a UUID
-        const firstId = ids[0];
-        const looksLikeUUID = firstId.includes("-") && firstId.length > 20;
-
-        if (looksLikeUUID) {
-          normalized.sub_collection_id = ids;
-        } else {
-          const numericIds = ids
-            .map((id) => Number(id))
-            .filter((id) => !isNaN(id) && id > 0);
-          if (numericIds.length > 0) {
-            normalized.sub_collection_id = numericIds;
-          }
-        }
-      }
-    } else if (Array.isArray(params.sub_collection_id)) {
-      const filtered = params.sub_collection_id.filter(
-        (id: any) => id && String(id).trim()
-      );
-      if (filtered.length > 0) {
-        normalized.sub_collection_id = filtered;
-      }
-    }
-  }
-
-  // Search - hanya jika ada dan tidak kosong
-  if (params.search && params.search.trim()) {
-    normalized.search = params.search.trim();
-  }
-
-  // Page - selalu number minimal 1
-  normalized.page = params.page ? Number(params.page) : 1;
-  normalized.collection = decodeURIComponent(params.collection ?? "");
-  normalized.sort_by = params.sort_by;
-  return normalized;
-};
 const CollectionProducts = ({
   collection,
   initialData,
+  sidebar_data,
 }: CollectionProductProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const sub_collection_id = searchParams.get("sub_collection_id");
-  const category_id = searchParams.get("category_id");
-  const sort_by = searchParams.get("sort_by");
   const initialSearchTerm = searchParams.get("search") || "";
   const currentPage = searchParams.get("page");
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -151,38 +60,47 @@ const CollectionProducts = ({
 
   // ✅ PERBAIKAN: Query params dengan parsing yang benar
   const queryParamsForApi = useMemo(() => {
-    // ✅ PENTING: Jangan set default value sebagai empty array!
     const params: Record<string, any> = {
       collection: collection || "",
       search: debouncedSearchTerm || "",
       page: currentPage || "1",
-      sort_by: sort_by || "",
     };
 
-    // ✅ Hanya tambahkan jika ada value
-    if (category_id) {
-      params.category_id = category_id;
+    // Hanya tambahkan parameter jika ada value
+    const addIfExists = (key: string, value: string | null) => {
+      if (value && value.trim()) {
+        params[key] = value;
+      }
+    };
+
+    addIfExists("category_id", searchParams.get("category_id"));
+    addIfExists("types", searchParams.get("types"));
+    addIfExists("finishing", searchParams.get("finishing"));
+    addIfExists("features", searchParams.get("features"));
+    addIfExists("complementary", searchParams.get("complementary"));
+    addIfExists("sizes", searchParams.get("sizes"));
+    addIfExists("thicknesses", searchParams.get("thicknesses"));
+    addIfExists("sort_by", searchParams.get("sort_by"));
+
+    // Boolean params
+    const isSoftTouch = searchParams.get("is_soft_touch");
+    if (isSoftTouch === "1" || isSoftTouch === "true") {
+      params.is_soft_touch = true;
     }
 
-    if (sub_collection_id) {
-      params.sub_collection_id = sub_collection_id;
+    const isAntiFingerprint = searchParams.get("is_anti_fingerprint");
+    if (isAntiFingerprint === "1" || isAntiFingerprint === "true") {
+      params.is_anti_fingerprint = true;
     }
 
-    if (sort_by) {
-      params.sort_by = sort_by;
+    const isMiraedge = searchParams.get("is_miraedge");
+    if (isMiraedge === "1" || isMiraedge === "true") {
+      params.is_miraedge = true;
     }
 
-    const normalized = normalizeQueryParams(params);
-
-    return normalized;
-  }, [
-    sort_by,
-    collection,
-    category_id,
-    sub_collection_id,
-    debouncedSearchTerm,
-    currentPage,
-  ]);
+    // Normalize params sebelum dikirim ke API
+    return normalizeQueryParams(params);
+  }, [collection, debouncedSearchTerm, currentPage, searchParams]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
@@ -231,42 +149,79 @@ const CollectionProducts = ({
   const rawSortBy = searchParams.get("sort_by");
 
   const sortByFilter: "new" | "" = rawSortBy === "new" ? "new" : "";
-  const initialFilters = {
-    categories: searchParams.get("category_id")?.split(",") || [],
-    subCollections: searchParams.get("sub_collection_id")?.split(",") || [],
-    sort_by: sortByFilter,
-  };
+  const initialFilters = useMemo(() => {
+    const parseArrayParam = (param: string | null): (string | number)[] => {
+      if (!param) return [];
+      return param
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean);
+    };
 
-  // ✅ Handler untuk filters - akan dipanggil dari SidebarFilter
+    const parseBooleanParam = (param: string | null): boolean => {
+      return param === "1" || param === "true";
+    };
+
+    return {
+      categories: parseArrayParam(searchParams.get("category_id")),
+      types: parseArrayParam(searchParams.get("types")),
+      finishing: parseArrayParam(searchParams.get("finishing")),
+      features: parseArrayParam(searchParams.get("features")),
+      complementary: parseArrayParam(searchParams.get("complementary")),
+      sizes: parseArrayParam(searchParams.get("sizes")),
+      thicknesses: parseArrayParam(searchParams.get("thicknesses")),
+      is_soft_touch: parseBooleanParam(searchParams.get("is_soft_touch")),
+      is_anti_fingerprint: parseBooleanParam(
+        searchParams.get("is_anti_fingerprint")
+      ),
+      is_miraedge: parseBooleanParam(searchParams.get("is_miraedge")),
+      sort_by: (searchParams.get("sort_by") || "") as "new" | "",
+    };
+  }, [searchParams]);
+
   // ✅ Handler untuk filters - akan dipanggil dari SidebarFilter
   const handleFilters = useCallback(
-    (filters: {
-      categories: (string | number)[];
-      subCollections: (string | number)[];
-      sort_by: "new" | ""; // ✅ Tambahkan sort_by
-    }) => {
+    (filters: FilterParams) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      // Reset page
+      // Reset page saat filter berubah
       params.delete("page");
 
-      // Clear old filters
-      params.delete("category_id");
-      params.delete("sub_collection_id");
-      params.delete("sort_by");
+      // Helper untuk set array params
+      const setArrayParam = (key: string, value?: (string | number)[]) => {
+        params.delete(key);
+        if (value && value.length > 0) {
+          params.set(key, value.join(","));
+        }
+      };
 
-      // Set new filters (comma-separated)
-      if (filters?.categories?.length > 0) {
-        params.set("category_id", filters.categories.join(","));
-      }
+      // Helper untuk set boolean params
+      const setBooleanParam = (key: string, value?: boolean) => {
+        params.delete(key);
+        if (value === true) {
+          params.set(key, "1");
+        }
+      };
 
-      if (filters?.subCollections?.length > 0) {
-        params.set("sub_collection_id", filters.subCollections.join(","));
-      }
+      // Set array filters
+      setArrayParam("category_id", filters.categories);
+      setArrayParam("types", filters.types);
+      setArrayParam("finishing", filters.finishing);
+      setArrayParam("features", filters.features);
+      setArrayParam("complementary", filters.complementary);
+      setArrayParam("sizes", filters.sizes);
+      setArrayParam("thicknesses", filters.thicknesses);
 
-      // ✅ Set sort_by jika ada dan tidak kosong
-      if (filters?.sort_by && filters.sort_by.trim()) {
+      // Set boolean filters
+      setBooleanParam("is_soft_touch", filters.is_soft_touch);
+      setBooleanParam("is_anti_fingerprint", filters.is_anti_fingerprint);
+      setBooleanParam("is_miraedge", filters.is_miraedge);
+
+      // Set sort_by
+      if (filters.sort_by && filters.sort_by.trim()) {
         params.set("sort_by", filters.sort_by);
+      } else {
+        params.delete("sort_by");
       }
 
       router.push(`?${params.toString()}`, { scroll: false });
@@ -277,6 +232,14 @@ const CollectionProducts = ({
   const ICON_SIZE = 16;
   const dataProducts = data?.data;
   const products = dataProducts?.data || [];
+
+  useEffect(() => {
+    console.log("🔍 Current Query Params:", {
+      raw: Object.fromEntries(searchParams.entries()),
+      normalized: queryParamsForApi,
+      filters: initialFilters,
+    });
+  }, [searchParams, queryParamsForApi, initialFilters]);
 
   if (isError) {
     return (
@@ -292,21 +255,23 @@ const CollectionProducts = ({
 
   return (
     <section className="section-padding pt-5">
-      <div className="container">
-        <div className="row g-5">
+      <div className="container-fluid">
+        <div className="row g-5  mx-5">
           {/* Sidebar - Col 3 */}
           <div className="col col-lg-3 col-12 mb-lg-0 d-none d-lg-block">
             <SidebarFilter
-              collection_id={products[0]?.collection_id as string}
+              collection_id={products[0]?.design?.collection_id}
               onFilterChange={handleFilters}
               initialFilters={initialFilters}
+              sidebar_data={sidebar_data}
             />
           </div>
           <div className="col col-lg-3 col-12 mb-lg-0 d-block d-lg-none">
             <MobileSidebar
-              collection_id={products[0]?.collection_id as string}
+              collection_id={products[0]?.design?.collection_id}
               onFilterChange={handleFilters}
               initialFilters={initialFilters}
+              sidebar_data={sidebar_data}
             />
           </div>
 
@@ -317,7 +282,7 @@ const CollectionProducts = ({
                 <SearchInput
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  placeholder="Cari Finishing, Texture, Sub Collection..."
+                  placeholder="Search Here..."
                 />
               </div>
             </div>
@@ -333,7 +298,7 @@ const CollectionProducts = ({
 
                   return (
                     <div
-                      className="col col-lg-3 col-md-6 col-6 fade_bottom"
+                      className="col col-lg-3 col-md-6 col-12 fade_bottom"
                       key={product?.id || index}
                     >
                       <Link
@@ -356,6 +321,7 @@ const CollectionProducts = ({
                                 alt={product?.name || "Product image"}
                                 width={350}
                                 height={350}
+                                // unoptimized
                                 style={{
                                   objectFit: "contain",
                                   width: "100%",
@@ -383,7 +349,7 @@ const CollectionProducts = ({
                                     {product.name}
                                   </span>
                                 </div>
-                                {product?.is_available_in_miraedge == 1 && (
+                                {!!product?.miraedge_detail && (
                                   <Image
                                     src={miraedge}
                                     alt="Product Icon"

@@ -2,6 +2,13 @@
 import { api } from "../client";
 import { ENDPOINTS } from "../endpoints";
 
+export async function getCollection(params?: Record<string, any>) {
+  return api.get(ENDPOINTS.COLLECTION_PAGE, {
+    params,
+    revalidate: 60,
+  });
+}
+
 export async function getProducts(params?: Record<string, any>) {
   return api.get(ENDPOINTS.COLLECTION, {
     params,

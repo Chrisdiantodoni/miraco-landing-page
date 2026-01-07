@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
+
 import React, { useState, useCallback, useMemo } from "react";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import Checkbox from "@mui/material/Checkbox";
@@ -15,14 +18,13 @@ import RadioGroup from "@mui/material/RadioGroup";
 import { ChevronDown, X } from "lucide-react";
 import type {
   ActiveFilters,
-  Category,
-  Collection,
-  SubCollection,
   FilterType,
   FilterItem,
   SidebarFilterProps,
   FilterBlockProps,
+  Category,
 } from "@/lib/types/filter";
+import { Type, Finishing, Size, Thickness } from "@/lib/types/master/master.d";
 
 // --- Color Variables ---
 const $black = "#000000";
@@ -31,26 +33,39 @@ const $black = "#000000";
 type SortOption = "latest" | "oldest";
 
 interface ExtendedActiveFilters extends ActiveFilters {
-  sortBy: SortOption;
-  sort_by: "new" | "";
-  newOnly: boolean;
+  types: (string | number)[];
+  finishing: (string | number)[];
+  features: (string | number)[];
+  is_soft_touch: boolean;
+  is_anti_fingerprint: boolean;
+  complementary: (string | number)[];
+  is_miraedge: boolean;
+  thicknesses: (string | number)[];
+  sizes: (string | number)[];
 }
 
 // --- Helper Functions ---
 const getItemData = (
-  item: Category | Collection | SubCollection,
+  item: Category | Type | Size | Thickness | Finishing,
   filterType: FilterType
 ): FilterItem => {
   let name: string;
 
   switch (filterType) {
-    case "categories":
+    case "features":
       name = (item as Category).category_name;
       break;
-    case "subCollections":
-      name =
-        (item as Collection).collection_name ||
-        (item as SubCollection).sub_collection_name;
+    case "types":
+      name = (item as Type).type_name;
+      break;
+    case "sizes":
+      name = (item as Size).size + " " + `(${(item as Size).size_ft} ft)`;
+      break;
+    case "thicknesses":
+      name = (item as Thickness).thickness;
+      break;
+    case "finishing":
+      name = (item as Finishing).finishing_name;
       break;
     default:
       name = "";
@@ -99,8 +114,8 @@ const FilterBlock: React.FC<
   if (!data || data.length === 0) return null;
 
   const calculateMaxHeight = () => {
-    const itemHeight = 40;
-    const maxVisibleItems = 7;
+    const itemHeight = 28;
+    const maxVisibleItems = 6;
     const totalItems = data.length;
 
     if (totalItems <= maxVisibleItems) {
@@ -109,8 +124,6 @@ const FilterBlock: React.FC<
 
     return `${itemHeight * maxVisibleItems}px`;
   };
-
-  const shouldShowScroll = data.length > 7;
 
   return (
     <Accordion
@@ -133,8 +146,8 @@ const FilterBlock: React.FC<
         className="widget-details"
         sx={{
           padding: 0,
-          maxHeight: shouldShowScroll ? calculateMaxHeight() : "auto",
-          overflowY: shouldShowScroll ? "auto" : "visible",
+          maxHeight: calculateMaxHeight(),
+          overflowY: "auto",
           overflowX: "hidden",
           "&::-webkit-scrollbar": {
             width: "6px",
@@ -150,24 +163,21 @@ const FilterBlock: React.FC<
               backgroundColor: "#555",
             },
           },
-          "@media (min-width: 1024px)": {
-            maxHeight: "none !important",
-            overflowY: "visible !important",
-          },
         }}
       >
         <List className="filter-list" disablePadding>
           {data.map((item) => {
             const { id: slug, name } = getItemData(item, filterType);
-            const isChecked = activeFilters[filterType].includes(slug);
-
+            const isChecked = activeFilters[filterType]
+              .map((id: any) => String(id))
+              .includes(String(slug));
             return (
               <ListItem
                 key={slug}
                 className="filter-item"
                 sx={{
-                  padding: "4px 16px",
-                  minHeight: "40px",
+                  padding: "0px 16px",
+                  minHeight: "28px",
                 }}
               >
                 <FormControlLabel
@@ -191,98 +201,153 @@ const FilterBlock: React.FC<
   );
 };
 
-// --- Sort Block Component ---
-const SortBlock: React.FC<{
-  sortBy: SortOption;
-  onSortChange: (value: SortOption) => void;
+// --- Extended Filter Block dengan Boolean Options ---
+const ExtendedFilterBlock: React.FC<{
+  title: string;
+  data: any[];
+  filterType: FilterType;
+  activeFilters: ExtendedActiveFilters;
+  handleCheckboxChange: (filterType: FilterType, slug: string | number) => void;
+  booleanOptions?: Array<{
+    key: keyof ExtendedActiveFilters;
+    label: string;
+  }>;
+  onBooleanChange?: (key: keyof ExtendedActiveFilters, value: boolean) => void;
   expanded: boolean;
   onToggleExpanded: () => void;
-}> = ({ sortBy, onSortChange, expanded, onToggleExpanded }) => {
+}> = ({
+  title,
+  data,
+  filterType,
+  activeFilters,
+  handleCheckboxChange,
+  booleanOptions = [],
+  onBooleanChange,
+  expanded,
+  onToggleExpanded,
+}) => {
+  const hasData = data && data.length > 0;
+  const hasBooleanOptions = booleanOptions.length > 0;
+
+  if (!hasData && !hasBooleanOptions) return null;
+
+  const calculateMaxHeight = () => {
+    const itemHeight = 40;
+    const maxVisibleItems = 6;
+    const totalItems = (data?.length || 0) + booleanOptions.length;
+
+    if (totalItems <= maxVisibleItems) {
+      return "auto";
+    }
+
+    return `${itemHeight * maxVisibleItems}px`;
+  };
+
   return (
     <Accordion
       expanded={expanded}
       onChange={onToggleExpanded}
-      className="widget sort-widget"
+      className={`widget ${filterType}-widget`}
     >
       <AccordionSummary
         expandIcon={<ChevronDown size={20} />}
-        aria-controls="panel-sort-content"
-        id="panel-sort-header"
+        aria-controls={`panel-${filterType}-content`}
+        id={`panel-${filterType}-header`}
         className="widget-header"
       >
         <Typography variant="h3" component="h3" className="filter-title">
-          Sort By
+          {title} {data && data.length > 7 && `(${data.length})`}
         </Typography>
       </AccordionSummary>
 
-      <AccordionDetails className="widget-details" sx={{ padding: 0 }}>
-        <List className="filter-list" disablePadding>
-          <RadioGroup
-            value={sortBy}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
-            sx={{ width: "100%" }}
-          >
-            <ListItem sx={{ padding: "4px 16px", minHeight: "40px" }}>
-              <FormControlLabel
-                value="latest"
-                control={<MonokromRadio />}
-                label={<span className="filter-label">Latest</span>}
-                sx={{ width: "100%", margin: 0 }}
-              />
-            </ListItem>
-            <ListItem sx={{ padding: "4px 16px", minHeight: "40px" }}>
-              <FormControlLabel
-                value="oldest"
-                control={<MonokromRadio />}
-                label={<span className="filter-label">Oldest</span>}
-                sx={{ width: "100%", margin: 0 }}
-              />
-            </ListItem>
-          </RadioGroup>
-        </List>
-      </AccordionDetails>
-    </Accordion>
-  );
-};
-
-// --- New Only Block Component ---
-const NewOnlyBlock: React.FC<{
-  newOnly: boolean;
-  onNewOnlyChange: (checked: boolean) => void;
-  expanded: boolean;
-  onToggleExpanded: () => void;
-}> = ({ newOnly, onNewOnlyChange, expanded, onToggleExpanded }) => {
-  return (
-    <Accordion
-      expanded={expanded}
-      onChange={onToggleExpanded}
-      className="widget new-only-widget"
-    >
-      <AccordionSummary
-        expandIcon={<ChevronDown size={20} />}
-        aria-controls="panel-new-only-content"
-        id="panel-new-only-header"
-        className="widget-header"
+      <AccordionDetails
+        className="widget-details"
+        sx={{
+          padding: 0,
+          maxHeight: calculateMaxHeight(),
+          overflowY: "auto",
+          overflowX: "hidden",
+          "&::-webkit-scrollbar": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "#f1f1f1",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#888",
+            borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "#555",
+            },
+          },
+        }}
       >
-        <Typography variant="h3" component="h3" className="filter-title">
-          Display Order
-        </Typography>
-      </AccordionSummary>
-
-      <AccordionDetails className="widget-details" sx={{ padding: 0 }}>
         <List className="filter-list" disablePadding>
-          <ListItem sx={{ padding: "4px 16px", minHeight: "40px" }}>
-            <FormControlLabel
-              control={
-                <MonokromCheckbox
-                  checked={newOnly}
-                  onChange={(e) => onNewOnlyChange(e.target.checked)}
-                />
-              }
-              label={<span className="filter-label">New Only</span>}
-              sx={{ width: "100%", margin: 0 }}
-            />
-          </ListItem>
+          {/* Render data items */}
+          {hasData &&
+            data.map((item) => {
+              const { id: slug, name } = getItemData(item, filterType);
+              // const isChecked = activeFilters[filterType].includes(slug);
+              const isChecked = activeFilters[filterType]
+                .map((id) => String(id))
+                .includes(String(slug));
+              return (
+                <ListItem
+                  key={slug}
+                  className="filter-item"
+                  sx={{
+                    padding: "4px 16px",
+                    minHeight: "40px",
+                  }}
+                >
+                  <FormControlLabel
+                    className="filter-item-content"
+                    label={<span className="filter-label">{name}</span>}
+                    control={
+                      <MonokromCheckbox
+                        checked={isChecked}
+                        onChange={() => handleCheckboxChange(filterType, slug)}
+                        name={name}
+                      />
+                    }
+                    sx={{ width: "100%", margin: 0 }}
+                  />
+                </ListItem>
+              );
+            })}
+
+          {/* Render boolean options */}
+          {hasBooleanOptions &&
+            booleanOptions.map((option) => {
+              const isChecked = activeFilters[option.key] as boolean;
+
+              return (
+                <ListItem
+                  key={option.key as string}
+                  className="filter-item"
+                  sx={{
+                    padding: "4px 16px",
+                    minHeight: "40px",
+                  }}
+                >
+                  <FormControlLabel
+                    className="filter-item-content"
+                    label={<span className="filter-label">{option.label}</span>}
+                    control={
+                      <MonokromCheckbox
+                        checked={isChecked}
+                        onChange={(e) =>
+                          onBooleanChange?.(option.key, e.target.checked)
+                        }
+                        name={option.label}
+                      />
+                    }
+                    sx={{ width: "100%", margin: 0 }}
+                  />
+                </ListItem>
+              );
+            })}
         </List>
       </AccordionDetails>
     </Accordion>
@@ -292,56 +357,71 @@ const NewOnlyBlock: React.FC<{
 // --- Main SidebarFilter Component ---
 const SidebarFilter: React.FC<SidebarFilterProps> = ({
   onFilterChange,
-  collection_id,
   initialFilters,
+  sidebar_data,
+  collection_id,
 }) => {
   const settings = useSiteSettings();
-  const types = settings?.categories || [];
+  const categories =
+    settings?.categories?.filter((filter) => filter?.category_name == "CORE") ||
+    [];
 
   const [expandedSections, setExpandedSections] = useState<
-    Record<FilterType | "sort" | "newOnly", boolean>
+    Record<string, boolean>
   >({
-    categories: true,
-    subCollections: true,
-    sort: true,
-    newOnly: true,
+    types: true,
+    finishing: true,
+    features: true,
+    complementary: true,
+    sizes: true,
+    thicknesses: true,
   });
 
-  const allSubCollections = useMemo(() => {
-    return settings?.sub_collections || [];
-  }, [settings]);
+  const allTypes = useMemo(() => {
+    return sidebar_data?.types?.filter(
+      (filter) => filter?.collection_id == collection_id
+    );
+  }, [sidebar_data, collection_id]);
+
+  const allFinishing = useMemo(() => {
+    return sidebar_data?.finishing?.filter(
+      (filter) => filter?.collection_id == collection_id
+    );
+  }, [sidebar_data, collection_id]);
+
+  const sizes = sidebar_data?.sizes;
+  const thicknesses = sidebar_data?.thicknesses;
 
   const [draftFilters, setDraftFilters] = useState<ExtendedActiveFilters>({
-    categories: initialFilters?.categories || [],
-    subCollections: initialFilters?.subCollections || [],
-    sortBy: "latest",
-    newOnly: false,
-    sort_by: "",
+    types: initialFilters?.types || [],
+    finishing: initialFilters?.finishing || [],
+    features: initialFilters?.features || [],
+    is_soft_touch: initialFilters?.is_soft_touch || false,
+    is_anti_fingerprint: initialFilters?.is_anti_fingerprint || false,
+    complementary: initialFilters?.complementary || [],
+    is_miraedge: initialFilters?.is_miraedge || false,
+    thicknesses: initialFilters?.thicknesses || [],
+    sizes: initialFilters?.sizes || [],
   });
 
-  const toggleExpand = useCallback(
-    (section: FilterType | "sort" | "newOnly") => {
-      setExpandedSections((prev) => ({
-        ...prev,
-        [section]: !prev[section],
-      }));
-    },
-    []
-  );
-
-  const filteredSubCollections = useMemo(() => {
-    const filtered = allSubCollections.filter(
-      (sub) => sub?.collection_id == collection_id
-    );
-
-    return filtered;
-  }, [allSubCollections, collection_id]);
+  const toggleExpand = useCallback((section: string) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  }, []);
 
   const activeFilterCount = useMemo(() => {
-    let count =
-      draftFilters.categories.length + draftFilters.subCollections.length;
-    if (draftFilters.sortBy !== "latest") count++;
-    if (draftFilters.newOnly) count++;
+    let count = 0;
+    count += draftFilters.types.length;
+    count += draftFilters.finishing.length;
+    count += draftFilters.features.length;
+    count += draftFilters.complementary.length;
+    count += draftFilters.thicknesses.length;
+    count += draftFilters.sizes.length;
+    if (draftFilters.is_soft_touch) count++;
+    if (draftFilters.is_anti_fingerprint) count++;
+    if (draftFilters.is_miraedge) count++;
     return count;
   }, [draftFilters]);
 
@@ -349,7 +429,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
   const handleCheckboxChange = useCallback(
     (filterType: FilterType, slug: string | number) => {
-      const currentList = draftFilters[filterType];
+      const currentList = draftFilters[filterType] as (string | number)[];
       const isChecked = currentList.includes(slug);
 
       let newSelectedList: (string | number)[];
@@ -359,42 +439,11 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         newSelectedList = [...currentList, slug];
       }
 
-      let newFilters: ExtendedActiveFilters = {
+      const newFilters: ExtendedActiveFilters = {
         ...draftFilters,
         [filterType]: newSelectedList,
       };
 
-      if (filterType === "categories") {
-        const validSubCollections = draftFilters.subCollections.filter(
-          (subId) => {
-            const subCollection = allSubCollections.find(
-              (sub) => sub.id === subId
-            );
-            return (
-              subCollection &&
-              newSelectedList.includes(subCollection.category_id)
-            );
-          }
-        );
-
-        newFilters = {
-          ...newFilters,
-          subCollections: validSubCollections,
-        };
-      }
-
-      setDraftFilters(newFilters);
-
-      if (onFilterChange) {
-        onFilterChange(newFilters);
-      }
-    },
-    [draftFilters, onFilterChange, allSubCollections]
-  );
-
-  const handleSortChange = useCallback(
-    (sortBy: SortOption) => {
-      const newFilters = { ...draftFilters, sortBy };
       setDraftFilters(newFilters);
       if (onFilterChange) {
         onFilterChange(newFilters);
@@ -403,12 +452,11 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     [draftFilters, onFilterChange]
   );
 
-  const handleNewOnlyChange = useCallback(
-    (newOnly: boolean) => {
+  const handleBooleanChange = useCallback(
+    (key: keyof ExtendedActiveFilters, value: boolean) => {
       const newFilters: ExtendedActiveFilters = {
         ...draftFilters,
-        newOnly,
-        sort_by: newOnly ? "new" : "",
+        [key]: value,
       };
 
       setDraftFilters(newFilters);
@@ -422,11 +470,15 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
   const resetFilters = () => {
     const emptyFilters: ExtendedActiveFilters = {
-      categories: [],
-      subCollections: [],
-      sort_by: "",
-      sortBy: "latest",
-      newOnly: false,
+      types: [],
+      finishing: [],
+      features: [],
+      is_soft_touch: false,
+      is_anti_fingerprint: false,
+      complementary: [],
+      is_miraedge: false,
+      thicknesses: [],
+      sizes: [],
     };
     setDraftFilters(emptyFilters);
     if (onFilterChange) {
@@ -438,7 +490,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     <div className="blog-sidebar">
       {/* Reset Button at Top */}
       <div className="filter-reset-top">
-        <p className="active-filter-count" style={{ fontWeight: "bold" }}>
+        <p className="active-filter-count" style={{ fontWeight: "normal" }}>
           {activeFilterCount} Active Filters
         </p>
         <Button
@@ -469,34 +521,75 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         </Button>
       </div>
 
-      {/* New Only Block */}
-      <NewOnlyBlock
-        newOnly={draftFilters.newOnly}
-        onNewOnlyChange={handleNewOnlyChange}
-        expanded={expandedSections.newOnly}
-        onToggleExpanded={() => toggleExpand("newOnly")}
-      />
-
       {/* Filter Blocks */}
       <FilterBlock
-        title="Types"
-        data={types}
-        filterType="categories"
+        title="Type"
+        data={allTypes}
+        filterType="types"
         activeFilters={draftFilters}
-        expanded={expandedSections.categories}
-        onToggleExpanded={() => toggleExpand("categories")}
+        expanded={expandedSections.types}
+        onToggleExpanded={() => toggleExpand("types")}
         handleCheckboxChange={handleCheckboxChange}
       />
 
       <FilterBlock
-        title="Sub Collections"
-        data={filteredSubCollections}
-        filterType="subCollections"
+        title="Finishing"
+        data={allFinishing}
+        filterType="finishing"
         activeFilters={draftFilters}
-        expanded={expandedSections.subCollections}
-        onToggleExpanded={() => toggleExpand("subCollections")}
+        expanded={expandedSections.finishing}
+        onToggleExpanded={() => toggleExpand("finishing")}
         handleCheckboxChange={handleCheckboxChange}
       />
+
+      {/* Features dengan Boolean Options */}
+      <ExtendedFilterBlock
+        title="Features"
+        data={categories}
+        filterType="features"
+        activeFilters={draftFilters}
+        expanded={expandedSections.features}
+        onToggleExpanded={() => toggleExpand("features")}
+        handleCheckboxChange={handleCheckboxChange}
+        booleanOptions={[
+          { key: "is_soft_touch", label: "Soft Touch" },
+          { key: "is_anti_fingerprint", label: "Anti Fingerprint" },
+        ]}
+        onBooleanChange={handleBooleanChange}
+      />
+
+      {/* Complementary dengan Boolean Option */}
+      <ExtendedFilterBlock
+        title="Complementary"
+        data={[]} // Kosongkan jika tidak ada data array
+        filterType="complementary"
+        activeFilters={draftFilters}
+        expanded={expandedSections.complementary}
+        onToggleExpanded={() => toggleExpand("complementary")}
+        handleCheckboxChange={handleCheckboxChange}
+        booleanOptions={[{ key: "is_miraedge", label: "Mira Edge" }]}
+        onBooleanChange={handleBooleanChange}
+      />
+      <FilterBlock
+        title="Size"
+        data={sizes}
+        filterType="sizes"
+        activeFilters={draftFilters}
+        expanded={expandedSections.sizes}
+        onToggleExpanded={() => toggleExpand("sizes")}
+        handleCheckboxChange={handleCheckboxChange}
+      />
+      <FilterBlock
+        title="Thickness"
+        data={thicknesses}
+        filterType="thicknesses"
+        activeFilters={draftFilters}
+        expanded={expandedSections.thicknesses}
+        onToggleExpanded={() => toggleExpand("thicknesses")}
+        handleCheckboxChange={handleCheckboxChange}
+      />
+
+      {/* Uncomment jika ingin menambahkan Size & Thickness */}
     </div>
   );
 };

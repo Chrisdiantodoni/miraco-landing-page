@@ -32,7 +32,12 @@
   },
   "collections": {
     "collections_heading": "Here is our Collection of ",
-    "disclaimer": "Digital colour displays may vary from actual colours.\n for accurate reference, please contact Miraco to request a physical catalogue."
+    "disclaimer": "The colors of Miraco HPL products displayed on this website may differ from the actual products due to variations in display devices, screen settings, and lighting conditions. Miraco has made every effort to present colors as accurately as possible. \n\n To ensure optimal color accuracy, we recommend contacting Miraco to request a physical sample as a reference before placing an order."
+  },
+  "Footer": {
+    "quick_link": "Quick Link",
+    "contact": "Contact",
+    "content": "Miraco presents high-quality High Pressure Laminates crafted to meet modern architectural standards. Designed with precision to deliver durability, aesthetics, and long-term value in every space."
   },
   "home": {
     "key_features": {

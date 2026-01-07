@@ -28,7 +28,7 @@
         "link": "/projects"
       },
       {
-        "title": "找到我们",
+        "title": "联系我们",
         "link": "/locate-us"
       },
       {
@@ -42,7 +42,13 @@
   },
   "collections": {
     "collections_heading": "这是我们的系列：",
-    "disclaimer": "数字展示的颜色可能与实际颜色不同，如需准确参考，请联系 Miraco 索取 实体目录。"
+    "disclaimer": "本网站所展示的 Miraco HPL 产品颜色可能因显示设备、屏幕设置及光线条件的不同而与实际产品存在差异。Miraco 已尽力准确呈现产品颜色。\n\n 为确保颜色的最佳一致性，建议在下单前联系 Miraco 以获取实物样品作为参考。"
+  },
+
+  "Footer": {
+    "quick_link": "快速链接",
+    "contact": "联系方式",
+    "content": "Miraco 提供高品质的高压装饰板（HPL），符合现代建筑设计标准。以精密工艺打造，为每一个空间带来卓越的耐用性、美观性与长期价值。"
   },
   "home": {
     "key_features": {

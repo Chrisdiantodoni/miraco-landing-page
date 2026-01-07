@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useRef } from "react";
 import Image from "next/image";
@@ -71,8 +72,7 @@ const CollectionSections = () => {
   return (
     <section className="wpo-instagram-section section-padding pb-0">
       <h2 className="d-none">hidden content</h2>
-
-      <div className="slider-controls ">
+      <div className="slider-controls d-flex d-lg-none d-md-none">
         <button
           onClick={goToPrev}
           className="slider-btn slider-btn-prev"
@@ -118,6 +118,7 @@ const CollectionSections = () => {
           {settings?.collections.map((col, index) => (
             <div key={index} className="slider-item">
               <Link
+                prefetch
                 className="instagram-card"
                 href={`/collections/${col?.collection_name?.toLowerCase()}`}
               >

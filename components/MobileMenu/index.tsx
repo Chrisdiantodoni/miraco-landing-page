@@ -61,6 +61,7 @@ const MobileMenu = () => {
                 {item.submenu ? (
                   <Fragment>
                     <Link
+                      prefetch
                       {...linkProps}
                       // Lakukan toggle hanya jika ada submenu
                       onClick={(e) => {
@@ -108,6 +109,7 @@ const MobileMenu = () => {
                             return (
                               <ListItem key={i}>
                                 <Link
+                                  prefetch
                                   onClick={ClickHandler}
                                   className="active"
                                   href={submenu.link}
@@ -122,7 +124,7 @@ const MobileMenu = () => {
                     </Collapse>
                   </Fragment>
                 ) : (
-                  <Link className="active" href={item.link}>
+                  <Link className="active" href={item.link} prefetch>
                     {item.title}
                   </Link>
                 )}

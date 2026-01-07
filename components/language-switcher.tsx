@@ -6,7 +6,7 @@ import createStore from "../context/index";
 export const languageOptions = [
   { code: "en", label: "ENG", flag: "🇺🇸" },
   { code: "id", label: "ID", flag: "🇮🇩" },
-  { code: "zh", label: "CN", flag: "🇨🇳" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
 ];
 
 const LanguageSwitcher = () => {

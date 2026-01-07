@@ -2,7 +2,7 @@
 "use client";
 import { Link } from "@/i18n/navigation";
 import { Meta } from "@/lib/types";
-import { Product as ProductTypes } from "@/lib/types/product/product";
+import { Product as ProductDetail } from "@/lib/types/product/product";
 import {
   BadgeCheck,
   Check,
@@ -28,7 +28,7 @@ import { useTranslations } from "next-intl";
 interface productDetailProps {
   data: {
     meta: Meta;
-    data: ProductTypes;
+    data: ProductDetail;
   };
 }
 
@@ -46,7 +46,7 @@ const Product = ({ data }: productDetailProps) => {
   const product = data?.data;
   const relatedProducts = product?.related_products;
   const currentProduct = product;
-  const allPillProducts: (ProductTypes | any)[] = [];
+  const allPillProducts: (ProductDetail | any)[] = [];
   if (currentProduct) {
     allPillProducts.push(currentProduct);
   }
@@ -64,7 +64,7 @@ const Product = ({ data }: productDetailProps) => {
   // Ini akan digunakan untuk memperbarui konten detail jika Anda mengimplementasikannya
   const activeProduct = allPillProducts.find(
     (p) => p.id === activeProductId
-  ) as ProductTypes;
+  ) as ProductDetail;
 
   // 4. Handler klik pada pill
   const handlePillClick = (productId: string | number) => {
@@ -201,6 +201,7 @@ const Product = ({ data }: productDetailProps) => {
 Order HPL dengan kode: ${getProductFormattedCode(activeProduct)}
 Link produk:
 ${currentLink}
+
 Mohon info ketersediaan, harga, dan estimasi pengiriman.
 Terima kasih.`;
     const cleanPhone = phoneNumber.replace(/[^0-9]/g, "");
@@ -210,7 +211,7 @@ Terima kasih.`;
     }`;
     window.open(url, "_blank");
   };
-
+  const hasMultipleProducts = allPillProducts.length > 1;
   return (
     <div className="row mt-5">
       {lightboxOpen && currentZoomImage && (
@@ -270,14 +271,14 @@ Terima kasih.`;
                           style={{ objectFit: "cover" }}
                         />
                         {/* Icon Zoom Overlay */}
-                        {/* <button
-                          className="zoom-icon-btn"
+                        <button
+                          className="zoom-icon-btn d-block d-lg-none"
                           // Ganti `handleZoomClick` dengan fungsi yang sebenarnya memicu modal/fungsi zoom Anda
 
                           aria-label="Perbesar Gambar"
                         >
                           <Maximize size={24} />{" "}
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   );
@@ -303,42 +304,48 @@ Terima kasih.`;
             <span className="current">{item.price}</span>
             <span className="old">{item.delPrice}</span>
           </div> */}
-          {/* <div
-            dangerouslySetInnerHTML={{
-              __html: activeProduct?.description ?? <p></p>,
-            }}
-          /> */}
+
           <div className="product-specification">
+            {/* {activeProduct?.category?.category_name == "CORE" && (
+              <div className="product-spec-row">
+                <div>Category</div>
+                <div>{activeProduct?.category?.category_name}</div>
+              </div>
+            )}
+          */}
             <div className="product-spec-row">
-              <div>Category</div>
-              <div>{activeProduct?.category?.category_name}</div>
+              <div>Design</div>
+              <div>
+                {activeProduct?.design?.design_name}{" "}
+                {activeProduct?.category?.category_name?.toLowerCase() ==
+                  "core" && <span>CORE</span>}
+              </div>
             </div>
             <div className="product-spec-row">
-              <div>Collection</div>
-              <div>{activeProduct?.collection?.name_en}</div>
-            </div>
-            <div className="product-spec-row">
-              <div>Sub Collection</div>
-              <div>{activeProduct?.sub_collection?.sub_collection_name}</div>
+              <div>Type</div>
+              <div>{activeProduct?.type?.type_name}</div>
             </div>
             <div className="product-spec-row">
               <div>Finish</div>
-              <div>{activeProduct?.finishing?.sub_category_name}</div>
+              <div>{activeProduct?.finishing?.finishing_name}</div>
             </div>
             <div className="product-spec-row">
               <div>Size</div>
-              <div>{activeProduct?.size}</div>
+              <div>
+                {activeProduct?.size?.size}{" "}
+                <span className="text-muted">
+                  ({activeProduct?.size?.size_ft} ft)
+                </span>
+              </div>
             </div>
             <div className="product-spec-row">
               <div>Thickness</div>
-              <div>{activeProduct?.thickness}</div>
+              <div>{activeProduct?.thickness?.thickness}</div>
             </div>
-            {activeProduct?.is_available_in_miraedge ? (
+            {activeProduct?.miraedge_detail ? (
               <div className="product-spec-row">
                 <div>MIRAEDGE</div>
-                <div>
-                  <Check />
-                </div>
+                <div>{activeProduct?.miraedge_detail}</div>
               </div>
             ) : null}
             {/* <div className="d-flex gx-2">
@@ -346,24 +353,37 @@ Terima kasih.`;
                 <div>MiraEdge</div>
               </div> */}
           </div>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: activeProduct?.description,
+            }}
+          />
           {allPillProducts && allPillProducts.length > 0 && (
             <div className="related-products-pills">
               <div className="pills-container">
                 {allPillProducts.map((p: any) => {
-                  // Fungsi untuk mendapatkan formattedCode dari produk terkait
-
                   const pillFormattedCode = getProductFormattedCode(p);
-
-                  // Tentukan apakah ini adalah produk yang sedang aktif
                   const isActive = p.id === activeProductId;
 
+                  // Ambil gambar thumbnail dari produk terkait
+                  const pillProductMedia = p?.media || [];
+                  const pillThumbnail = pillProductMedia.find(
+                    (media: any) => media?.type === "product_thumbnail"
+                  );
+                  const pillDownloadImage = pillProductMedia.find(
+                    (media: any) => media?.type === "product_to_download"
+                  );
+
+                  // Prioritas: thumbnail dulu, kalau tidak ada gunakan download image
+                  const pillImageUrl =
+                    pillThumbnail?.image_url || pillDownloadImage?.image_url;
+
                   // Dapatkan HEX Warna
-                  const colorHex = p.color_hex ?? "#000000";
+                  const colorHex = p.color_hex;
 
                   return (
                     <button
                       type="button"
-                      // Menggunakan button (bukan Link) karena kita hanya mengubah state lokal
                       key={p.id}
                       onClick={() => handlePillClick(p.id)}
                       className={`product-pill ${
@@ -371,16 +391,29 @@ Terima kasih.`;
                       }`}
                     >
                       {/* =================================================== */}
-                      {/* INDIKATOR WARNA */}
+                      {/* INDIKATOR WARNA - PRIORITAS: IMAGE > COLOR HEX > BLACK */}
                       {/* =================================================== */}
-                      {colorHex && (
+                      {pillImageUrl ? (
+                        // Jika ada gambar, tampilkan gambar
+                        <div className="color-dot-image">
+                          <Image
+                            src={pillImageUrl}
+                            alt={p.name || "Product color"}
+                            width={25}
+                            height={25}
+                            style={{
+                              objectFit: "cover",
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        // Jika tidak ada gambar, tampilkan color dot (hex atau hitam default)
                         <div
                           className="color-dot"
                           style={{
-                            backgroundColor: colorHex,
-                            border: colorHex.toLowerCase().startsWith("#f")
-                              ? "1px solid #000000" // Hanya border hitam jika warna putih
-                              : "none",
+                            backgroundColor: colorHex || "#000000",
                           }}
                         />
                       )}
@@ -474,6 +507,7 @@ Terima kasih.`;
           </div>
           <div className="product-back-btn">
             <Link
+              prefetch
               href={`/collections/${
                 activeProduct?.collection?.name_en?.toLowerCase() || ""
               }`}

@@ -20,7 +20,6 @@ interface ProjectProps {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ProjectSection = (props: ProjectProps) => {
   const projects = props.projects;
-  console.log({ projects });
   return (
     <section className={"" + props.hclass}>
       {/* <div className="title">
@@ -66,11 +65,9 @@ const ProjectSection = (props: ProjectProps) => {
           );
         })}
       </div>
-      <div
-        className="project-allBtn fade_bottom d-flex justify-content-center align-items-center"
-        style={{ minHeight: "200px" }}
-      >
+      <div className="project-allBtn fade_bottom d-flex mb-5 justify-content-center align-items-center">
         <Link
+          prefetch
           onClick={ClickHandler}
           href="/projects"
           className="theme-btn"
