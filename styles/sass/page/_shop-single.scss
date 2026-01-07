@@ -684,7 +684,7 @@
 
       div:first-child {
         font-weight: 500;
-        flex-basis: 45%; // Sesuaikan persentase label
+        flex-basis: 40%; // Sesuaikan persentase label
         min-width: 100px;
         color: #333;
       }
@@ -693,7 +693,7 @@
         font-weight: 400;
         color: #555;
         text-align: left; // Tetap rata kiri untuk teks di dalam value
-        flex-basis: 55%;
+        flex-basis: 60%;
         // Pastikan konten dimulai dari kiri dalam container-nya sendiri
       }
     }
