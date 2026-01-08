@@ -145,7 +145,7 @@ const FilterBlock: React.FC<
             fontSize: 22,
           }}
         >
-          {title} {data.length > 7 && `(${data.length})`}
+          {title}
         </Typography>
       </AccordionSummary>
 

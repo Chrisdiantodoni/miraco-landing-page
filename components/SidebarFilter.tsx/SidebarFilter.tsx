@@ -138,7 +138,7 @@ const FilterBlock: React.FC<
         className="widget-header"
       >
         <Typography variant="h3" component="h3" className="filter-title">
-          {title} {data.length > 7 && `(${data.length})`}
+          {title}
         </Typography>
       </AccordionSummary>
 
