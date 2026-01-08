@@ -84,7 +84,7 @@ const MonokromCheckbox: React.FC<React.ComponentProps<typeof Checkbox>> = (
   <Checkbox
     {...props}
     className="monokrom-checkbox"
-    sx={{ color: $black, "&.Mui-checked": { color: $black } }}
+    sx={{ color: $black, "&.Mui-checked": { color: $black }, padding: "6px" }}
   />
 );
 
@@ -137,7 +137,14 @@ const FilterBlock: React.FC<
         id={`panel-${filterType}-header`}
         className="widget-header"
       >
-        <Typography variant="h3" component="h3" className="filter-title">
+        <Typography
+          variant="h3"
+          component="h3"
+          className="filter-title"
+          sx={{
+            fontSize: 22,
+          }}
+        >
           {title} {data.length > 7 && `(${data.length})`}
         </Typography>
       </AccordionSummary>
@@ -176,7 +183,6 @@ const FilterBlock: React.FC<
                 className="filter-item"
                 sx={{
                   padding: "0px 16px",
-
                   minHeight: "28px",
                 }}
               >
@@ -232,7 +238,7 @@ const ExtendedFilterBlock: React.FC<{
   if (!hasData && !hasBooleanOptions) return null;
 
   const calculateMaxHeight = () => {
-    const itemHeight = 28;
+    const itemHeight = 16;
     const maxVisibleItems = 6;
     const totalItems = (data?.length || 0) + booleanOptions.length;
 
@@ -255,7 +261,14 @@ const ExtendedFilterBlock: React.FC<{
         id={`panel-${filterType}-header`}
         className="widget-header"
       >
-        <Typography variant="h3" component="h3" className="filter-title">
+        <Typography
+          variant="h3"
+          component="h3"
+          className="filter-title"
+          sx={{
+            fontSize: 22,
+          }}
+        >
           {title} {data && data.length > 7 && `(${data.length})`}
         </Typography>
       </AccordionSummary>
@@ -473,7 +486,7 @@ const NewOnlyBlock: React.FC<{
 // --- Main SidebarFilter Component with Drawer ---
 const MobileSidebar: React.FC<SidebarFilterProps> = ({
   onFilterChange,
-  collection_id,
+  collection_name,
   initialFilters,
   sidebar_data,
 }) => {
@@ -483,7 +496,6 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
     [];
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
   >({
@@ -495,17 +507,22 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
     thicknesses: true,
   });
 
+  const collection = settings?.collections?.find(
+    (find) => find?.collection_name?.toLowerCase() == collection_name
+  )?.id as string | number;
+
   const allTypes = useMemo(() => {
     return sidebar_data?.types?.filter(
-      (filter) => filter?.collection_id == collection_id
+      (filter) => filter?.collection_id == collection
     );
-  }, [sidebar_data, collection_id]);
+  }, [sidebar_data, collection]);
 
   const allFinishing = useMemo(() => {
     return sidebar_data?.finishing?.filter(
-      (filter) => filter?.collection_id == collection_id
+      (filter) => filter?.collection_id == collection
     );
-  }, [sidebar_data, collection_id]);
+  }, [sidebar_data, collection]);
+
   const sizes = sidebar_data?.sizes;
   const thicknesses = sidebar_data?.thicknesses;
   const [draftFilters, setDraftFilters] = useState<ExtendedActiveFilters>({
@@ -588,8 +605,6 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
     },
     [draftFilters, onFilterChange]
   );
-
-  console.log({ initialFilters }, "mobile");
 
   const handleBooleanChange = useCallback(
     (key: keyof ExtendedActiveFilters, value: boolean) => {
@@ -674,7 +689,11 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
               borderBottom: "1px solid #e0e0e0",
             }}
           >
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 700 }}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{ fontWeight: 600, fontSize: 28 }}
+            >
               Filters
             </Typography>
             <IconButton onClick={toggleDrawer(false)} edge="end">

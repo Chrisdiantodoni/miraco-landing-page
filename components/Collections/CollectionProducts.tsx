@@ -260,7 +260,7 @@ const CollectionProducts = ({
           {/* Sidebar - Col 3 */}
           <div className="col col-lg-3 col-12 mb-lg-0 d-none d-lg-block">
             <SidebarFilter
-              collection_id={products[0]?.design?.collection_id}
+              collection_name={collection}
               onFilterChange={handleFilters}
               initialFilters={initialFilters}
               sidebar_data={sidebar_data}
@@ -268,7 +268,7 @@ const CollectionProducts = ({
           </div>
           <div className="col col-lg-3 col-12 mb-lg-0 d-block d-lg-none">
             <MobileSidebar
-              collection_id={products[0]?.design?.collection_id}
+              collection_name={collection}
               onFilterChange={handleFilters}
               initialFilters={initialFilters}
               sidebar_data={sidebar_data}
