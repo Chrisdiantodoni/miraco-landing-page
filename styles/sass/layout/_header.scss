@@ -539,14 +539,18 @@ $transition-speed: 0.3s;
   .nav-item {
     .nav-link {
       position: relative;
-      padding: 0.5rem 1rem !important;
+      padding: 0.5rem 0.5rem !important;
       margin: 0 0.5rem;
       color: #3c3c3c !important;
       text-decoration: none !important;
       transition: color 0.3s ease;
       font-weight: 400;
-
-      // Underline animation - HITAM
+      @media (max-width: 1400) {
+        padding: 0.5rem 0.5rem !important;
+      }
+      @media (max-width: 1024px) {
+        padding: 0.5rem 0.5rem !important;
+      }
       &::after {
         content: "";
         position: absolute;
