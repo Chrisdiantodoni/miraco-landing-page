@@ -256,7 +256,7 @@ const CollectionProducts = ({
   return (
     <section className="section-padding pt-5">
       <div className="container-fluid">
-        <div className="row g-5  mx-5">
+        <div className="row g-5  mx-5 mx-md-0">
           {/* Sidebar - Col 3 */}
           <div className="col col-lg-3 col-12 mb-lg-0 d-none d-lg-block">
             <SidebarFilter
