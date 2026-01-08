@@ -339,7 +339,7 @@ const ExtendedFilterBlock: React.FC<{
                   className="filter-item"
                   sx={{
                     padding: "0px 16px",
-                    minHeight: "16px",
+                    minHeight: "28px",
                   }}
                 >
                   <FormControlLabel
