@@ -18,8 +18,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-width: 40px; // atau sesuaikan dengan width button lain
-      height: 40px; // atau sesuaikan dengan height button lain
+      min-width: 40px;
+      height: 40px;
 
       span {
         line-height: 1;
@@ -29,9 +29,11 @@
     li {
       float: left;
       margin-right: 10px;
+      margin-bottom: 10px; // Tambahkan spacing vertikal untuk wrap
 
       @include media-query(767px) {
         margin-right: 5px;
+        margin-bottom: 8px; // Spacing vertikal untuk mobile
       }
     }
 
@@ -77,6 +79,7 @@
 .pagination-wrapper-left {
   text-align: left;
 }
+
 .pagination-wrapper-center {
   text-align: center;
 }

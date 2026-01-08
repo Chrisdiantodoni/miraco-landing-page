@@ -235,7 +235,10 @@ export default function Header(props: {
                   </div>
                 </div>
               </div>
-              <div className="d-flex align-items-center pe-3">
+              <div
+                className="d-flex align-items-center pe-3"
+                style={{ zIndex: 100 }}
+              >
                 {/* Search Button (Selalu Tampilkan, Sembunyikan di Desktop karena sudah ada di #navbar) */}
                 <div className="header-search-form-wrapper d-lg-none">
                   <div className="cart-search-contact">

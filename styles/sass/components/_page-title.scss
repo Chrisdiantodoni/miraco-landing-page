@@ -479,6 +479,339 @@
 //   }
 // }
 
+// .wpo-page-title {
+//   position: relative;
+//   display: flex;
+//   justify-content: center;
+//   flex-direction: column;
+//   z-index: 1;
+//   overflow: hidden;
+//   background: #ffffff;
+//   padding-top: 40px;
+//   padding-bottom: 40px;
+
+//   @media (max-width: 767px) {
+//     padding-top: 30px;
+//     padding-bottom: 30px;
+//   }
+
+//   @media (max-width: 575px) {
+//     padding-top: 15px;
+//     padding-bottom: 15px;
+//   }
+
+//   .wpo-breadcumb-wrap {
+//     text-align: center;
+//     position: relative;
+//     z-index: 1;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     width: 100%;
+//     h2,
+//     ol {
+//       width: 100%; // Pastikan full width
+//       text-align: center; // Pastikan center
+//       // margin-top: 10px;
+//       margin-bottom: 10px;
+//     }
+//     p {
+//       margin-left: auto; // Tambahkan ini untuk semua elemen
+//       margin-right: auto;
+//       text-align: center; // Tambahkan ini
+//       width: 100%; // Tambahkan ini
+//     }
+//     h2 {
+//       font-size: 100px;
+//       font-weight: 300;
+//       line-height: 1.2;
+//       margin-bottom: 0;
+//       color: #1a1a1a;
+//       position: relative;
+//       letter-spacing: -3px;
+//       display: block; // Ubah dari inline-block ke block
+//       animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+//       // font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+//       font-family: $heading-font;
+
+//       @keyframes fadeInUp {
+//         from {
+//           opacity: 0;
+//           transform: translateY(30px);
+//         }
+//         to {
+//           opacity: 1;
+//           transform: translateY(0);
+//         }
+//       }
+
+//       @keyframes expandWidth {
+//         from {
+//           transform: scaleX(0);
+//         }
+//         to {
+//           transform: scaleX(1);
+//         }
+//       }
+
+//       @media (max-width: 1399px) {
+//         font-size: 85px;
+//         letter-spacing: -2px;
+//       }
+
+//       @media (max-width: 1199px) {
+//         font-size: 70px;
+//         letter-spacing: -2px;
+//       }
+
+//       @media (max-width: 991px) {
+//         font-size: 60px;
+//         letter-spacing: -1.5px;
+//       }
+
+//       @media (max-width: 767px) {
+//         font-size: 40px;
+//         letter-spacing: -1px;
+//       }
+
+//       @media (max-width: 575px) {
+//         font-size: 32px;
+//         letter-spacing: -0.5px;
+//       }
+//     }
+
+//     p {
+//       color: #666;
+//       font-size: 18px;
+//       font-weight: 300;
+//       line-height: 1.8;
+//       margin: 0;
+//       margin-top: 40px;
+//       padding-bottom: 0;
+//       letter-spacing: 0.5px;
+//       max-width: 600px;
+//       margin-left: auto;
+//       margin-right: auto;
+//       animation: fadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+
+//       @keyframes fadeIn {
+//         from {
+//           opacity: 0;
+//         }
+//         to {
+//           opacity: 1;
+//         }
+//       }
+
+//       @media (max-width: 991px) {
+//         font-size: 16px;
+//         margin-top: 30px;
+//       }
+
+//       @media (max-width: 757px) {
+//         font-size: 15px;
+//         line-height: 1.7;
+//         margin-top: 25px;
+//       }
+//     }
+
+//     ol {
+//       padding-left: 0;
+//       margin-top: 10px;
+//       display: flex; // Ubah dari inline-block ke flex
+//       justify-content: center; // Center the items
+//       align-items: center; // Vertical alignment
+//       // margin-bottom: 35px;
+//       border: none;
+//       border-radius: 0;
+//       background: transparent;
+//       padding: 0;
+//       // display: inline-block;
+//       animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+
+//       @media (max-width: 767px) {
+//         margin-bottom: 25px;
+//       }
+
+//       li {
+//         display: inline-block;
+//         padding: 0;
+//         margin: 0 10px;
+//         color: #999;
+//         position: relative;
+//         // font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+//         font-family: $heading-font;
+//         font-size: 13px;
+//         font-weight: 400;
+//         line-height: 1;
+//         text-transform: uppercase;
+//         letter-spacing: 2px;
+//         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+//         &:last-child {
+//           color: #1a1a1a;
+//           font-weight: 500;
+//         }
+
+//         &:first-child {
+//           margin-left: 0;
+//         }
+
+//         @media (max-width: 767px) {
+//           font-size: 11px;
+//           letter-spacing: 1.5px;
+//           margin: 0 6px;
+//         }
+
+//         &:after {
+//           content: "·";
+//           position: absolute;
+//           right: -10px;
+//           top: 50%;
+//           transform: translateY(-50%);
+//           color: #ddd;
+//           font-size: 16px;
+//           line-height: 1;
+
+//           @media (max-width: 767px) {
+//             right: -8px;
+//           }
+//         }
+
+//         &:last-child {
+//           &:after {
+//             display: none;
+//           }
+//         }
+
+//         a {
+//           color: #999;
+//           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+//           font-size: 13px;
+//           font-weight: 400;
+//           text-decoration: none;
+//           position: relative;
+
+//           @media (max-width: 767px) {
+//             font-size: 11px;
+//           }
+
+//           &:hover {
+//             color: #1a1a1a;
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   // Minimal decorative dot
+//   .minimal-dot {
+//     position: absolute;
+//     width: 4px;
+//     height: 4px;
+//     background: #1a1a1a;
+//     border-radius: 50%;
+//     opacity: 0.2;
+//     animation: dotFloat 8s ease-in-out infinite;
+
+//     &:nth-child(1) {
+//       top: 20%;
+//       left: 10%;
+//       animation-delay: 0s;
+//     }
+
+//     &:nth-child(2) {
+//       top: 60%;
+//       right: 15%;
+//       animation-delay: -4s;
+//     }
+
+//     &:nth-child(3) {
+//       bottom: 30%;
+//       left: 20%;
+//       animation-delay: -2s;
+//     }
+
+//     @media (max-width: 767px) {
+//       display: none;
+//     }
+//   }
+
+//   @keyframes dotFloat {
+//     0%,
+//     100% {
+//       transform: translateY(0px);
+//       opacity: 0.2;
+//     }
+//     50% {
+//       transform: translateY(-15px);
+//       opacity: 0.4;
+//     }
+//   }
+
+//   // Top line dengan jarak dari konten
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     height: 1px;
+//     // background: linear-gradient(
+//     //   90deg,
+//     //   transparent 0%,
+//     //   rgba(0, 0, 0, 0.05) 50%,
+//     //   transparent 100%
+//     // );
+//     background: linear-gradient(
+//       90deg,
+//       transparent 0%,
+//       #1a1a1a 50%,
+//       transparent 100%
+//     );
+//     z-index: 0;
+//   }
+
+//   // Bottom line dengan jarak dari konten
+//   &::after {
+//     content: "";
+//     position: absolute;
+//     bottom: 0;
+//     left: 0;
+//     right: 0;
+//     height: 1px;
+//     background: linear-gradient(
+//       90deg,
+//       transparent 0%,
+//       #1a1a1a 50%,
+//       transparent 100%
+//     );
+//     z-index: 0;
+//   }
+
+//   // Modifier class untuk hide top line
+//   &.no-top-line {
+//     &::before {
+//       display: none;
+//     }
+//   }
+
+//   // Modifier class untuk hide bottom line
+//   &.no-bottom-line {
+//     &::after {
+//       display: none;
+//     }
+//   }
+
+//   // Modifier class untuk hide both lines
+//   &.no-lines {
+//     &::before,
+//     &::after {
+//       display: none;
+//     }
+//   }
+// }
+
 .wpo-page-title {
   position: relative;
   display: flex;
@@ -508,15 +841,21 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+
     h2,
     ol {
-      // margin-top: 10px;
       margin-bottom: 10px;
+      width: 100%; // Pastikan full width
+      text-align: center; // Pastikan center
     }
+
     p {
-      margin-left: auto; // Tambahkan ini untuk semua elemen
+      margin-left: auto;
       margin-right: auto;
+      text-align: center; // Tambahkan ini
+      width: 100%; // Tambahkan ini
     }
+
     h2 {
       font-size: 100px;
       font-weight: 300;
@@ -524,10 +863,9 @@
       margin-bottom: 0;
       color: #1a1a1a;
       position: relative;
-      display: inline-block;
+      display: block; // Ubah dari inline-block ke block
       letter-spacing: -3px;
       animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-      // font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-family: $heading-font;
 
       @keyframes fadeInUp {
@@ -614,12 +952,13 @@
     ol {
       padding-left: 0;
       margin-top: 10px;
-      // margin-bottom: 35px;
       border: none;
       border-radius: 0;
       background: transparent;
       padding: 0;
-      display: inline-block;
+      display: flex; // Ubah dari inline-block ke flex
+      justify-content: center; // Center the items
+      align-items: center; // Vertical alignment
       animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
 
       @media (max-width: 767px) {
@@ -629,10 +968,10 @@
       li {
         display: inline-block;
         padding: 0;
-        margin: 0 10px;
+        margin: 0;
+        margin-right: 10px;
         color: #999;
         position: relative;
-        // font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         font-family: $heading-font;
         font-size: 13px;
         font-weight: 400;
@@ -644,16 +983,13 @@
         &:last-child {
           color: #1a1a1a;
           font-weight: 500;
-        }
-
-        &:first-child {
-          margin-left: 0;
+          margin-right: 0;
         }
 
         @media (max-width: 767px) {
           font-size: 11px;
           letter-spacing: 1.5px;
-          margin: 0 6px;
+          margin-right: 6px;
         }
 
         &:after {
@@ -697,7 +1033,6 @@
     }
   }
 
-  // Minimal decorative dot
   .minimal-dot {
     position: absolute;
     width: 4px;
@@ -742,7 +1077,6 @@
     }
   }
 
-  // Top line dengan jarak dari konten
   &::before {
     content: "";
     position: absolute;
@@ -750,12 +1084,6 @@
     left: 0;
     right: 0;
     height: 1px;
-    // background: linear-gradient(
-    //   90deg,
-    //   transparent 0%,
-    //   rgba(0, 0, 0, 0.05) 50%,
-    //   transparent 100%
-    // );
     background: linear-gradient(
       90deg,
       transparent 0%,
@@ -765,7 +1093,6 @@
     z-index: 0;
   }
 
-  // Bottom line dengan jarak dari konten
   &::after {
     content: "";
     position: absolute;
@@ -782,21 +1109,18 @@
     z-index: 0;
   }
 
-  // Modifier class untuk hide top line
   &.no-top-line {
     &::before {
       display: none;
     }
   }
 
-  // Modifier class untuk hide bottom line
   &.no-bottom-line {
     &::after {
       display: none;
     }
   }
 
-  // Modifier class untuk hide both lines
   &.no-lines {
     &::before,
     &::after {

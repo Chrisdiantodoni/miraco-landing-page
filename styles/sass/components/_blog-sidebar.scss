@@ -595,8 +595,8 @@ $dark-soft-grey: #555555; // Warna soft untuk judul
     margin: 0;
 
     .filter-item {
-      padding: 0px 16px !important;
-      min-height: 28px !important; // Kurangi dari 40px ke 28px
+      padding: 0px 8px !important;
+      min-height: 16px !important; // Kurangi dari 40px ke 28px
       &:first-child {
         margin-top: 10px;
       }

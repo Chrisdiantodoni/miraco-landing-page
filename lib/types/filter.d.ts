@@ -41,7 +41,7 @@ export interface ActiveFilters {
 export interface SidebarFilterProps {
   onFilterChange?: (filters: ActiveFilters) => void;
   initialFilters: ActiveFilters;
-  collection_id: string;
+  collection_name: string;
   sidebar_data: {
     types: Type[];
     finishing: Finishing[];

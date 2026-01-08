@@ -84,7 +84,7 @@ const MonokromCheckbox: React.FC<React.ComponentProps<typeof Checkbox>> = (
   <Checkbox
     {...props}
     className="monokrom-checkbox"
-    sx={{ color: $black, "&.Mui-checked": { color: $black } }}
+    sx={{ color: $black, "&.Mui-checked": { color: $black }, padding: "6px" }}
   />
 );
 
@@ -138,7 +138,7 @@ const FilterBlock: React.FC<
         className="widget-header"
       >
         <Typography variant="h3" component="h3" className="filter-title">
-          {title} {data.length > 7 && `(${data.length})`}
+          {title}
         </Typography>
       </AccordionSummary>
 
@@ -297,8 +297,8 @@ const ExtendedFilterBlock: React.FC<{
                   key={slug}
                   className="filter-item"
                   sx={{
-                    padding: "4px 16px",
-                    minHeight: "40px",
+                    padding: "0px 16px",
+                    minHeight: "28px",
                   }}
                 >
                   <FormControlLabel
@@ -327,8 +327,8 @@ const ExtendedFilterBlock: React.FC<{
                   key={option.key as string}
                   className="filter-item"
                   sx={{
-                    padding: "4px 16px",
-                    minHeight: "40px",
+                    padding: "0px 16px",
+                    minHeight: "28px",
                   }}
                 >
                   <FormControlLabel
@@ -359,7 +359,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
   onFilterChange,
   initialFilters,
   sidebar_data,
-  collection_id,
+  collection_name,
 }) => {
   const settings = useSiteSettings();
   const categories =
@@ -377,17 +377,21 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     thicknesses: true,
   });
 
+  const collection = settings?.collections?.find(
+    (find) => find?.collection_name?.toLowerCase() == collection_name
+  )?.id as string | number;
+
   const allTypes = useMemo(() => {
     return sidebar_data?.types?.filter(
-      (filter) => filter?.collection_id == collection_id
+      (filter) => filter?.collection_id == collection
     );
-  }, [sidebar_data, collection_id]);
+  }, [sidebar_data, collection]);
 
   const allFinishing = useMemo(() => {
     return sidebar_data?.finishing?.filter(
-      (filter) => filter?.collection_id == collection_id
+      (filter) => filter?.collection_id == collection
     );
-  }, [sidebar_data, collection_id]);
+  }, [sidebar_data, collection]);
 
   const sizes = sidebar_data?.sizes;
   const thicknesses = sidebar_data?.thicknesses;

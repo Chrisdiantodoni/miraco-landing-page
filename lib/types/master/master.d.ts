@@ -1,7 +1,9 @@
+import { Collection } from "@/lib/types/settings";
 export interface Type {
   id: number;
   type_name: string;
   collection_id: string;
+  collection: Collection;
 }
 
 export interface Thickness {
@@ -21,10 +23,12 @@ export interface Design {
   id: number;
   design_name: string;
   collection_id: string;
+  collection: Collection;
 }
 
 export interface Finishing {
   id: string | number;
   finishing_name: string;
   collection_id: string;
+  collection: Collection;
 }
