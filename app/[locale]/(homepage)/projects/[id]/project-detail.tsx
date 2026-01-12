@@ -6,6 +6,7 @@ import { Project } from "@/lib/types";
 import { getProductFormattedCode } from "@/lib/util";
 import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import miraedge from "@/public/images/miraco/miraedge/miraedge.png";
+import { useTranslations } from "next-intl";
 
 interface ProjectDetailProps {
   project: Project;
@@ -52,6 +53,9 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
       prev === allImages.length - 1 ? 0 : prev + 1
     );
   };
+
+  const t = useTranslations("request");
+  const tbackTo = useTranslations("");
 
   const renderLinkOrText = (text: string, link: string | null) => {
     if (link && link !== "#") {
@@ -140,7 +144,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
           )}
           <div className="project-back-btn">
             <Link href={`/projects`} prefetch>
-              Back to Projects
+              {tbackTo("button_back_to")} {t("label_project")}
             </Link>
           </div>
           {/* Caption */}
@@ -148,7 +152,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
           {/* Project Info - Center Aligned */}
           <div className="project-info">
             <div className="info-item">
-              <span className="info-label">Project</span>
+              <span className="info-label">{t("label_project")}</span>
               <span className="info-value">{project?.project_name}</span>
             </div>
             {project?.caption && (
@@ -160,7 +164,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
 
             {project?.project_type?.project_type && (
               <div className="info-item">
-                <span className="info-label">Type</span>
+                <span className="info-label">{t("label_type")}</span>
                 <span className="info-value">
                   {project.project_type.project_type}
                 </span>
@@ -168,7 +172,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
             )}
 
             <div className="info-item">
-              <span className="info-label">Location</span>
+              <span className="info-label">{t("label_location")}</span>
               <span className="info-value">{project?.country}</span>
             </div>
           </div>
@@ -178,7 +182,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
             <div className="credits-section">
               {project?.designed_by && (
                 <div className="credit-item">
-                  <span className="credit-label">Designed By</span>
+                  <span className="credit-label">{t("label_designed_by")}</span>
                   <span className="credit-value">
                     {renderLinkOrText(
                       project.designed_by,
@@ -194,7 +198,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
 
               {project?.photos_by && (
                 <div className="credit-item">
-                  <span className="credit-label">Photos By</span>
+                  <span className="credit-label">{t("label_photos_by")}</span>
                   <span className="credit-value">
                     {renderLinkOrText(
                       project.photos_by,
@@ -213,10 +217,8 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
         project.featured_project_products.length > 0 && (
           <section className="products-section">
             <div className="max-width-container">
-              <h2 className="section-title">Featured Products</h2>
-              <p className="section-subtitle">
-                Products and materials used in this project
-              </p>
+              <h2 className="section-title">{t("label_featured_products")}</h2>
+              <p className="section-subtitle">{t("label_products_used")}</p>
 
               <div className="products-grid">
                 {project.featured_project_products.map((featured) => {

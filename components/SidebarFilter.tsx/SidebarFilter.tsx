@@ -25,6 +25,7 @@ import type {
   Category,
 } from "@/lib/types/filter";
 import { Type, Finishing, Size, Thickness } from "@/lib/types/master/master.d";
+import { useTranslations } from "next-intl";
 
 // --- Color Variables ---
 const $black = "#000000";
@@ -378,8 +379,11 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
   });
 
   const collection = settings?.collections?.find(
-    (find) => find?.collection_name?.toLowerCase() == collection_name
+    (find) =>
+      find?.collection_name?.toLowerCase() ==
+      decodeURIComponent(collection_name)
   )?.id as string | number;
+  console.log({ collection_name });
 
   const allTypes = useMemo(() => {
     return sidebar_data?.types?.filter(
@@ -407,6 +411,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     thicknesses: initialFilters?.thicknesses || [],
     sizes: initialFilters?.sizes || [],
   });
+  console.log(draftFilters.types, "mobile");
 
   const toggleExpand = useCallback((section: string) => {
     setExpandedSections((prev) => ({
@@ -490,12 +495,14 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
     }
   };
 
+  const t = useTranslations("collections");
+
   return (
     <div className="blog-sidebar">
       {/* Reset Button at Top */}
       <div className="filter-reset-top">
         <p className="active-filter-count" style={{ fontWeight: "normal" }}>
-          {activeFilterCount} Active Filters
+          {activeFilterCount} {t("active_filters")}
         </p>
         <Button
           onClick={resetFilters}
@@ -521,13 +528,13 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
           }}
         >
           <X size={14} style={{ marginRight: 4 }} />
-          Clear All
+          {t("clear_all")}
         </Button>
       </div>
 
       {/* Filter Blocks */}
       <FilterBlock
-        title="Type"
+        title={t("label_type")}
         data={allTypes}
         filterType="types"
         activeFilters={draftFilters}
@@ -537,7 +544,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
       />
 
       <FilterBlock
-        title="Finishing"
+        title={t("label_finish")}
         data={allFinishing}
         filterType="finishing"
         activeFilters={draftFilters}
@@ -548,7 +555,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
       {/* Features dengan Boolean Options */}
       <ExtendedFilterBlock
-        title="Features"
+        title={t("label_features")}
         data={categories}
         filterType="features"
         activeFilters={draftFilters}
@@ -564,18 +571,18 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
 
       {/* Complementary dengan Boolean Option */}
       <ExtendedFilterBlock
-        title="Complementary"
+        title={t("label_complementary")}
         data={[]} // Kosongkan jika tidak ada data array
         filterType="complementary"
         activeFilters={draftFilters}
         expanded={expandedSections.complementary}
         onToggleExpanded={() => toggleExpand("complementary")}
         handleCheckboxChange={handleCheckboxChange}
-        booleanOptions={[{ key: "is_miraedge", label: "Mira Edge" }]}
+        booleanOptions={[{ key: "is_miraedge", label: "MiraEDGE" }]}
         onBooleanChange={handleBooleanChange}
       />
       <FilterBlock
-        title="Size"
+        title={t("label_size")}
         data={sizes}
         filterType="sizes"
         activeFilters={draftFilters}
@@ -584,7 +591,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
         handleCheckboxChange={handleCheckboxChange}
       />
       <FilterBlock
-        title="Thickness"
+        title={t("label_thickness")}
         data={thicknesses}
         filterType="thicknesses"
         activeFilters={draftFilters}

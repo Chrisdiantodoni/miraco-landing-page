@@ -171,7 +171,7 @@ const Footer = (props: { logo: string }) => {
             >
               <div className="widget certification-widget">
                 <div className="widget-title">
-                  <h3>Certification</h3>
+                  <h3>{t("certification")}</h3>
                 </div>
                 <div className="certification-grid">
                   {certificates.map((cert) => (

@@ -26,6 +26,7 @@ import type {
   Category,
 } from "@/lib/types/filter";
 import { Type, Finishing, Size, Thickness } from "@/lib/types/master/master.d";
+import { useTranslations } from "next-intl";
 // --- Color Variables ---
 const $black = "#000000";
 
@@ -494,7 +495,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
   const categories =
     settings?.categories?.filter((filter) => filter?.category_name == "CORE") ||
     [];
-
+  const t = useTranslations("collections");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -536,6 +537,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
     thicknesses: initialFilters?.thicknesses || [],
     sizes: initialFilters?.sizes || [],
   });
+  console.log(draftFilters?.types, "mobile");
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
   };
@@ -656,7 +658,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
           },
         }}
       >
-        Filters {hasActiveFilters && `(${activeFilterCount})`}
+        {t("button_filter")} {hasActiveFilters && `(${activeFilterCount})`}
       </Button>
 
       {/* Drawer */}
@@ -715,7 +717,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
               }}
             >
               <Typography sx={{ fontWeight: "bold", fontSize: "0.9rem" }}>
-                {activeFilterCount} Active Filters
+                {activeFilterCount} {t("active_filters")}
               </Typography>
               <Button
                 onClick={resetFilters}
@@ -741,12 +743,12 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
                 }}
               >
                 <X size={14} style={{ marginRight: 4 }} />
-                Clear All
+                {t("clear_all")}
               </Button>
             </Box>
 
             <FilterBlock
-              title="Type"
+              title={t("label_type")}
               data={allTypes}
               filterType="types"
               activeFilters={draftFilters}
@@ -756,7 +758,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
             />
 
             <FilterBlock
-              title="Finishing"
+              title={t("label_finish")}
               data={allFinishing}
               filterType="finishing"
               activeFilters={draftFilters}
@@ -767,7 +769,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
 
             {/* Features dengan Boolean Options */}
             <ExtendedFilterBlock
-              title="Features"
+              title={t("label_features")}
               data={categories}
               filterType="features"
               activeFilters={draftFilters}
@@ -783,18 +785,18 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
 
             {/* Complementary dengan Boolean Option */}
             <ExtendedFilterBlock
-              title="Complementary"
+              title={t("label_complementary")}
               data={[]} // Kosongkan jika tidak ada data array
               filterType="complementary"
               activeFilters={draftFilters}
               expanded={expandedSections.complementary}
               onToggleExpanded={() => toggleExpand("complementary")}
               handleCheckboxChange={handleCheckboxChange}
-              booleanOptions={[{ key: "is_miraedge", label: "Mira Edge" }]}
+              booleanOptions={[{ key: "is_miraedge", label: "MiraEDGE" }]}
               onBooleanChange={handleBooleanChange}
             />
             <FilterBlock
-              title="Size"
+              title={t("label_size")}
               data={sizes}
               filterType="sizes"
               activeFilters={draftFilters}
@@ -803,7 +805,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
               handleCheckboxChange={handleCheckboxChange}
             />
             <FilterBlock
-              title="Thickness"
+              title={t("label_thickness")}
               data={thicknesses}
               filterType="thicknesses"
               activeFilters={draftFilters}

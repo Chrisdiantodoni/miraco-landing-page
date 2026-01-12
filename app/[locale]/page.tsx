@@ -11,14 +11,15 @@ import ProjectSection from "@/components/Projects/ProjectSection";
 import { getHome } from "@/lib/api/queries/home";
 import { getLocale } from "next-intl/server";
 
-export const delay = (ms: number): Promise<void> => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
+// export const delay = (ms: number): Promise<void> => {
+//   return new Promise((resolve) => setTimeout(resolve, ms));
+// };
 
 export default async function Index() {
   const locale = await getLocale();
   // await delay(2000);
   const { data } = await getHome({ locale });
+
   return (
     <Fragment>
       <Hero6 hero={data?.hero} />
@@ -26,15 +27,17 @@ export default async function Index() {
         <ServiceSectionS6 hclass={"wpo-service-section-s6"} />
         {/* <PartnerSection hclass={"wpo-partners-section fade_bottom"} /> */}
         <PageTitle
-          pageTitle="Collections"
-          pagesub="Here is Our Collection"
+          translations="home"
+          translation_text="collection_heading"
+          translation_sub_text="collection_sub_heading"
           // paddingTop={0}
         />
         <CollectionSections />
 
         <PageTitle
-          pageTitle="Projects"
-          pagesub="See Our Projects"
+          translations="home"
+          translation_text="project_heading"
+          translation_sub_text="project_sub_heading"
           marginTop={100}
           // paddingTop={100}
         />

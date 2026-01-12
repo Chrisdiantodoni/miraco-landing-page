@@ -19,6 +19,8 @@ import { getProducts } from "@/lib/api/queries/product";
 import { getProductFormattedCode } from "@/lib/util";
 import MobileSidebar from "../MobileMenu/filter-menu";
 import { normalizeQueryParams } from "../../lib/util";
+import { useTranslations } from "next-intl";
+import image from "@/public/images/miraco/logo/logo-miraco.png";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
@@ -155,7 +157,12 @@ const CollectionProducts = ({
       return param
         .split(",")
         .map((id) => id.trim())
-        .filter(Boolean);
+        .filter(Boolean)
+        .map((id) => {
+          // Coba konversi ke number, jika gagal tetap string
+          const numId = Number(id);
+          return isNaN(numId) ? id : numId;
+        });
     };
 
     const parseBooleanParam = (param: string | null): boolean => {
@@ -241,6 +248,8 @@ const CollectionProducts = ({
     });
   }, [searchParams, queryParamsForApi, initialFilters]);
 
+  const t = useTranslations("collections");
+
   if (isError) {
     return (
       <section className="section-padding pt-4">
@@ -282,14 +291,20 @@ const CollectionProducts = ({
                 <SearchInput
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  placeholder="Search Here..."
+                  placeholder={t("button_search")}
                 />
               </div>
             </div>
 
             <div className="row g-5">
               {isFetching ? (
-                <Loading size="small" />
+                <Loading
+                  size="medium"
+                  // fullScreen={true}
+                  text="Loading..."
+                  image={image}
+                  imageSize={100}
+                />
               ) : products.length > 0 ? (
                 products.map((product, index) => {
                   const productImage = product?.media?.find(

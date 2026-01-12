@@ -10,8 +10,9 @@ export default async function LocationPage() {
       <section className="wpo-location-section">
         <div className="container">
           <PageTitle
-            pageTitle="Locate Us"
-            pagesub="Visit us at our offices around Indonesia"
+            translation_text="locate_us_heading"
+            translation_sub_text="locate_us_sub_heading"
+            translations="location"
             showTopLine={false}
             paddingTop={50}
           />

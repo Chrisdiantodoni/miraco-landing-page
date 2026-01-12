@@ -21,6 +21,7 @@ import image from "@/public/images/miraco/logo/logo-miraco.png";
 import { useEffect } from "react";
 import { getProductFormattedCode } from "@/lib/util";
 import createStore from "../../context/index";
+import { useTranslations } from "next-intl";
 
 export const SearchDrawerContent: React.FC<{
   onSearch: (value: any) => void;
@@ -76,6 +77,8 @@ export const SearchDrawerContent: React.FC<{
     handle!("isOpenDrawer", false);
   };
 
+  const t = useTranslations("collections");
+
   return (
     <div className={styles.container}>
       {/* Search Bar */}
@@ -83,7 +86,7 @@ export const SearchDrawerContent: React.FC<{
         <SearchInput
           value={searchTerm}
           onChange={handleSearchChange}
-          placeholder="Search Here..."
+          placeholder={t("button_search")}
         />
 
         <div className="row g-5 mt-2">
@@ -91,7 +94,7 @@ export const SearchDrawerContent: React.FC<{
             <Loading
               size="medium"
               // fullScreen={true}
-              text="Memuat..."
+              text="Loading..."
               image={image}
               imageSize={100}
             />
