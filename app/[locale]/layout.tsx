@@ -64,7 +64,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html
-      suppressHydrationWarning
+      // suppressHydrationWarning
       lang={locale}
       translate="no"
       className="notranslate"
