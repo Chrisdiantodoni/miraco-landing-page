@@ -16,7 +16,7 @@ export default function NotFound() {
       <body>
         {/* <Error statusCode={404} /> */}
         <section className="error-404-section section-padding pt-0">
-          <PageTitle pageTitle={""} pagesub={"Contact Us"} />
+          {/* <PageTitle pageTitle={"Error"} pagesub={"Error 404"} /> */}
           <div className="container">
             <div className="row">
               <div className="col col-xs-12">
