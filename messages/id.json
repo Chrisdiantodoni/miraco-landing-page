@@ -56,7 +56,8 @@
     "label_size": "Ukuran",
     "label_thickness": "Ketebalan",
     "label_features": "Fitur",
-    "label_complementary": "Komplementer"
+    "label_complementary": "Komplementer",
+    "button_filter": "Filter"
   },
   "Footer": {
     "quick_link": "Tautan Cepat",

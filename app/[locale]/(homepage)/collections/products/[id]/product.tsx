@@ -35,33 +35,39 @@ interface productDetailProps {
 }
 
 const Product = ({ data }: productDetailProps) => {
-  const features = [
+  const allFeatures = [
     {
       id: 1,
+      key: "is_anti_fingerprint", // Sesuaikan dengan field di backend
       image: "/images/features/anti-fingerprint-1.png",
       name: "Anti Fingerprint",
     },
     {
       id: 2,
+      key: "is_soft_touch", // Sesuaikan dengan field di backend
       image: "/images/features/soft-touch-2.png",
       name: "Soft Touch",
     },
     {
       id: 3,
+      key: "is_high_moisture", // Sesuaikan dengan field di backend
       image: "/images/features/high-moisture-3.png",
       name: "High Moisture",
     },
     {
       id: 4,
+      key: "is_low_reflective", // Sesuaikan dengan field di backend
       image: "/images/features/low-reflective-4.png",
       name: "Low Reflective",
     },
     {
       id: 5,
+      key: "is_anti_bacteria", // Sesuaikan dengan field di backend
       image: "/images/features/anti-bacteria-5.png",
       name: "Anti Bacteria",
     },
   ];
+
   const t = useTranslations("collections");
   const tbackTo = useTranslations();
 
@@ -244,6 +250,25 @@ Terima kasih.`;
   const hasMultipleProducts = allPillProducts.length > 1;
   const locale = useLocale();
 
+  const getActiveFeatures = () => {
+    if (!activeProduct) return [];
+
+    // Jika type = "mira", tampilkan SEMUA features
+    const isMira = activeProduct?.type?.type_name?.toLowerCase() === "mira";
+
+    if (isMira) {
+      return allFeatures; // Return semua tanpa filter
+    }
+
+    // Kalau bukan mira, filter berdasarkan field is_*
+    return allFeatures.filter((feature) => {
+      const value = (activeProduct as any)[feature.key];
+      return value === true || value === 1 || value === "1";
+    });
+  };
+
+  const activeFeatures = getActiveFeatures();
+
   const getLink = () => {
     switch (locale) {
       case "en":
@@ -387,30 +412,33 @@ Terima kasih.`;
               <div>{t("label_thickness")}</div>
               <div>{activeProduct?.thickness?.thickness}</div>
             </div>
-            {activeProduct?.type?.type_name?.toLowerCase() == "mira" && (
-              <div className="product-features-grid">
-                {features.map((cert) => (
-                  <div key={cert.id} className="product-features-item">
-                    <div className="product-features-logo-wrapper">
-                      <Image
-                        src={cert.image}
-                        alt={cert.name}
-                        width={32}
-                        height={32}
-                        className="product-features-logo"
-                      />
-                    </div>
-                    <span className="product-features-name">{cert.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+
             {activeProduct?.miraedge_detail ? (
               <div className="product-spec-row">
                 <div>MiraEDGE</div>
                 <div>{activeProduct?.miraedge_detail}</div>
               </div>
             ) : null}
+            {activeFeatures.length > 0 && (
+              <div className="product-features-grid">
+                {activeFeatures.map((feature) => (
+                  <div key={feature.id} className="product-features-item">
+                    <div className="product-features-logo-wrapper">
+                      <Image
+                        src={feature.image}
+                        alt={feature.name}
+                        width={32}
+                        height={32}
+                        className="product-features-logo"
+                      />
+                    </div>
+                    <span className="product-features-name">
+                      {feature.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             {/* <div className="d-flex gx-2">
                 <Check className="text-success me-2" />
                 <div>MiraEdge</div>

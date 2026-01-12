@@ -56,7 +56,8 @@
     "label_size": "尺寸",
     "label_thickness": "厚度",
     "label_features": "产品特点",
-    "label_complementary": "配套产品"
+    "label_complementary": "配套产品",
+    "button_filter": "筛选"
   },
 
   "Footer": {

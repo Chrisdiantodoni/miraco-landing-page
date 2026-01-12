@@ -8,7 +8,8 @@ const Loading = ({
   text = "",
   image = null,
   imageSize = 60,
-}) => {
+}: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+any) => {
   const sizeClass = `loading-spinner--${size}`;
 
   if (fullScreen) {

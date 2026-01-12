@@ -379,8 +379,11 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({
   });
 
   const collection = settings?.collections?.find(
-    (find) => find?.collection_name?.toLowerCase() == collection_name
+    (find) =>
+      find?.collection_name?.toLowerCase() ==
+      decodeURIComponent(collection_name)
   )?.id as string | number;
+  console.log({ collection_name });
 
   const allTypes = useMemo(() => {
     return sidebar_data?.types?.filter(

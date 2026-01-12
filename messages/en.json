@@ -47,7 +47,8 @@
     "label_size": "Size",
     "label_thickness": "Thickness",
     "label_features": "Features",
-    "label_complementary": "Complementary"
+    "label_complementary": "Complementary",
+    "button_filter": "Filters"
   },
   "Footer": {
     "quick_link": "Quick Link",

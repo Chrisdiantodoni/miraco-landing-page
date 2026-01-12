@@ -38,8 +38,6 @@ export default function Header(props: {
 
   const settings = useSiteSettings();
 
-  console.log(props.collections);
-
   const collectionItems = props?.collections?.map((item) => ({
     title: item?.collection_name,
     link: `/collections/${item?.collection_name?.toLowerCase()}`,

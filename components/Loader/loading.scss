@@ -43,7 +43,9 @@
 
 .logo-image {
   object-fit: contain;
-  animation: pulse 2s ease-in-out infinite;
+  width: auto;
+  height: auto;
+  // animation: pulse 2s ease-in-out infinite;
 }
 
 .loading-spinner {
