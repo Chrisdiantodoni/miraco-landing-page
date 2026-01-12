@@ -17,6 +17,9 @@ export interface SiteSettings {
 
 export interface Collection {
   id: number;
+  name_en: string;
+  name_zh: string;
+  name_id: string;
   collection_name: string;
   created_at: string;
   updated_at: string;

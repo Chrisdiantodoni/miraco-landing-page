@@ -1,4 +1,5 @@
 {
+  "button_back_to": "返回到",
   "header": {
     "menu": [
       {
@@ -42,13 +43,27 @@
   },
   "collections": {
     "collections_heading": "这是我们的系列：",
-    "disclaimer": "本网站所展示的 Miraco HPL 产品颜色可能因显示设备、屏幕设置及光线条件的不同而与实际产品存在差异。Miraco 已尽力准确呈现产品颜色。\n\n 为确保颜色的最佳一致性，建议在下单前联系 Miraco 以获取实物样品作为参考。"
+    "disclaimer": "本网站所展示的 Miraco HPL 产品颜色可能因显示设备、屏幕设置及光线条件的不同而与实际产品存在差异。Miraco 已尽力准确呈现产品颜色。\n\n 为确保颜色的最佳一致性，建议在下单前联系 Miraco 以获取实物样品作为参考。",
+    "active_filters": "已选筛选",
+    "clear_all": "全部清除",
+    "button_search": "在此搜索",
+    "button_order": "立即订购",
+    "button_download": "下载",
+    "label_design": "设计",
+    "label_woods": "木材",
+    "label_type": "类型",
+    "label_finish": "表面处理",
+    "label_size": "尺寸",
+    "label_thickness": "厚度",
+    "label_features": "产品特点",
+    "label_complementary": "配套产品"
   },
 
   "Footer": {
     "quick_link": "快速链接",
     "contact": "联系方式",
-    "content": "Miraco 提供高品质的高压装饰板（HPL），符合现代建筑设计标准。以精密工艺打造，为每一个空间带来卓越的耐用性、美观性与长期价值。"
+    "content": "Miraco 提供高品质的高压装饰板（HPL），符合现代建筑设计标准。以精密工艺打造，为每一个空间带来卓越的耐用性、美观性与长期价值。",
+    "certification": "资质认证"
   },
   "home": {
     "key_features": {
@@ -76,6 +91,55 @@
         "title": "MIRACORE",
         "description": "MIRACORE采用颜色匹配的芯材,消除深色接缝线,打造无缝、坚固且建筑精致的表面。"
       }
-    ]
+    ],
+    "collection_heading": "产品系列",
+    "collection_sub_heading": "这是我们的系列产品",
+    "project_heading": "项目案例",
+    "project_sub_heading": "查看我们的项目",
+    "button_all_projects": "查看所有项目"
+  },
+  "request": {
+    "request_heading": "向我们申请",
+    "request_sub_heading": "向我们提交您的需求",
+    "label_name": "姓名",
+    "placeholder_name": "请输入您的姓名",
+    "label_email": "电子邮箱",
+    "placeholder_email": "example@email.com",
+    "label_region": "地区",
+    "placeholder_region": "请选择您的地区",
+    "label_phone": "电话号码",
+    "placeholder_phone": "例如：+628123456789",
+    "label_instagram": "Instagram 账号",
+    "placeholder_instagram": "@您的用户名",
+    "label_company": "公司名称",
+    "placeholder_company": "您的公司名称",
+    "label_address": "地址",
+    "placeholder_address": "详细收货地址",
+    "label_product_request": "产品需求",
+    "placeholder_product_request": "您需要什么产品？",
+    "label_sample": "样品名称",
+    "placeholder_sample": "样品产品名称",
+    "label_select_product": "选择产品 (最多5个)",
+    "placeholder_select_product": "最多选择5件产品",
+    "label_project": "项目",
+    "placeholder_project": "请输入项目名称",
+    "label_type": "类型",
+    "placeholder_type": "请选择类型",
+    "label_description": "描述",
+    "placeholder_description": "请提供更多详情",
+    "label_location": "地点",
+    "placeholder_location": "城市或具体地点",
+    "label_photos_by": "摄影：",
+    "label_designed_by": "设计：",
+    "label_featured_products": "展示产品",
+    "label_products_used": "本项目使用的产品和材料",
+    "button_get_in_touch": "联系我们",
+    "status_sending": "发送中...",
+    "toast_success": "请求发送成功",
+    "toast_error": "发送请求失败"
+  },
+  "location": {
+    "locate_us_heading": "联系我们",
+    "locate_us_sub_heading": "莅临我们在印度尼西亚各地的办公室"
   }
 }

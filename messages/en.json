@@ -1,4 +1,5 @@
 {
+  "button_back_to": "Back to",
   "header": {
     "menu": [
       {
@@ -27,17 +28,32 @@
       }
     ]
   },
+
   "LocaleSwitcher": {
     "switchLocale": "Switch to {locale, select, id {Indonesia} en {English} other {China}}"
   },
   "collections": {
     "collections_heading": "Here is our Collection of ",
-    "disclaimer": "The colors of Miraco HPL products displayed on this website may differ from the actual products due to variations in display devices, screen settings, and lighting conditions. Miraco has made every effort to present colors as accurately as possible. \n\n To ensure optimal color accuracy, we recommend contacting Miraco to request a physical sample as a reference before placing an order."
+    "disclaimer": "The colors of Miraco HPL products displayed on this website may differ from the actual products due to variations in display devices, screen settings, and lighting conditions. Miraco has made every effort to present colors as accurately as possible. \n\n To ensure optimal color accuracy, we recommend contacting Miraco to request a physical sample as a reference before placing an order.",
+    "active_filters": "Active Filters",
+    "clear_all": "Clear All",
+    "button_search": "Search here",
+    "button_order": "Order",
+    "button_download": "Download",
+    "label_design": "Design",
+    "label_woods": "Woods",
+    "label_type": "Type",
+    "label_finish": "Finish",
+    "label_size": "Size",
+    "label_thickness": "Thickness",
+    "label_features": "Features",
+    "label_complementary": "Complementary"
   },
   "Footer": {
     "quick_link": "Quick Link",
     "contact": "Contact",
-    "content": "Miraco presents high-quality High Pressure Laminates crafted to meet modern architectural standards. Designed with precision to deliver durability, aesthetics, and long-term value in every space."
+    "content": "Miraco presents high-quality High Pressure Laminates crafted to meet modern architectural standards. Designed with precision to deliver durability, aesthetics, and long-term value in every space.",
+    "certification": "Certification"
   },
   "home": {
     "key_features": {
@@ -65,6 +81,55 @@
         "title": "MIRACORE",
         "description": "MIRACORE features a color-matched core that eliminates dark joint lines, creating a seamless, solid, and architecturally refined surface."
       }
-    ]
+    ],
+    "collection_heading": "Collections",
+    "collection_sub_heading": "Here is our collection",
+    "project_heading": "Projects",
+    "project_sub_heading": "See Our Projects",
+    "button_all_projects": "See All Projects"
+  },
+  "request": {
+    "request_heading": "Request From Us",
+    "request_sub_heading": "Request Something from Us",
+    "label_name": "Name",
+    "placeholder_name": "Enter your full name",
+    "label_email": "Email",
+    "placeholder_email": "example@email.com",
+    "label_region": "Region",
+    "placeholder_region": "Select your region",
+    "label_phone": "Phone Number",
+    "placeholder_phone": "e.g. +628123456789",
+    "label_instagram": "Instagram Account",
+    "placeholder_instagram": "@username",
+    "label_company": "Company Name",
+    "placeholder_company": "Your company name",
+    "label_address": "Address",
+    "placeholder_address": "Full shipping address",
+    "label_product_request": "Product Request",
+    "placeholder_product_request": "What product do you need?",
+    "label_sample": "Sample Product",
+    "placeholder_sample": "Name of sample product",
+    "label_select_product": "Select Product (Just 5 Maximum allowed)",
+    "placeholder_select_product": "Select up to 5 products",
+    "label_project": "Project",
+    "placeholder_project": "Enter project name",
+    "label_type": "Type",
+    "placeholder_type": "Select type",
+    "label_description": "Description",
+    "placeholder_description": "Provide more details",
+    "label_location": "Location",
+    "placeholder_location": "City or specific location",
+    "button_get_in_touch": "Get in Touch",
+    "status_sending": "Sending...",
+    "toast_success": "Successfully Sent Request",
+    "toast_error": "Failed to send request",
+    "label_photos_by": "Photos by",
+    "label_designed_by": "Designed by",
+    "label_featured_products": "Featured Products",
+    "label_products_used": "Products and materials used in this project"
+  },
+  "location": {
+    "locate_us_heading": "Locate Us",
+    "locate_us_sub_heading": "Visit us at our offices around Indonesia"
   }
 }

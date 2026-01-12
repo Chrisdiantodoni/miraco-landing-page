@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
+import { useTranslations } from "next-intl";
 
 const PageTitle = (props: {
   pagesub?: string;
-  pageTitle: string;
+  pageTitle?: string;
   showTopLine?: boolean;
   showBottomLine?: boolean;
   paddingTop?: number;
@@ -11,8 +12,11 @@ const PageTitle = (props: {
   className?: string;
   marginTop?: number;
   marginBottom?: number;
+  translations?: string;
+  translation_text?: string;
+  translation_sub_text?: string;
 }) => {
-  const decodedTitle = decodeURIComponent(props.pageTitle);
+  const decodedTitle = decodeURIComponent(props.pageTitle ?? "");
   const decodedPageSub = decodeURIComponent(props.pagesub ?? "");
   const showTopLine = props.showTopLine ?? true;
   const showBottomLine = props.showBottomLine ?? true;
@@ -45,6 +49,9 @@ const PageTitle = (props: {
     marginTop: marginTop !== undefined ? `${marginTop}px` : undefined,
     marginBottom: marginBottom !== undefined ? `${marginBottom}px` : undefined,
   };
+
+  const t = useTranslations(props.translations);
+
   return (
     <section className={`${containerClasses}`} style={containerStyle}>
       {/* Minimal floating dots */}
@@ -56,9 +63,15 @@ const PageTitle = (props: {
         <div className="row">
           <div className="col col-xs-12">
             <div className="wpo-breadcumb-wrap">
-              <h2 className="fade_bottom">{decodedTitle}</h2>
+              <h2 className="fade_bottom">
+                {decodedTitle ? decodedTitle : t(props.translation_text!)}
+              </h2>
               <ol>
-                <li>{decodedPageSub}</li>
+                <li>
+                  {decodedPageSub
+                    ? decodedPageSub
+                    : t(props.translation_sub_text!)}
+                </li>
               </ol>
             </div>
           </div>

@@ -26,6 +26,7 @@ import type {
   Category,
 } from "@/lib/types/filter";
 import { Type, Finishing, Size, Thickness } from "@/lib/types/master/master.d";
+import { useTranslations } from "next-intl";
 // --- Color Variables ---
 const $black = "#000000";
 
@@ -494,7 +495,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
   const categories =
     settings?.categories?.filter((filter) => filter?.category_name == "CORE") ||
     [];
-
+  const t = useTranslations("collections");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -536,6 +537,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
     thicknesses: initialFilters?.thicknesses || [],
     sizes: initialFilters?.sizes || [],
   });
+  console.log(draftFilters?.types, "mobile");
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
   };
@@ -790,7 +792,7 @@ const MobileSidebar: React.FC<SidebarFilterProps> = ({
               expanded={expandedSections.complementary}
               onToggleExpanded={() => toggleExpand("complementary")}
               handleCheckboxChange={handleCheckboxChange}
-              booleanOptions={[{ key: "is_miraedge", label: "Mira Edge" }]}
+              booleanOptions={[{ key: "is_miraedge", label: "MiraEDGE" }]}
               onBooleanChange={handleBooleanChange}
             />
             <FilterBlock

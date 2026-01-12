@@ -25,7 +25,13 @@ interface DataProductProps {
 }
 const MAX_PRODUCTS = 5;
 
-const SearchProduct = ({ hasError = false, onChange, value, field }: any) => {
+const SearchProduct = ({
+  hasError = false,
+  onChange,
+  value,
+  field,
+  placeholder,
+}: any) => {
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const debouncedSearchTerm = useDebounce(search, 500);
@@ -115,6 +121,7 @@ const SearchProduct = ({ hasError = false, onChange, value, field }: any) => {
       options={productOptions}
       styles={getSelectStyles(hasError)}
       menuPortalTarget={document.body}
+      placeholder={placeholder}
       //   isOptionDisabled={isOptionDisabled}
       classNamePrefix="custom-select"
     />

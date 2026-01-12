@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 interface ContactPageProps {
   data: RequestResponse;
 }
+import { useTranslations } from "next-intl";
 import SearchProduct from "../Input/SearchProduct";
 
 const DynamicClientSelect = dynamic(() => import("../Input/ClientSelect"), {
@@ -69,7 +70,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
       products: [],
     },
   });
-
+  const t = useTranslations("request");
   const productRequests = useWatch<any>({
     control,
     name: "product_requests",
@@ -121,7 +122,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
   // Helper untuk label dengan bintang merah
   const getLabel = (fieldName: string, labelText: string) => (
     <Label htmlFor={fieldName}>
-      {labelText}
+      {t(labelText)}
       {requiredFields.includes(fieldName) && (
         <span className="required-star">*</span>
       )}
@@ -138,12 +139,12 @@ const Contactpage = ({ data }: ContactPageProps) => {
     onSuccess: async ({ response, body }) => {
       if (response?.meta?.code == 200) {
         reset();
-        toast.success("Successfully Send Request");
+        toast.success(t("toast_success"));
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { region_id, ...payload } = body;
         // TIDAK menggunakan await, agar tugas ini berjalan di latar belakang
         sendFormSpree(payload).catch((err) => {
-          toast.error("Failed to send Gmail");
+          toast.error(t("toast_error"));
           console.error("Formspree failed:", err);
         });
       }
@@ -158,12 +159,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
       <div className="container">
         <div className="row">
           <div className="col col-lg-10 offset-lg-1">
-            {/* <div className="wpo-contact-title">
-              <h2>Request From Us</h2>
-              <p>
-                Tell us what you need, and our team will get in touch shortly.
-              </p>
-            </div> */}
             <div className="wpo-contact-form-area">
               {/* Menggunakan Form dari Reactstrap dan RHF handleSubmit */}
               <Form
@@ -172,7 +167,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
               >
                 {/* 1. Name (required|string) */}
                 <FormGroup>
-                  {getLabel("name", "Name")}
+                  {getLabel("name", "label_name")}
                   <Controller
                     name="name"
                     control={control}
@@ -182,7 +177,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         {...field}
                         type="text"
                         className="form-control"
-                        placeholder="Name"
+                        placeholder={t("placeholder_name")}
                         id="name"
                         invalid={!!errors.name} // Set invalid jika ada error
                       />
@@ -193,7 +188,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 2. Email (required|email) */}
                 <FormGroup>
-                  {getLabel("email", "Email")}
+                  {getLabel("email", "label_email")}
                   <Controller
                     name="email"
                     control={control}
@@ -209,7 +204,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         {...field}
                         type="email"
                         className="form-control"
-                        placeholder="Email"
+                        placeholder={t("placeholder_email")}
                         id="email"
                         invalid={!!errors.email}
                       />
@@ -220,7 +215,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 3. Region ID (required|string - SELECT) */}
                 <FormGroup>
-                  {getLabel("region_id", "Region")}
+                  {getLabel("region_id", "label_region")}
                   <Controller
                     name="region_id"
                     rules={{ required: "Region is Required" }}
@@ -230,7 +225,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         field={field}
                         options={regionOptions}
                         hasError={!!errors.region_id}
-                        placeholder="Select Region"
+                        placeholder={t("placeholder_region")}
                         isClearable={true}
                       />
                     )}
@@ -244,7 +239,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 4. Phone Number (required) */}
                 <FormGroup>
-                  {getLabel("phone_number", "Phone Number")}
+                  {getLabel("phone_number", "label_phone")}
                   <Controller
                     name="phone_number"
                     control={control}
@@ -254,7 +249,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         {...field}
                         type="text"
                         className="form-control"
-                        placeholder="Phone Number"
+                        placeholder={t("placeholder_phone")}
                         id="phone_number"
                         invalid={!!errors.phone_number}
                       />
@@ -265,7 +260,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 5. Instagram (nullable) */}
                 <FormGroup>
-                  {getLabel("instagram", "Instagram Account")}
+                  {getLabel("instagram", "label_instagram")}
                   <Controller
                     name="instagram"
                     control={control}
@@ -275,7 +270,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         {...field}
                         type="text"
                         className="form-control"
-                        placeholder="Instagram (Optional)"
+                        placeholder={t("placeholder_instagram")}
                         id="instagram"
                         invalid={!!errors.instagram}
                       />
@@ -286,7 +281,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 6. Company Name (nullable) */}
                 <FormGroup>
-                  {getLabel("company_name", "Company Name")}
+                  {getLabel("company_name", "label_company")}
                   <Controller
                     name="company_name"
                     control={control}
@@ -295,7 +290,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         {...field}
                         type="text"
                         className="form-control"
-                        placeholder="Company Name (Optional)"
+                        placeholder={t("placeholder_company")}
                         id="company_name"
                         invalid={!!errors.company_name}
                       />
@@ -306,7 +301,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 7. Address (nullable - Full Width) */}
                 <FormGroup className="fullwidth">
-                  {getLabel("address", "Address")}
+                  {getLabel("address", "label_address")}
                   <Controller
                     name="address"
                     control={control}
@@ -315,7 +310,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         {...field}
                         type="textarea"
                         className="form-control"
-                        placeholder="Address (Optional)"
+                        placeholder={t("placeholder_address")}
                         id="address"
                         invalid={!!errors.address}
                       />
@@ -326,7 +321,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
                 {/* 8. Product Requests (nullable - SELECT) */}
                 <FormGroup>
-                  {getLabel("product_requests", "Product Request")}
+                  {getLabel("product_requests", "label_product_request")}
                   <Controller
                     name="product_requests"
                     control={control}
@@ -336,7 +331,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         field={field}
                         options={productOptions}
                         hasError={!!errors.product_requests}
-                        placeholder="Select Product"
+                        placeholder={t("placeholder_product_request")}
                         isClearable={true}
                       />
                     )}
@@ -344,10 +339,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                 </FormGroup>
                 {productRequests === "Sample Product" && (
                   <FormGroup className="fullwidth">
-                    {getLabel(
-                      "products",
-                      "Select Product (Just 5 Maximum allowed)"
-                    )}
+                    {getLabel("products", "label_select_product")}
 
                     <Controller
                       name="products"
@@ -361,7 +353,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                           {...field}
                           options={productOptions}
                           hasError={!!errors.products}
-                          placeholder="Select Product"
+                          placeholder={t("placeholder_select_product")}
                           isClearable
                         />
                       )}
@@ -385,7 +377,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
                     }}
                     disabled={isPending}
                   >
-                    {isPending ? "Sending..." : "Get in Touch"}
+                    {isPending ? t("status_sending") : t("button_get_in_touch")}
                   </button>
                   <div id="loader">
                     <i className="ti-reload"></i>

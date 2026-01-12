@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLocale } from "next-intl";
 import { useState, useEffect, useRef } from "react";
 import { usePathname, Link } from "@/i18n/navigation";
-import createStore from "../context/index";
+import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
+import { useQuery } from "@tanstack/react-query";
+import { getCollection } from "@/lib/api/queries/settings";
 
 export const languageOptions = [
   { code: "en", label: "ENG", flag: "🇺🇸" },
@@ -14,69 +17,57 @@ const LanguageSwitcher = () => {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-
-  const { collections } = createStore((state) => state);
+  const site_settings = useSiteSettings();
 
   const nameToSlug = (name: string) => {
     return name.toLowerCase().replace(/\s+/g, "-");
   };
+  const { data } = useQuery({
+    queryKey: ["getCollections"],
+    queryFn: async () => {
+      const response = await getCollection();
+      return response;
+    },
+    enabled: langDropdownOpen,
+  });
 
-  // Function untuk find collection berdasarkan slug di locale tertentu
-  const findCollectionBySlug = (slug: string, searchLocale: string) => {
-    // PENTING: Decode slug dulu untuk handle Chinese/special chars
-    const decodedSlug = decodeURIComponent(slug);
-
-    return collections.find((collection) => {
-      const name = collection[
-        `name_${searchLocale}` as keyof Collection
-      ] as string;
-      return nameToSlug(name) === decodedSlug;
-    });
-  };
-
+  /**
+   * Mengambil path yang sudah diterjemahkan slug-nya.
+   * Logika ini mencari apakah segment URL saat ini adalah sebuah nama koleksi,
+   * jika iya, ia memastikan slug tetap konsisten atau bisa disesuaikan ke depan.
+   */
   const getTranslatedPath = (targetLocale: string) => {
     try {
       const decodedPathname = decodeURIComponent(pathname);
-      let translatedPath = decodedPathname;
       const segments = decodedPathname.split("/").filter(Boolean);
 
-      // Track segments yang berhasil ditranslate
-      const translatedSegments: string[] = [];
+      const translatedSegments = segments.map((segment) => {
+        // 1. Cari apakah segment ini ada di database (name_en, name_id, atau name_zh)
+        const matchedCollection = data?.find((c: any) => {
+          return (
+            nameToSlug(c.name_en) === segment ||
+            nameToSlug(c.name_id) === segment ||
+            nameToSlug(c.name_zh) === segment
+          );
+        });
 
-      segments.forEach((segment) => {
-        const matchedCollection = findCollectionBySlug(segment, locale);
-
+        // 2. Jika ketemu koleksi yang cocok, ambil nama dalam bahasa target
         if (matchedCollection) {
-          const targetName = matchedCollection[
-            `name_${targetLocale}` as keyof Collection
-          ] as string;
-
-          if (targetName) {
-            const targetSlug = nameToSlug(targetName);
-            translatedPath = translatedPath.replace(
-              `/${segment}`,
-              `/${targetSlug}`
-            );
-            translatedSegments.push(targetSlug);
-          } else {
-            // Kalau gak ada translation, keep original segment
-            console.warn(`No translation for segment: ${segment}`);
-            translatedSegments.push(segment);
-          }
-        } else {
-          // Segment bukan collection, keep as is
-          translatedSegments.push(segment);
+          const targetName = matchedCollection[`name_${targetLocale}`];
+          return nameToSlug(targetName);
         }
-      });
 
-      return translatedPath;
+        // 3. Jika tidak ketemu (seperti kata "collections"), biarkan apa adanya
+        return segment;
+      });
+      return `/${translatedSegments.join("/")}`;
     } catch (error) {
       console.error("Translation error:", error);
-      // Fallback: keep current pathname
       return pathname;
     }
   };
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -86,14 +77,10 @@ const LanguageSwitcher = () => {
         setLangDropdownOpen(false);
       }
     };
-
     if (langDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [langDropdownOpen]);
 
   const currentLanguage = languageOptions.find((lang) => lang.code === locale);
@@ -102,10 +89,7 @@ const LanguageSwitcher = () => {
     <div
       className="language-switcher"
       ref={dropdownRef}
-      style={{
-        marginLeft: "20px",
-        position: "relative",
-      }}
+      style={{ marginLeft: "20px", position: "relative" }}
     >
       <button
         className="lang-toggle-btn"
@@ -141,51 +125,49 @@ const LanguageSwitcher = () => {
             border: "1px solid #ccc",
             borderRadius: "4px",
             marginTop: "8px",
-            minWidth: "120px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            minWidth: "140px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             zIndex: 1000,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
-          {languageOptions.map((lang, index) => (
+          {languageOptions.map((lang) => (
+            // <button onClick={() => getTranslatedPath(lang.code)}>
+            //   {lang.code}
+            // </button>
             <Link
+              key={lang.code}
               href={getTranslatedPath(lang.code)}
               locale={lang.code}
-              prefetch={false}
-              key={lang.code}
               onClick={() => setLangDropdownOpen(false)}
               style={{
-                width: "100%",
-                padding: "12px 16px",
-                background: locale === lang.code ? "#f0f0f0" : "white",
-                border: "none",
-                textAlign: "left",
-                cursor: "pointer",
+                padding: "10px 16px",
+                background: locale === lang.code ? "#f5f5f5" : "white",
+                textDecoration: "none",
+                color: "#333",
                 display: "flex",
                 alignItems: "center",
-                gap: "8px",
+                gap: "10px",
                 fontSize: "14px",
-                borderBottom:
-                  index !== languageOptions.length - 1
-                    ? "1px solid #eee"
-                    : "none",
                 transition: "background 0.2s",
-                textDecoration: "none",
-                color: "inherit",
               }}
-              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                if (locale !== lang.code) {
-                  const target = e.currentTarget as HTMLAnchorElement;
-                  target.style.background = "#f9f9f9";
-                }
-              }}
-              onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                const target = e.currentTarget as HTMLAnchorElement;
-                target.style.background =
-                  locale === lang.code ? "#f0f0f0" : "white";
-              }}
+              // Menambahkan hover effect via inline style (opsional, lebih baik di CSS)
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#f0f0f0")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background =
+                  locale === lang.code ? "#f5f5f5" : "white")
+              }
             >
               <span>{lang.flag}</span>
-              <span>{lang.label}</span>
+              <span
+                style={{ fontWeight: locale === lang.code ? "bold" : "normal" }}
+              >
+                {lang.label}
+              </span>
             </Link>
           ))}
         </div>

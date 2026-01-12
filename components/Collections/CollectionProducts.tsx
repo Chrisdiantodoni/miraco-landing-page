@@ -155,7 +155,12 @@ const CollectionProducts = ({
       return param
         .split(",")
         .map((id) => id.trim())
-        .filter(Boolean);
+        .filter(Boolean)
+        .map((id) => {
+          // Coba konversi ke number, jika gagal tetap string
+          const numId = Number(id);
+          return isNaN(numId) ? id : numId;
+        });
     };
 
     const parseBooleanParam = (param: string | null): boolean => {

@@ -24,6 +24,8 @@ import { downloads } from "@/lib/api/queries/product";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import Dropdown from "../../../../../../components/ui/dropdown";
 import { useTranslations } from "next-intl";
+import { getLocale } from "next-intl/server";
+import { useLocale } from "next-intl";
 
 interface productDetailProps {
   data: {
@@ -33,7 +35,35 @@ interface productDetailProps {
 }
 
 const Product = ({ data }: productDetailProps) => {
+  const features = [
+    {
+      id: 1,
+      image: "/images/features/anti-fingerprint-1.png",
+      name: "Anti Fingerprint",
+    },
+    {
+      id: 2,
+      image: "/images/features/soft-touch-2.png",
+      name: "Soft Touch",
+    },
+    {
+      id: 3,
+      image: "/images/features/high-moisture-3.png",
+      name: "High Moisture",
+    },
+    {
+      id: 4,
+      image: "/images/features/low-reflective-4.png",
+      name: "Low Reflective",
+    },
+    {
+      id: 5,
+      image: "/images/features/anti-bacteria-5.png",
+      name: "Anti Bacteria",
+    },
+  ];
   const t = useTranslations("collections");
+  const tbackTo = useTranslations();
 
   const settings = {
     dots: true,
@@ -212,6 +242,21 @@ Terima kasih.`;
     window.open(url, "_blank");
   };
   const hasMultipleProducts = allPillProducts.length > 1;
+  const locale = useLocale();
+
+  const getLink = () => {
+    switch (locale) {
+      case "en":
+        return activeProduct?.design?.collection?.name_en;
+      case "zh":
+        return activeProduct?.design?.collection?.name_zh;
+      case "id":
+        return activeProduct?.design?.collection?.name_id;
+
+      default:
+        break;
+    }
+  };
   return (
     <div className="row mt-5">
       {lightboxOpen && currentZoomImage && (
@@ -297,7 +342,7 @@ Terima kasih.`;
       </div>
       <div className="col col-lg-7 col-12">
         <div className="product-details">
-          <span>{formattedCode}</span>
+          <span className="product-sku">{formattedCode}</span>
           <h2>{activeProduct?.name}</h2>
 
           {/* <div className="price">
@@ -314,7 +359,7 @@ Terima kasih.`;
             )}
           */}
             <div className="product-spec-row">
-              <div>Design</div>
+              <div>{t("label_design")}</div>
               <div>
                 {activeProduct?.design?.design_name}{" "}
                 {activeProduct?.category?.category_name?.toLowerCase() ==
@@ -322,15 +367,15 @@ Terima kasih.`;
               </div>
             </div>
             <div className="product-spec-row">
-              <div>Type</div>
+              <div>{t("label_type")}</div>
               <div>{activeProduct?.type?.type_name}</div>
             </div>
             <div className="product-spec-row">
-              <div>Finish</div>
+              <div>{t("label_finish")}</div>
               <div>{activeProduct?.finishing?.finishing_name}</div>
             </div>
             <div className="product-spec-row">
-              <div>Size</div>
+              <div>{t("label_size")}</div>
               <div>
                 {activeProduct?.size?.size}{" "}
                 <span className="text-muted">
@@ -339,12 +384,30 @@ Terima kasih.`;
               </div>
             </div>
             <div className="product-spec-row">
-              <div>Thickness</div>
+              <div>{t("label_thickness")}</div>
               <div>{activeProduct?.thickness?.thickness}</div>
             </div>
+            {activeProduct?.type?.type_name?.toLowerCase() == "mira" && (
+              <div className="product-features-grid">
+                {features.map((cert) => (
+                  <div key={cert.id} className="product-features-item">
+                    <div className="product-features-logo-wrapper">
+                      <Image
+                        src={cert.image}
+                        alt={cert.name}
+                        width={32}
+                        height={32}
+                        className="product-features-logo"
+                      />
+                    </div>
+                    <span className="product-features-name">{cert.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             {activeProduct?.miraedge_detail ? (
               <div className="product-spec-row">
-                <div>MIRAEDGE</div>
+                <div>MiraEDGE</div>
                 <div>{activeProduct?.miraedge_detail}</div>
               </div>
             ) : null}
@@ -436,7 +499,7 @@ Terima kasih.`;
                   )
                 }
               >
-                Order
+                {t("button_order")}
               </button>
               {productDownload && (
                 <button
@@ -448,7 +511,7 @@ Terima kasih.`;
                   ) : (
                     <LucideDownload />
                   )}
-                  Download
+                  {t("button_download")}
                 </button>
               )}
               {/* <Dropdown
@@ -506,14 +569,8 @@ Terima kasih.`;
             </div>
           </div>
           <div className="product-back-btn">
-            <Link
-              prefetch
-              href={`/collections/${
-                activeProduct?.collection?.name_en?.toLowerCase() || ""
-              }`}
-            >
-              Back to {activeProduct?.collection?.name_en} /{" "}
-              {activeProduct?.collection?.name_en} CORE
+            <Link prefetch href={`/collections/${getLink() || ""}`}>
+              {tbackTo("button_back_to")} {getLink()} / {getLink()} CORE
             </Link>
           </div>
           {/* <div className="tg-btm">

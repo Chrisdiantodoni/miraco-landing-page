@@ -52,15 +52,17 @@ export default function LocationSection({ data }: locationSectionProps | any) {
             </div>
 
             {/* Google Maps Button */}
-            <a
-              href={location.link_google_maps}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="location-button"
-            >
-              <Navigation />
-              View on Google Maps
-            </a>
+            {location.link_google_maps && (location?.lat || location?.long) && (
+              <a
+                href={location.link_google_maps}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="location-button"
+              >
+                <Navigation />
+                View on Google Maps
+              </a>
+            )}
           </div>
           {location.image_url && (
             <div className="location-image-wrapper">

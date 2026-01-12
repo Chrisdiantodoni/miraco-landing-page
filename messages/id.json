@@ -1,4 +1,5 @@
 {
+  "button_back_to": "Kembali ke",
   "header": {
     "menu": [
       {
@@ -42,12 +43,26 @@
   },
   "collections": {
     "collections_heading": "Ini adalah Koleksi kami: ",
-    "disclaimer": "Warna produk Miraco HPL yang ditampilkan di situs web ini dapat berbeda dengan produk sebenarnya akibat perbedaan perangkat tampilan, pengaturan layar, dan kondisi pencahayaan. Miraco telah berupaya menampilkan warna seakurat mungkin.\n\n Untuk memastikan kesesuaian warna yang optimal, kami menyarankan Anda menghubungi Miraco untuk meminta sampel fisik sebagai acuan sebelum melakukan pemesanan."
+    "disclaimer": "Warna produk Miraco HPL yang ditampilkan di situs web ini dapat berbeda dengan produk sebenarnya akibat perbedaan perangkat tampilan, pengaturan layar, dan kondisi pencahayaan. Miraco telah berupaya menampilkan warna seakurat mungkin.\n\n Untuk memastikan kesesuaian warna yang optimal, kami menyarankan Anda menghubungi Miraco untuk meminta sampel fisik sebagai acuan sebelum melakukan pemesanan.",
+    "active_filters": "Filter Aktif",
+    "clear_all": "Hapus Semua",
+    "button_search": "Cari di sini",
+    "button_order": "Pesan",
+    "button_download": "Unduh",
+    "label_design": "Desain",
+    "label_woods": "Kayu",
+    "label_type": "Tipe",
+    "label_finish": "Finishing",
+    "label_size": "Ukuran",
+    "label_thickness": "Ketebalan",
+    "label_features": "Fitur",
+    "label_complementary": "Komplementer"
   },
   "Footer": {
     "quick_link": "Tautan Cepat",
     "contact": "Kontak",
-    "content": "Miraco menghadirkan High Pressure Laminates berkualitas tinggi dengan standar arsitektur modern. Dibuat dengan presisi untuk menghadirkan ketahanan, estetika, dan nilai jangka panjang pada setiap ruang."
+    "content": "Miraco menghadirkan High Pressure Laminates berkualitas tinggi dengan standar arsitektur modern. Dibuat dengan presisi untuk menghadirkan ketahanan, estetika, dan nilai jangka panjang pada setiap ruang.",
+    "certification": "Sertifikasi"
   },
   "home": {
     "key_features": {
@@ -75,6 +90,55 @@
         "title": "MIRACORE",
         "description": "MIRACORE menampilkan inti yang sesuai warna untuk menghilangkan garis sambungan gelap, menciptakan permukaan yang mulus, solid, dan halus secara arsitektural."
       }
-    ]
+    ],
+    "collection_heading": "Koleksi",
+    "collection_sub_heading": "Ini adalah koleksi kami",
+    "project_heading": "Proyek",
+    "project_sub_heading": "Lihat Proyek Kami",
+    "button_all_projects": "Lihat Semua Proyek"
+  },
+  "request": {
+    "request_heading": "Permintaan Kepada Kami",
+    "request_sub_heading": "Ajukan permintaan kepada kami",
+    "label_name": "Nama",
+    "placeholder_name": "Masukkan nama lengkap",
+    "label_email": "Email",
+    "placeholder_email": "contoh@email.com",
+    "label_region": "Wilayah",
+    "placeholder_region": "Pilih wilayah Anda",
+    "label_phone": "Nomor Telepon",
+    "placeholder_phone": "Contoh: 08123456789",
+    "label_instagram": "Akun Instagram",
+    "placeholder_instagram": "@username_anda",
+    "label_company": "Nama Perusahaan",
+    "placeholder_company": "Nama perusahaan Anda",
+    "label_address": "Alamat",
+    "placeholder_address": "Alamat lengkap pengiriman",
+    "label_product_request": "Permintaan Produk",
+    "placeholder_product_request": "Produk apa yang Anda butuhkan?",
+    "label_sample": "Produk Sampel",
+    "placeholder_sample": "Nama produk sampel",
+    "label_select_product": "Pilih Produk (Maksimal 5)",
+    "placeholder_select_product": "Pilih maksimal 5 produk",
+    "label_project": "Proyek",
+    "placeholder_project": "Masukkan nama proyek",
+    "label_type": "Tipe",
+    "placeholder_type": "Pilih tipe",
+    "label_description": "Deskripsi",
+    "placeholder_description": "Berikan detail lebih lanjut",
+    "label_location": "Lokasi",
+    "placeholder_location": "Kota atau lokasi spesifik",
+    "button_get_in_touch": "Hubungi Kami",
+    "label_photos_by": "Foto oleh",
+    "label_designed_by": "Didesain oleh",
+    "label_featured_products": "Produk yang Ditampilkan",
+    "label_products_used": "Produk dan material yang digunakan dalam proyek ini",
+    "status_sending": "Mengirim...",
+    "toast_success": "Permintaan Berhasil Dikirim",
+    "toast_error": "Gagal mengirim permintaan"
+  },
+  "location": {
+    "locate_us_heading": "Lokasi Kami",
+    "locate_us_sub_heading": "Kunjungi kantor kami di seluruh Indonesia"
   }
 }

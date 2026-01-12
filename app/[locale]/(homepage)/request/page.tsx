@@ -7,15 +7,17 @@ import { Fragment } from "react/jsx-runtime";
 
 export default async function page() {
   const data = (await getRequestPages()) as RequestResponse;
-  console.log({ data });
 
   return (
     <Fragment>
       {/* <RequestFormSection hclass={"wpo-consultaForm-section"} />
       <Con */}
       <PageTitle
-        pageTitle="Request From Us"
-        pagesub="Request Something from Us"
+        translation_text="request_heading"
+        translation_sub_text="request_sub_heading"
+        translations="request"
+        showTopLine={false}
+        paddingTop={50}
       />
 
       <Contactpage data={data} />

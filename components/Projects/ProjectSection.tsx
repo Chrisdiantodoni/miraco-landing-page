@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Project } from "@/lib/types";
 import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const ClickHandler = () => {
   window.scrollTo(10, 0);
@@ -20,6 +21,7 @@ interface ProjectProps {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ProjectSection = (props: ProjectProps) => {
   const projects = props.projects;
+  const t = useTranslations("home");
   return (
     <section className={"" + props.hclass}>
       {/* <div className="title">
@@ -75,7 +77,7 @@ const ProjectSection = (props: ProjectProps) => {
             border: "1px solid #000",
           }}
         >
-          <span>See All Projects</span>
+          <span>{t("button_all_projects")}</span>
           {/* <span className="read-more-icon">→</span> */}
         </Link>
       </div>

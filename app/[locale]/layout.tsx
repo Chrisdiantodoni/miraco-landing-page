@@ -43,6 +43,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Premium furniture materials",
       images: [settings?.logo_dark_url],
     },
+    robots: {
+      googleBot: "notranslate",
+    },
   };
 }
 
@@ -60,12 +63,13 @@ export default async function LocaleLayout({ children, params }: Props) {
   const siteData = await getSiteData({ locale });
 
   return (
-    <html lang={locale} data-scroll-behavior="smooth">
+    <html lang={locale} data-scroll-behavior="smooth" translate="no">
       <head>
         <link rel="icon" href={siteData?.site_settings?.logo_dark_url} />
         <meta
+          name="google"
           property="og:image"
-          content={siteData?.site_settings?.logo_dark_url}
+          content={`${siteData?.site_settings?.logo_dark_url} notranslate`}
         />
       </head>
       <body className={poppins.className}>
