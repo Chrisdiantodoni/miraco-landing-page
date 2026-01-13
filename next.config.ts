@@ -40,6 +40,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "dashboard.miracohpl.com",
+        pathname: "/storage/**",
+      },
     ],
     minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200],
