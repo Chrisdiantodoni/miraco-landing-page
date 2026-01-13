@@ -45,9 +45,9 @@ const LanguageSwitcher = () => {
         // 1. Cari apakah segment ini ada di database (name_en, name_id, atau name_zh)
         const matchedCollection = data?.find((c: any) => {
           return (
-            nameToSlug(c.name_en) === segment ||
-            nameToSlug(c.name_id) === segment ||
-            nameToSlug(c.name_zh) === segment
+            nameToSlug(c.name_en || "") === segment ||
+            nameToSlug(c.name_id || "") === segment ||
+            nameToSlug(c.name_zh || "") === segment
           );
         });
 
@@ -139,6 +139,7 @@ const LanguageSwitcher = () => {
             // </button>
             <Link
               key={lang.code}
+              replace
               href={getTranslatedPath(lang.code)}
               locale={lang.code}
               onClick={() => setLangDropdownOpen(false)}

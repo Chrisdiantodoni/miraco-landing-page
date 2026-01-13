@@ -33,34 +33,34 @@ const ProjectList = (props: ProjectProps) => {
 
           return (
             <div className="project-card fade_bottom" key={item}>
-              {thumbnailImage ? (
-                <Image
-                  src={thumbnailImage}
-                  alt="project-1"
-                  priority
-                  width={1080}
-                  height={720}
-                />
-              ) : null}
-              <div className="content">
-                <h2 className="project-title">
-                  <Link onClick={ClickHandler} href={`/projects/${project.id}`}>
+              <Link
+                onClick={ClickHandler}
+                href={`/projects/${project.id}`}
+                style={{ textDecoration: "none" }}
+              >
+                {thumbnailImage ? (
+                  <Image
+                    src={thumbnailImage}
+                    alt="project-1"
+                    priority
+                    width={1080}
+                    height={720}
+                  />
+                ) : null}
+                <div className="content">
+                  <h2 className="project-title">
                     {project?.project_name || ""}
-                  </Link>
-                </h2>
+                  </h2>
 
-                <span className="project-subtitle">{`${project.country} | ${project?.project_type?.project_type}`}</span>
+                  <span className="project-subtitle">{`${project.country} | ${project?.project_type?.project_type}`}</span>
 
-                <Link
-                  onClick={ClickHandler}
-                  href={`/projects/${project.id}`}
-                  className="read-more-btn"
-                >
-                  Read More
-                  <span className="read-more-icon">→</span>
-                </Link>
-                {/* 🚨 END TOMBOL READ MORE */}
-              </div>
+                  <div className="read-more-btn">
+                    Read More
+                    <span className="read-more-icon">→</span>
+                  </div>
+                  {/* 🚨 END TOMBOL READ MORE */}
+                </div>
+              </Link>
             </div>
           );
         })}

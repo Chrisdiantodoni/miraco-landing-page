@@ -744,9 +744,9 @@
       margin-bottom: 5px;
       transform: translateY(0);
       transition: transform 0.4s ease;
+      color: rgba(255, 255, 255, 0.95);
 
       a {
-        color: rgba(255, 255, 255, 0.95);
         font-family: $heading-font;
         font-size: 32px;
         line-height: 1.2;
