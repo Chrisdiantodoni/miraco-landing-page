@@ -93,6 +93,7 @@ const nextConfig: NextConfig = {
         port: "8000",
         pathname: "/storage/**",
       },
+
       {
         protocol: "http",
         hostname: "72.61.215.207",

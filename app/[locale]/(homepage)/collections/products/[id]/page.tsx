@@ -2,22 +2,20 @@ import { getProductById } from "@/lib/api/queries/product";
 import Product from "./product";
 import { Product as ProductDetail } from "@/lib/types/product/product";
 import { Meta } from "@/lib/types";
+import { getLocale } from "next-intl/server";
 
 type Props = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ type?: string; id?: string }>;
 };
 interface productDetailProps {
-  data: {
-    meta: Meta;
-    data: ProductDetail;
-  };
+  data: ProductDetail;
 }
 // Generate metadata untuk SEO
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const product = (await getProductById(id)) as productDetailProps;
-
+  const locale = await getLocale();
   if (!product) {
     return {
       title: "Product Not Found",
@@ -28,25 +26,48 @@ export async function generateMetadata({ params }: Props) {
     };
   }
 
-  const images =
-    product?.data?.data.media?.map((item) => item?.image_url).filter(Boolean) ||
-    [];
-  const products = product?.data?.data;
+  // ✅ Extract images dengan absolute URL
+  const imageUrls =
+    product?.data.media?.map((item) => item?.image_url).filter(Boolean) || [];
+
+  // ✅ Pastikan URL absolute (jika belum)
+  const absoluteImages = imageUrls.map((url) =>
+    url.startsWith("http") ? url : `https://miracohpl.com${url}`
+  );
+
+  const products = product?.data;
+  const description =
+    products.description?.substring(0, 160) ||
+    `${products.name} - ${
+      products.design?.design_name || "HPL Product"
+    } by Miraco`;
   return {
     title: `${products.name} | Miraco HPL ${products?.design?.design_name}`,
-    description: products.description.substring(0, 160),
-    keywords: `${products.name}, ${products.design?.design_name} HPL, high pressure laminate`,
+    description: description,
+    keywords: `${products.name}, ${products.design?.design_name}, ${products.type?.type_name} HPL, high pressure laminate`,
     openGraph: {
       title: products.name,
       description: products.description.substring(0, 160),
-      images: [images],
-      type: "article",
+      images:
+        absoluteImages.length > 0
+          ? [
+              {
+                url: absoluteImages[0],
+                width: 1200,
+                height: 630,
+                alt: products.name,
+              },
+            ]
+          : [],
+      type: "website",
+      locale: locale,
     },
     twitter: {
       card: "summary_large_image",
       title: products.name,
-      description: products.description.substring(0, 160),
-      images: [images],
+      description: description,
+      images: absoluteImages,
+      creator: "@miracohpl", // Optional: Twitter handle Anda
     },
     alternates: {
       canonical: `https://miracohpl.com/en/collections/products/${id}`,
