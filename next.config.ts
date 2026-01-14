@@ -8,6 +8,82 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/request.html",
+        destination: "/en/request",
+        permanent: true,
+      },
+
+      // Redirect untuk .html pages di root
+      {
+        source: "/e-catalogue.html",
+        destination: "/en/e-catalogue",
+        permanent: true,
+      },
+
+      // Redirect untuk pages di /products/
+      {
+        source: "/products/wood.html",
+        destination: "/en/collections/woods",
+        permanent: true,
+      },
+      {
+        source: "/products/marbles.html",
+        destination: "/en/collections/pattern",
+        permanent: true,
+      },
+      {
+        source: "/products/fabrics.html",
+        destination: "/en/collections/pattern", // atau sesuaikan dengan kategori yang tepat
+        permanent: true,
+      },
+      {
+        source: "/products/bookmatched.html",
+        destination: "/en/collections/pattern", // atau sesuaikan dengan kategori yang tepat
+        permanent: true,
+      },
+      {
+        source: "/products/stone.html",
+        destination: "/en/collections/pattern",
+        permanent: true,
+      },
+
+      {
+        source: "/wood/:slug",
+        destination: "/en/collections/woods",
+        permanent: true,
+      },
+      {
+        source: "/solids/:slug",
+        destination: "/en/collections/solid",
+        permanent: true,
+      },
+      {
+        source: "/stones/:slug",
+        destination: "/en/collections/pattern",
+        permanent: true,
+      },
+      {
+        source: "/marbles/:slug",
+        destination: "/en/collections/pattern",
+        permanent: true,
+      },
+      {
+        source: "/leathers/:slug",
+        destination: "/en/collections/pattern",
+        permanent: true,
+      },
+
+      // Catch-all untuk URL dengan .html
+      {
+        source: "/:path*.html",
+        destination: "/:path*",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       // Development - Local Laravel
@@ -38,6 +114,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "dashboard.miracohpl.com",
+        pathname: "/storage/**",
       },
     ],
     minimumCacheTTL: 60,
