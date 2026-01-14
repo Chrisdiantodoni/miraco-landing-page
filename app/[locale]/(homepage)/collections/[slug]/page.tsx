@@ -22,6 +22,98 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+  const locale = await getLocale();
+
+  try {
+    // ✅ Fetch collection data untuk metadata
+    const rawParams: Record<string, any> = {
+      collection: slug,
+      page: 1,
+      limit: 1, // Ambil 1 product saja untuk metadata
+    };
+    const normalizedParams = normalizeQueryParams(rawParams);
+    const productsResponse = (await getProducts(
+      normalizedParams
+    )) as ProductListResponse;
+
+    // ✅ Safe access ke data
+    const products = productsResponse?.data;
+    const firstProduct = products?.data[0];
+
+    if (!firstProduct) {
+      return {
+        title: `${capitalizeFirstLetter(slug)} Collection | Miraco HPL`,
+        description: `Explore our ${capitalizeFirstLetter(
+          slug
+        )} collection of high-quality HPL products`,
+        robots: {
+          index: true,
+          follow: true,
+        },
+      };
+    }
+    // ✅ Extract images dengan absolute URL
+    const imageUrls =
+      firstProduct?.media?.map((item) => item?.image_url).filter(Boolean) || [];
+
+    // ✅ Pastikan URL absolute (jika belum)
+    const absoluteImages = imageUrls.map((url) =>
+      url.startsWith("http") ? url : `https://miracohpl.com${url}`
+    );
+
+    // ✅ Safe description
+    const description = firstProduct.description
+      ? firstProduct.description.substring(0, 160)
+      : `${firstProduct.name} - ${
+          firstProduct.design?.design_name || slug
+        } collection`;
+
+    return {
+      title: `${capitalizeFirstLetter(slug)} Collection | Miraco HPL`,
+      description: description,
+      keywords: `${slug}, ${firstProduct.design?.design_name || ""}, ${
+        firstProduct.type?.type_name || ""
+      } HPL, high pressure laminate, Miraco`,
+
+      openGraph: {
+        title: `${capitalizeFirstLetter(slug)} Collection`,
+        description: description,
+        images:
+          absoluteImages.length > 0
+            ? [
+                {
+                  url: absoluteImages[0],
+                  width: 1200,
+                  height: 630,
+                  alt: firstProduct.name,
+                },
+              ]
+            : [],
+        type: "website",
+      },
+
+      twitter: {
+        card: "summary_large_image",
+        title: `${capitalizeFirstLetter(slug)} Collection`,
+        description: description,
+        images: absoluteImages,
+      },
+
+      alternates: {
+        canonical: `https://miracohpl.com/${locale}/collections/${slug}`,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: `${capitalizeFirstLetter(slug)} Collection | Miraco HPL`,
+      description: `Explore our ${capitalizeFirstLetter(slug)} collection`,
+    };
+  }
+}
+
 export async function generateStaticParams() {
   const locales = ["en", "id", "zh"];
   const allParams: { slug: string; locale: string }[] = [];
