@@ -28,12 +28,14 @@ export async function generateMetadata({ params }: Props) {
     };
   }
 
-  const images = product?.data?.data?.media?.map((item) => item?.image_url);
+  const images =
+    product?.data?.data.media?.map((item) => item?.image_url).filter(Boolean) ||
+    [];
   const products = product?.data?.data;
   return {
-    title: `${products.name} | Miraco HPL ${products.category}`,
+    title: `${products.name} | Miraco HPL ${products?.design?.design_name}`,
     description: products.description.substring(0, 160),
-    keywords: `${products.name}, ${products.category} HPL, high pressure laminate`,
+    keywords: `${products.name}, ${products.design?.design_name} HPL, high pressure laminate`,
     openGraph: {
       title: products.name,
       description: products.description.substring(0, 160),
