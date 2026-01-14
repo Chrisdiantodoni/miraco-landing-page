@@ -26,6 +26,7 @@ import Dropdown from "../../../../../../components/ui/dropdown";
 import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
+import { useEffect } from "react";
 
 interface productDetailProps {
   data: {
@@ -174,6 +175,20 @@ const Product = ({ data }: productDetailProps) => {
     setLightboxOpen(false);
     setCurrentZoomImage(null);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && lightboxOpen) {
+        closeLightbox();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [lightboxOpen, currentZoomImage]); // Tambahkan dependencies
 
   // const testingDownload = activeProduct?.media?.find(
   //   (find) => find?.type == "additional_image_products"
