@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import { getSiteData } from "@/lib/api/queries/settings";
 import { getLocale } from "next-intl/server";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
+import { SiteData } from "../../lib/types/settings.d";
 type Props = {
   children: ReactNode;
   params: Promise<{ locale: string }>;
@@ -32,20 +33,100 @@ const poppins = Poppins({
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getSiteData({ locale: "en" });
+  const locale = await getLocale();
+  const data = (await getSiteData({ locale })) as SiteData;
   const settings = data.site_settings;
+  const collections = data.collections || [];
+  const categories = data.categories || [];
+
+  // ✅ Filter dan ambil hanya URL yang valid (bukan null/undefined)
+  const collectionImages = collections
+    .map((col) => col.image_url)
+    .filter((url): url is string => Boolean(url)); // Type guard
+
+  // Build keywords dari categories dan collections
+  const categoryNames = categories.map((cat) => cat.category_name).join(", ");
+  const collectionNames = collections
+    .map((col) => col.collection_name)
+    .join(", ");
+
+  // Build description yang lebih rich
+  const description =
+    "Miraco HPL - Premium High Pressure Laminate for furniture and interior design. " +
+    `Explore our collections: ${collectionNames}. ` +
+    `Available in ${categoryNames} categories.`;
 
   return {
-    title: "Miraco HPL",
-    description: "Premium furniture materials",
+    title: "Miraco HPL | Premium High Pressure Laminate",
+    description: description.substring(0, 160),
+    keywords: `Miraco HPL, High Pressure Laminate, ${categoryNames}, ${collectionNames}, furniture materials, interior design`,
+
     openGraph: {
-      title: "Miraco HPL",
-      description: "Premium furniture materials",
-      images: [settings?.logo_dark_url],
+      title: "Miraco HPL | Premium High Pressure Laminate",
+      description: description.substring(0, 160),
+      type: "website",
+      locale: locale,
+      siteName: "Miraco HPL",
+      url: "https://miracohpl.com",
+      // ✅ Hanya set images jika ada URL yang valid
+      ...(collectionImages.length > 0 && {
+        images: [
+          {
+            url: collectionImages[0], // Sudah pasti string, bukan null
+            width: 1200,
+            height: 630,
+            alt: "Miraco HPL Collections",
+          },
+        ],
+      }),
+      // ✅ Fallback ke logo jika ada
+      ...(!collectionImages.length &&
+        settings?.logo_dark_url && {
+          images: [
+            {
+              url: settings.logo_dark_url,
+              width: 800,
+              height: 600,
+              alt: "Miraco HPL Logo",
+            },
+          ],
+        }),
     },
+
+    twitter: {
+      card: "summary_large_image",
+      title: "Miraco HPL | Premium High Pressure Laminate",
+      description: description.substring(0, 160),
+      // ✅ Hanya set images jika ada
+      ...(collectionImages.length > 0 && {
+        images: [collectionImages[0]],
+      }),
+    },
+
+    alternates: {
+      canonical: "https://miracohpl.com",
+      languages: {
+        en: "https://miracohpl.com/en",
+        id: "https://miracohpl.com/id",
+        zh: "https://miracohpl.com/zh",
+      },
+    },
+
     robots: {
-      googleBot: "notranslate",
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        notranslate: true,
+      },
     },
+
+    category: "Business",
+    applicationName: "Miraco HPL",
   };
 }
 
