@@ -1042,143 +1042,142 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
-  }
+    .product-card-projects {
+      transition: transform 0.3s ease;
+      cursor: pointer;
 
-  .product-card-projects {
-    transition: transform 0.3s ease;
-    cursor: pointer;
-
-    &:hover {
-      .product-image {
-        transform: scale(1.08);
+      &:hover {
+        .product-image {
+          transform: scale(1.08);
+        }
       }
     }
-  }
 
-  .product-image-wrapper-projects {
-    border-radius: 6px;
-    overflow: hidden;
-    background-color: #ffffff;
-    margin-bottom: 12px;
-    position: relative;
-    width: 100%;
-    padding-bottom: 125%; /* Aspect ratio 4:5 */
-
-    @media (max-width: 767px) {
-      margin-bottom: 8px;
-      border-radius: 4px;
-    }
-  }
-
-  .product-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .product-placeholder {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f0f0;
-
-    &::after {
-      content: "No Image Available";
-      color: #999;
-      font-size: 14px;
-      white-space: nowrap;
+    .product-image-wrapper-projects {
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: #ffffff;
+      margin-bottom: 12px;
+      position: relative;
+      width: 100%;
+      padding-bottom: 125%; /* Aspect ratio 4:5 */
 
       @media (max-width: 767px) {
-        font-size: 12px;
+        margin-bottom: 8px;
+        border-radius: 4px;
       }
     }
-  }
 
-  .product-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .product-text {
-    flex: 1;
-    min-width: 0; // Untuk text truncation jika dibutuhkan
-  }
-
-  .product-name {
-    font-size: 20px;
-    font-weight: 500;
-    color: #1e3446;
-    margin: 0 0 4px 0;
-    letter-spacing: -0.01em;
-    transition: color 0.3s ease;
-
-    @media (max-width: 991px) {
-      font-size: 18px;
+    .product-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    @media (max-width: 767px) {
-      font-size: 16px;
+    .product-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f0f0f0;
+
+      &::after {
+        content: "No Image Available";
+        color: #999;
+        font-size: 14px;
+        white-space: nowrap;
+
+        @media (max-width: 767px) {
+          font-size: 12px;
+        }
+      }
     }
 
-    .product-card-projects:hover & {
-      color: #000;
-    }
-  }
-
-  .product-code {
-    font-size: 20px;
-    font-weight: 500;
-    color: #1e3446;
-    margin: 0;
-    letter-spacing: -0.01em;
-    transition: color 0.3s ease;
-
-    @media (max-width: 991px) {
-      font-size: 18px;
+    .product-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
     }
 
-    @media (max-width: 767px) {
-      font-size: 16px;
+    .product-text {
+      flex: 1;
+      min-width: 0; // Untuk text truncation jika dibutuhkan
     }
 
-    .product-card-projects:hover & {
-      color: #000;
-    }
-  }
+    .product-name {
+      font-size: 20px;
+      font-weight: 500;
+      color: #1e3446;
+      margin: 0 0 4px 0;
+      letter-spacing: -0.01em;
+      transition: color 0.3s ease;
 
-  .product-icon {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #1e3446;
-    transition: color 0.3s ease, transform 0.3s ease;
-
-    svg {
-      width: 24px;
-      height: 24px;
+      @media (max-width: 991px) {
+        font-size: 18px;
+      }
 
       @media (max-width: 767px) {
-        width: 20px;
-        height: 20px;
+        font-size: 16px;
+      }
+
+      .product-card-projects:hover & {
+        color: #000;
       }
     }
 
-    .product-card-projects:hover & {
-      color: #000;
-      transform: translateX(4px);
+    .product-code {
+      font-size: 20px;
+      font-weight: 500;
+      color: #1e3446;
+      margin: 0;
+      letter-spacing: -0.01em;
+      transition: color 0.3s ease;
+
+      @media (max-width: 991px) {
+        font-size: 18px;
+      }
+
+      @media (max-width: 767px) {
+        font-size: 16px;
+      }
+
+      .product-card-projects:hover & {
+        color: #000;
+      }
+    }
+
+    .product-icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e3446;
+      transition: color 0.3s ease, transform 0.3s ease;
+
+      svg {
+        width: 24px;
+        height: 24px;
+
+        @media (max-width: 767px) {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .product-card-projects:hover & {
+        color: #000;
+        transform: translateX(4px);
+      }
     }
   }
 }

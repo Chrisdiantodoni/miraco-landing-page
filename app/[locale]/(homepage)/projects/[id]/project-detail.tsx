@@ -240,7 +240,6 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
                               width={300}
                               height={300}
                               className="product-image"
-                              style={{ width: "100%", height: "auto" }}
                             />
                           ) : (
                             <div className="product-placeholder"></div>
@@ -256,6 +255,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
                           {featured?.is_available_in_miraedge == 1 && (
                             <div className="product-icon">
                               <Image
+                                unoptimized
                                 src={miraedge}
                                 alt="Product Icon"
                                 width={16}
