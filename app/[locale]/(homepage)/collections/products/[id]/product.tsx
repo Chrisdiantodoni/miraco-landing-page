@@ -92,15 +92,16 @@ const Product = ({ data }: productDetailProps) => {
       allPillProducts.push(rp);
     }
   });
+  console.log({ relatedProducts });
 
   const [activeProductId, setActiveProductId] = useState<string | number>(
-    currentProduct?.id
+    currentProduct?.id,
   );
 
   // 3. Cari objek produk aktif berdasarkan ID (derived state)
   // Ini akan digunakan untuk memperbarui konten detail jika Anda mengimplementasikannya
   const activeProduct = allPillProducts.find(
-    (p) => p.id === activeProductId
+    (p) => p.id === activeProductId,
   ) as ProductDetail;
 
   // 4. Handler klik pada pill
@@ -115,7 +116,7 @@ const Product = ({ data }: productDetailProps) => {
 
   const allMedia = activeProduct?.media || [];
   const productDownload = allMedia.find(
-    (find) => find?.type == "product_to_download"
+    (find) => find?.type == "product_to_download",
   );
   const thumbnail = allMedia.find((find) => find?.type === "product_thumbnail");
   const otherMedia = allMedia.filter(
@@ -123,7 +124,7 @@ const Product = ({ data }: productDetailProps) => {
       find?.type !== "product_to_download" &&
       find?.type !== "product_thumbnail" &&
       find?.image_url &&
-      find.image_url.length > 0
+      find.image_url.length > 0,
   );
 
   const sliderMedia: { image_url: string; alt: string }[] = [];
@@ -217,7 +218,7 @@ const Product = ({ data }: productDetailProps) => {
 
         // Match pattern: filename="..." atau filename=...
         const match = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
         );
 
         if (match && match[1]) {
@@ -320,6 +321,7 @@ Terima kasih.`;
                 src={currentZoomImage.url}
                 alt={currentZoomImage.alt}
                 sizes="100vw"
+                priority
                 fill
                 style={{
                   objectFit: "contain",
@@ -353,6 +355,7 @@ Terima kasih.`;
                           alt={mediaItem.alt}
                           sizes="(max-width: 991px) 100vw, 40vw"
                           fill
+                          priority
                           style={{ objectFit: "cover" }}
                         />
                         {/* Icon Zoom Overlay */}
@@ -474,10 +477,10 @@ Terima kasih.`;
                   // Ambil gambar thumbnail dari produk terkait
                   const pillProductMedia = p?.media || [];
                   const pillThumbnail = pillProductMedia.find(
-                    (media: any) => media?.type === "product_thumbnail"
+                    (media: any) => media?.type === "product_thumbnail",
                   );
                   const pillDownloadImage = pillProductMedia.find(
-                    (media: any) => media?.type === "product_to_download"
+                    (media: any) => media?.type === "product_to_download",
                   );
 
                   // Prioritas: thumbnail dulu, kalau tidak ada gunakan download image
@@ -538,7 +541,7 @@ Terima kasih.`;
                 className="theme-btn2"
                 onClick={() =>
                   handleWhatsAppClick(
-                    site_settings?.site_settings?.whatsapp ?? ""
+                    site_settings?.site_settings?.whatsapp ?? "",
                   )
                 }
               >
