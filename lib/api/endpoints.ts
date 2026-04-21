@@ -18,4 +18,5 @@ export const ENDPOINTS = {
   FORMSPREE_DONI: `https://formspree.io/f/xwpobnlr`,
   SUB_COLLECTION: `${API_URL}/sites/sub-collections`,
   COLLECTION_MASTER: `${API_URL}/sites/collections`,
+  TRACKING: `${API_URL}/analytics/track`,
 };
