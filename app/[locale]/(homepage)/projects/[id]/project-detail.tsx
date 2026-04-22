@@ -255,7 +255,7 @@ const ProjectDetail = ({ project }: ProjectDetailProps) => {
                           {featured?.is_available_in_miraedge == 1 && (
                             <div className="product-icon">
                               <Image
-                                unoptimized
+                                // unoptimized
                                 src={miraedge}
                                 alt="Product Icon"
                                 width={16}

@@ -6,6 +6,7 @@ import "@/styles/font-awesome.min.css";
 import "@/styles/themify-icons.css";
 import "@/styles/sass/style.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AnalyticsTracker from "@/components/AnalyticTracker";
 
 type Props = {
   children: ReactNode;
@@ -14,5 +15,10 @@ type Props = {
 // Since we have a `not-found.tsx` page on the root, a layout file
 // is required, even if it's just passing children through.
 export default async function RootLayout({ children }: Props) {
-  return children;
+  return (
+    <>
+      <AnalyticsTracker />
+      {children}
+    </>
+  );
 }
