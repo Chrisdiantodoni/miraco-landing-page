@@ -251,6 +251,7 @@ a {
 
 // layout
 @import "layout/header";
+@import "layout/header-v2";
 @import "layout/hero-slider";
 @import "layout/footer";
 
@@ -289,3 +290,6 @@ a {
 @import "page/terms";
 @import "page/error-404";
 @import "page/preview";
+@import "page/floating-lang";
+@import "page/floating-wa";
+@import "page/dashboard";
