@@ -782,47 +782,6 @@
       }
     }
 
-    button {
-      background: transparent;
-      border: 0;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease-in-out;
-      z-index: 1;
-
-      i {
-        background: #fff;
-        text-align: center;
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        color: #d4b0a5;
-        display: inline-block;
-        font-size: 20px;
-      }
-
-      span {
-        color: #d4b0a5;
-        text-align: center;
-        font-size: 18px;
-        font-weight: 500;
-        background: #fff;
-        height: 40px;
-        line-height: 40px;
-        padding: 0 22px;
-        display: inline-block;
-        margin-left: 3px;
-      }
-    }
-
     &::before {
       position: absolute;
       top: 0;
@@ -832,13 +791,60 @@
       content: "";
       width: 50%;
       height: 100%;
-      // untuk shining
-      //   background: linear-gradient(
-      //     to right,
-      //     rgba(255, 255, 255, 0) 0%,
-      //     rgba(255, 255, 255, 0.3) 100%
-      //   );
-      //   transform: skewX(-25deg);
+    }
+
+    .shop-card-hover-actions {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%) translateY(8px);
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: all 0.3s ease-in-out;
+      z-index: 2;
+    }
+
+    .shop-card-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      border: none;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.2s;
+      padding: 0;
+
+      &:hover {
+        background: #1a1c1c;
+        color: #fff;
+      }
+
+      &--favourite {
+        &:hover {
+          background: #fff;
+          color: #e53935;
+
+          svg {
+            fill: currentColor;
+          }
+        }
+
+        &.active {
+          background: #e53935;
+          color: #fff;
+        }
+      }
+
+      &--cart.in-cart {
+        background: #1a1c1c;
+        color: #fff;
+      }
     }
   }
 
@@ -893,6 +899,24 @@
       // KANAN: ICON MIRAEDGE
       .product-icon {
         flex-shrink: 0; // Pastikan ikon tidak menyusut
+      }
+    }
+
+    &:hover {
+      .image img {
+        transform: scale(1.08);
+      }
+
+      .image .shop-card-hover-actions {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .image {
+        &::before {
+          -webkit-animation: shine 0.75s;
+          animation: shine 0.75s;
+        }
       }
     }
 
@@ -955,17 +979,14 @@
 
   &:hover {
     // box-shadow: 0px 4px 20px 2px rgba(4, 0, 52, 0.12);
-
     .image {
       img {
         transform: scale(1.08);
       }
-
-      button {
+      .shop-card-hover-actions {
         opacity: 1;
-        visibility: visible;
+        transform: translateX(-50%) translateY(0);
       }
-
       &::before {
         -webkit-animation: shine 0.75s;
         animation: shine 0.75s;

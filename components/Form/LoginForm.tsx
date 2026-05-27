@@ -5,13 +5,42 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import Image from "next/image";
+import { toast } from "react-toastify";
 import fallbackLogo from "@/public/images/miraco/logo/logo-miraco.png";
+import { useForm } from "react-hook-form";
+import { useAuth } from "@/lib/providers/AuthProvider";
+
+interface LoginFields {
+  identifier: string;
+  password: string;
+}
 
 export default function LoginForm() {
   const t = useTranslations("auth");
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const settings = useSiteSettings();
   const logo = settings?.site_settings?.logo_dark_url || fallbackLogo;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<LoginFields>({
+    defaultValues: {
+      identifier: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginFields) => {
+    try {
+      await login(data.identifier, data.password);
+      toast.success(t("toast_success"));
+    } catch {
+      toast.error(t("toast_error"));
+    }
+  };
 
   return (
     <div className="wpo-login-wrapper">
@@ -36,15 +65,14 @@ export default function LoginForm() {
             <p>{t("sub_heading")}</p>
           </div>
 
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="wpo-login-form-group">
               <label htmlFor="identifier">{t("label_email")}</label>
               <input
                 id="identifier"
-                name="identifier"
                 type="text"
                 placeholder={t("placeholder_email")}
-                required
+                {...register("identifier", { required: true })}
               />
             </div>
 
@@ -52,11 +80,10 @@ export default function LoginForm() {
               <label htmlFor="password">{t("label_password")}</label>
               <input
                 id="password"
-                name="password"
                 type={showPassword ? "text" : "password"}
                 className="wpo-password-input"
                 placeholder={t("placeholder_password")}
-                required
+                {...register("password", { required: true })}
               />
               <button
                 type="button"
@@ -64,7 +91,9 @@ export default function LoginForm() {
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                <i className={`fa ${showPassword ? "fa-eye" : "fa-eye-slash"}`}></i>
+                <i
+                  className={`fa ${showPassword ? "fa-eye" : "fa-eye-slash"}`}
+                ></i>
               </button>
             </div>
 
@@ -79,8 +108,12 @@ export default function LoginForm() {
               </Link>
             </div>
 
-            <button type="submit" className="wpo-login-submit">
-              <span>{t("button_sign_in")}</span>
+            <button
+              type="submit"
+              className="wpo-login-submit"
+              disabled={isSubmitting}
+            >
+              <span>{isSubmitting ? "..." : t("button_sign_in")}</span>
               <i className="fi ti-arrow-right"></i>
             </button>
           </form>

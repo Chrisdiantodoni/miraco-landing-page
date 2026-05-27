@@ -1,7 +1,11 @@
 export const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL;
 
 export const ENDPOINTS = {
+  LOGIN: `${API_URL}/member/login`,
+  REGISTER: `${API_URL}/member/register`,
+  ME: `${API_URL}/member/me`,
   SITE_SETTINGS: `${API_URL}/sites/settings`,
+  POSITION: `${API_URL}/positions/list`,
   HOME: `${API_URL}/sites/home`,
   HERO: `${API_URL}/sites/hero`,
   COLLECTION_PAGE: `${API_URL}/sites/collection-page`,

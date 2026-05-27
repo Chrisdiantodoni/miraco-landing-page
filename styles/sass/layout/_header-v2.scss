@@ -217,13 +217,21 @@ body {
 
 .wpo-header-v2-cart-badge {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 8px;
-    height: 8px;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
     background: #ba1a1a;
-    border-radius: 50%;
+    border-radius: 9px;
     border: 1.5px solid $white;
+    font-size: 10px;
+    font-weight: 600;
+    color: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 /*--------------------------------------------------------------
@@ -369,73 +377,30 @@ body {
 }
 
 /*--------------------------------------------------------------
-  PROFILE DROPDOWN
+  PROFILE
 --------------------------------------------------------------*/
 .wpo-header-v2-profile {
     position: relative;
-    display: none;
-
-    @include widther(992px) {
-        display: flex;
-    }
-
+    display: flex;
     align-items: center;
-    gap: 12px;
     cursor: pointer;
-    padding-left: 16px;
-    border-left: 1px solid $border-color;
-}
-
-.wpo-header-v2-profile-info {
-    display: none;
-
-    @include widther(992px) {
-        display: block;
-        text-align: right;
-    }
-}
-
-.wpo-header-v2-profile-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: $black;
-    margin: 0;
-    line-height: 1.2;
-}
-
-.wpo-header-v2-profile-role {
-    font-size: 12px;
-    font-weight: 600;
-    color: $text-color;
-    margin: 0;
-    line-height: 1.2;
 }
 
 .wpo-header-v2-profile-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    overflow: hidden;
     border: 1px solid $border-color;
-    object-fit: cover;
     flex-shrink: 0;
-}
-
-.wpo-header-v2-profile-arrow {
-    display: none;
-
-    @include widther(992px) {
-        display: block;
-        font-size: 14px;
-        color: $text-color;
-        line-height: 1;
-    }
+    object-fit: cover;
 }
 
 .wpo-header-v2-profile-menu {
     position: absolute;
     right: 0;
     top: calc(100% + 4px);
-    width: 190px;
+    width: 220px;
     background: $white;
     border: 1px solid $border-color;
     border-radius: 8px;
@@ -445,12 +410,66 @@ body {
     @include transition-time(0.15s, all);
     z-index: 50;
     list-style: none;
-    padding: 4px 0;
+    padding: 8px 0;
 }
 
 .wpo-header-v2-profile:hover .wpo-header-v2-profile-menu {
     opacity: 1;
     visibility: visible;
+}
+
+.wpo-header-v2-profile-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px 12px;
+}
+
+.wpo-header-v2-profile-menu-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid $border-color;
+    flex-shrink: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.wpo-header-v2-profile-menu-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.wpo-header-v2-profile-menu-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: $black;
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wpo-header-v2-profile-menu-role {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.wpo-header-v2-profile-menu-divider {
+    height: 1px;
+    background: $border-color;
+    margin: 0 0 4px;
 }
 
 .wpo-header-v2-profile-menu-link {
@@ -463,6 +482,11 @@ body {
     color: $black;
     text-decoration: none;
     line-height: 1;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
     @include transition-time(0.12s, background);
 
     &:hover {
@@ -481,6 +505,7 @@ body {
         font-size: 16px;
     }
 }
+
 
 /*--------------------------------------------------------------
   MOBILE TOGGLE
@@ -640,14 +665,14 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 44px;
+    height: 36px;
     background: #000;
     border: none;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    line-height: 44px;
+    line-height: 36px;
     text-align: center;
     cursor: pointer;
     font-family: $base-font;

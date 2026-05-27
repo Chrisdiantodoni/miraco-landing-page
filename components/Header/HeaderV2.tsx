@@ -7,11 +7,13 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Collection } from "@/lib/types/settings";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { useCartStore } from "@/lib/store/cart";
 import { useQuery } from "@tanstack/react-query";
 import { getCollection } from "@/lib/api/queries/settings";
 import createStore from "@/context/index";
 import CustomMUIDrawer from "./Drawer";
-import fallbackLogo from "@/public/images/miraco/logo/logo-miraco.png";
+import fallbackLogo from "@/public/images/miraco/avatar.webp";
 
 const languageOptions = [
   { code: "en", label: "EN" },
@@ -22,14 +24,20 @@ const languageOptions = [
 interface HeaderV2Props {
   logo: string;
   collections: Collection[];
-  authenticated?: boolean;
 }
 
-export default function HeaderV2({ logo, collections, authenticated = false }: HeaderV2Props) {
+export default function HeaderV2({
+  logo,
+  collections,
+}: HeaderV2Props) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("header");
   const settings = useSiteSettings();
+  const { member, isAuthenticated, logout } = useAuth();
+  const cartCount = useCartStore((state) =>
+    state.cart.reduce((sum, item) => sum + item.quantity, 0)
+  );
   const { handle } = createStore((state) => state);
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,21 +46,15 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
 
   const menuData = t.raw("menu") as { title: string; link: string }[];
 
-  const nameToSlug = (name: string) =>
-    name.toLowerCase().replace(/\s+/g, "-");
+  const nameToSlug = (name: string) => name.toLowerCase().replace(/\s+/g, "-");
 
   const isActive = (link: string) => {
     const pathWithoutQuery = pathname.split("?")[0];
-    const pathWithoutLocale = pathWithoutQuery.replace(
-      /^\/(en|id|zh)\/?/,
-      "/"
-    );
+    const pathWithoutLocale = pathWithoutQuery.replace(/^\/(en|id|zh)\/?/, "/");
     const cleanPathname = pathWithoutLocale;
     const target = link.split("?")[0];
     if (target === "/") return cleanPathname === "/";
-    return (
-      cleanPathname === target || cleanPathname.startsWith(target + "/")
-    );
+    return cleanPathname === target || cleanPathname.startsWith(target + "/");
   };
 
   const isSubActive = (slug: string) =>
@@ -116,7 +118,7 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
   const hasCollections = collectionItems.length > 0;
 
   const isCollectionActive = collectionItems.some((item) =>
-    isActive(`/collections/${item.slug}`)
+    isActive(`/collections/${item.slug}`),
   );
 
   // Close mobile on route change
@@ -149,10 +151,7 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
 
               if (isCollections && hasCollections) {
                 return (
-                  <li
-                    key={i}
-                    className="wpo-header-v2-nav-item"
-                  >
+                  <li key={i} className="wpo-header-v2-nav-item">
                     <Link
                       href={item.link}
                       className={`wpo-header-v2-nav-link ${isCollectionActive ? "active" : ""}`}
@@ -165,9 +164,7 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
                           <Link
                             href={`/collections/${col.slug}`}
                             className={`wpo-header-v2-dropdown-link ${
-                              isSubActive(col.slug)
-                                ? "active"
-                                : ""
+                              isSubActive(col.slug) ? "active" : ""
                             }`}
                           >
                             {col.title}
@@ -205,37 +202,60 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
             <i className="fi flaticon-loupe"></i>
           </button>
 
-          {/* Cart (placeholder) */}
-          <button className="wpo-header-v2-icon-btn" aria-label="Cart">
+          {/* Cart */}
+          <button
+            className="wpo-header-v2-icon-btn"
+            onClick={() => useCartStore.getState().toggleCart()}
+            aria-label="Cart"
+          >
             <i className="fi flaticon-shopping-bag"></i>
-            <span className="wpo-header-v2-cart-badge"></span>
+            {cartCount > 0 && (
+              <span className="wpo-header-v2-cart-badge">{cartCount}</span>
+            )}
           </button>
 
           {/* Auth: Profile or Login */}
-          {authenticated ? (
+          {isAuthenticated ? (
             <div className="wpo-header-v2-profile">
-              <div className="wpo-header-v2-profile-info">
-                <p className="wpo-header-v2-profile-name">John Doe</p>
-                <p className="wpo-header-v2-profile-role">Admin</p>
-              </div>
               <Image
                 className="wpo-header-v2-profile-avatar"
-                src={fallbackLogo}
-                alt="Profile"
+                src={member?.profile_photo || fallbackLogo}
+                alt={member?.name || "Profile"}
                 width={40}
                 height={40}
               />
-              <i className="fi ti-angle-down wpo-header-v2-profile-arrow"></i>
               <ul className="wpo-header-v2-profile-menu">
+                <li className="wpo-header-v2-profile-menu-header">
+                  <div className="wpo-header-v2-profile-menu-avatar">
+                    <Image
+                      src={member?.profile_photo || fallbackLogo}
+                      alt={member?.name || "Profile"}
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+                  <div className="wpo-header-v2-profile-menu-info">
+                    <p className="wpo-header-v2-profile-menu-name">{member?.name}</p>
+                    <p className="wpo-header-v2-profile-menu-role">{member?.role}</p>
+                  </div>
+                </li>
+                <li className="wpo-header-v2-profile-menu-divider"></li>
                 <li>
-                  <Link href="/dashboard" className="wpo-header-v2-profile-menu-link">
+                  <Link
+                    href="/dashboard"
+                    className="wpo-header-v2-profile-menu-link"
+                  >
                     <i className="fi ti-dashboard"></i> Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link href="/login" className="wpo-header-v2-profile-menu-link logout">
+                  <button
+                    type="button"
+                    className="wpo-header-v2-profile-menu-link logout"
+                    onClick={logout}
+                  >
                     <i className="fi ti-shift-right"></i> Keluar
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -252,7 +272,9 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
               onClick={() => setLangOpen(!langOpen)}
             >
               <span>{locale.toUpperCase()}</span>
-              <i className={`fi ${langOpen ? "ti-angle-up" : "ti-angle-down"}`}></i>
+              <i
+                className={`fi ${langOpen ? "ti-angle-up" : "ti-angle-down"}`}
+              ></i>
             </button>
             {langOpen && (
               <ul className="wpo-header-v2-lang-menu wpo-header-v2-lang-menu-open">
@@ -268,7 +290,11 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
                       onClick={() => setLangOpen(false)}
                     >
                       <span className="wpo-header-v2-lang-flag">
-                        {lang.code === "zh" ? "🇨🇳" : lang.code === "id" ? "🇮🇩" : "🇺🇸"}
+                        {lang.code === "zh"
+                          ? "🇨🇳"
+                          : lang.code === "id"
+                            ? "🇮🇩"
+                            : "🇺🇸"}
                       </span>
                       <span className="wpo-header-v2-lang-name">
                         {lang.code === "zh"
@@ -277,7 +303,9 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
                             ? "ID"
                             : "EN"}
                       </span>
-                      <span className="wpo-header-v2-lang-code">{lang.label}</span>
+                      <span className="wpo-header-v2-lang-code">
+                        {lang.label}
+                      </span>
                     </Link>
                   </li>
                 ))}
@@ -303,9 +331,7 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
       />
 
       {/* Mobile Panel */}
-      <div
-        className={`wpo-header-v2-mobile-panel ${mobileOpen ? "open" : ""}`}
-      >
+      <div className={`wpo-header-v2-mobile-panel ${mobileOpen ? "open" : ""}`}>
         <button
           className="wpo-header-v2-mobile-close"
           onClick={() => setMobileOpen(false)}
@@ -337,9 +363,7 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
                           <Link
                             href={`/collections/${col.slug}`}
                             className={`wpo-header-v2-mobile-sub-link ${
-                              isSubActive(col.slug)
-                                ? "active"
-                                : ""
+                              isSubActive(col.slug) ? "active" : ""
                             }`}
                             onClick={() => setMobileOpen(false)}
                           >
@@ -354,15 +378,17 @@ export default function HeaderV2({ logo, collections, authenticated = false }: H
             })}
         </ul>
 
-        <div className="wpo-header-v2-mobile-actions">
-          <Link
-            href="/login"
-            className="wpo-header-v2-mobile-login"
-            onClick={() => setMobileOpen(false)}
-          >
-            Masuk
-          </Link>
-        </div>
+        {!isAuthenticated && (
+          <div className="wpo-header-v2-mobile-actions">
+            <Link
+              href="/login"
+              className="wpo-header-v2-mobile-login"
+              onClick={() => setMobileOpen(false)}
+            >
+              Masuk
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );

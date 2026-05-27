@@ -7,13 +7,11 @@ import { Collection } from "@/lib/types/settings";
 interface NavbarV2Props {
   logo: string;
   collections: Collection[];
-  authenticated?: boolean;
 }
 
 export default function NavbarV2({
   logo,
   collections,
-  authenticated = false,
 }: NavbarV2Props) {
   const [scrolled, setScrolled] = React.useState(false);
 
@@ -31,7 +29,6 @@ export default function NavbarV2({
       <HeaderV2
         logo={logo}
         collections={collections}
-        authenticated={authenticated}
       />
     </header>
   );

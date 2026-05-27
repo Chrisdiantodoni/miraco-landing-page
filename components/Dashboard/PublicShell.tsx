@@ -7,6 +7,7 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import { ToastContainer } from "react-toastify";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
 import { SiteData } from "@/lib/types/settings";
+import CartDrawer from "@/components/Cart/CartDrawer";
 
 export default function PublicShell({
   children,
@@ -23,12 +24,12 @@ export default function PublicShell({
       <NavbarV2
         collections={siteData.collections}
         logo={siteData?.site_settings?.logo_dark_url ?? image}
-        authenticated={isDashboard}
       />
       {children}
       <Footer logo={siteData?.site_settings?.logo_white_url ?? image} />
       {!isDashboard && <FloatingWhatsApp />}
       <ToastContainer />
+      <CartDrawer />
     </>
   );
 }

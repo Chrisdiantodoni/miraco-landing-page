@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { SiteSettingsProvider } from "@/lib/providers/SiteSettingProvider";
+import { AuthProvider } from "@/lib/providers/AuthProvider";
 import { getSiteData } from "@/lib/api/queries/settings";
 import { getLocale } from "next-intl/server";
 import { SiteData } from "../../lib/types/settings.d";
@@ -159,9 +160,11 @@ export default async function LocaleLayout({ children, params }: Props) {
         <SiteSettingsProvider settings={siteData}>
           <Providers>
             <NextIntlClientProvider>
-              <PublicShell siteData={siteData}>
-                {children}
-              </PublicShell>
+              <AuthProvider>
+                <PublicShell siteData={siteData}>
+                  {children}
+                </PublicShell>
+              </AuthProvider>
             </NextIntlClientProvider>
           </Providers>
         </SiteSettingsProvider>
