@@ -4,16 +4,23 @@
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useSiteSettings } from "@/lib/providers/SiteSettingProvider";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import fallbackLogo from "@/public/images/miraco/logo/logo-miraco.png";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { register } from "@/lib/api/queries/member";
+import { checkUsername, checkReferral } from "@/lib/api/queries/member";
+import { getRequestPages } from "@/lib/api/queries/request";
 import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema, RegisterFormData } from "@/lib/validations/auth";
+import { Loader2 } from "lucide-react";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 import dynamic from "next/dynamic";
 
-const DynamicClientSelect = dynamic(() => import("../Input/SearchPosition"), {
+const DynamicSearchPosition = dynamic(() => import("../Input/SearchPosition"), {
   ssr: false,
   loading: () => (
     <input
@@ -25,22 +32,21 @@ const DynamicClientSelect = dynamic(() => import("../Input/SearchPosition"), {
   ),
 });
 
-interface RegisterFormFields {
-  company_name: string;
-  position: string;
-  owner_name: string;
-  address: string;
-  phone: string;
-  email: string;
-  username: string;
-  password: string;
-  confirm_password: string;
-  referral: string;
-  profile_photo: any;
-}
+const DynamicRegionSelect = dynamic(() => import("../Input/ClientSelect"), {
+  ssr: false,
+  loading: () => (
+    <input
+      type="text"
+      className="form-control"
+      disabled
+      defaultValue="Loading..."
+    />
+  ),
+});
 
 export default function RegisterForm() {
   const t = useTranslations("register");
+  const router = useRouter();
   const settings = useSiteSettings();
   const logo = settings?.site_settings?.logo_dark_url || fallbackLogo;
 
@@ -49,6 +55,18 @@ export default function RegisterForm() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { data: regionData } = useQuery({
+    queryKey: ["regions"],
+    queryFn: () => getRequestPages(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const regionOptions =
+    regionData?.data?.regions?.map((item: any) => ({
+      label: item?.region_name,
+      value: item?.id,
+    })) || [];
+
   const {
     register: formRegister,
     handleSubmit,
@@ -56,32 +74,81 @@ export default function RegisterForm() {
     control,
     formState: { errors },
     reset,
-  } = useForm<RegisterFormFields>({
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       company_name: "",
+      city: "",
       position: "",
-      owner_name: "",
+      fullname: "",
       address: "",
-      phone: "",
+      phone_number: "",
       email: "",
       username: "",
       password: "",
       confirm_password: "",
-      referral: "",
+      referral_code: "",
       profile_photo: null,
     },
   });
 
+  const [watchUsername, setWatchUsername] = useState("");
+  const debouncedUsername = useDebounce(watchUsername, 500);
+
+  const { data: usernameCheck } = useQuery({
+    queryKey: ["checkUsername", debouncedUsername],
+    queryFn: () => checkUsername(debouncedUsername),
+    enabled: debouncedUsername.length > 0,
+  });
+
+  const [referralInput, setReferralInput] = useState("");
+  const [checkReferralCode, setCheckReferralCode] = useState("");
+  const [referralName, setReferralName] = useState("");
+  const [referralStatus, setReferralStatus] = useState<"idle" | "valid" | "invalid">("idle");
+
+  const handleApplyReferral = () => {
+    const code = referralInput.trim();
+    if (!code) return;
+
+    setCheckReferralCode(code);
+    checkReferral(code).then((res: any) => {
+      if (res?.data?.valid) {
+        setReferralName(res.data.name || "");
+        setReferralStatus("valid");
+        setValue("referral_code", code);
+      } else {
+        setReferralStatus("invalid");
+        setReferralName("");
+      }
+    }).catch(() => {
+      setReferralStatus("invalid");
+      setReferralName("");
+    });
+  };
+
   const { isPending, mutate } = useMutation({
     mutationFn: async (body: any) => {
-      const response = await register(body);
-      return { response, body };
+      const { profile_photo, confirm_password, ...rest } = body;
+
+      if (profile_photo instanceof File) {
+        const formData = new FormData();
+        Object.entries(rest).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            formData.append(key, value as string);
+          }
+        });
+        formData.append("profile_photo", profile_photo);
+        const response = await register(formData, true);
+        return { response };
+      }
+
+      const response = await register(rest);
+      return { response };
     },
     onSuccess: async ({ response }) => {
       if (response?.meta?.code == 200) {
-        reset();
-        setPhotoPreview(null);
         toast.success(t("toast_success"));
+        router.push("/login");
       }
     },
     onError: (res: any) => {
@@ -90,9 +157,17 @@ export default function RegisterForm() {
     },
   });
 
-  const onSubmit = (data: RegisterFormFields) => {
-    const { confirm_password, ...payload } = data;
-    mutate(payload);
+  const onSubmit = (data: RegisterFormData) => {
+    const positionName =
+      data.position && typeof data.position === "object"
+        ? (data.position as any).label || ""
+        : data.position || "";
+
+    const cityName = regionOptions?.find((r) => r?.value == data.city)?.label;
+    // console.log({ cityName });
+    // return;
+
+    mutate({ ...data, position: positionName, city: cityName });
   };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,6 +192,7 @@ export default function RegisterForm() {
     }
   };
 
+  console.log({ errors });
   return (
     <div className="wpo-login-wrapper">
       <div
@@ -148,15 +224,14 @@ export default function RegisterForm() {
               </h3>
               <div className="wpo-login-form-group">
                 <label htmlFor="company_name">
-                  {t("label_company_name")} <span className="required-star">*</span>
+                  {t("label_company_name")}{" "}
+                  <span className="required-star">*</span>
                 </label>
                 <input
                   id="company_name"
                   type="text"
                   placeholder={t("placeholder_company_name")}
-                  {...formRegister("company_name", {
-                    required: t("error_company_required"),
-                  })}
+                  {...formRegister("company_name")}
                 />
                 {errors.company_name && (
                   <div className="invalid-feedback">
@@ -171,9 +246,8 @@ export default function RegisterForm() {
                 <Controller
                   name="position"
                   control={control}
-                  rules={{ required: t("error_position_required") }}
                   render={({ field }) => (
-                    <DynamicClientSelect
+                    <DynamicSearchPosition
                       onChange={field.onChange}
                       value={field.value}
                       hasError={!!errors.position}
@@ -188,20 +262,40 @@ export default function RegisterForm() {
                 )}
               </div>
               <div className="wpo-login-form-group">
-                <label htmlFor="owner_name">
-                  {t("label_owner_name")} <span className="required-star">*</span>
+                <label htmlFor="city">
+                  {t("label_city")} <span className="required-star">*</span>
+                </label>
+                <Controller
+                  name="city"
+                  control={control}
+                  rules={{ required: t("error_city_required") }}
+                  render={({ field }) => (
+                    <DynamicRegionSelect
+                      field={field}
+                      options={regionOptions}
+                      hasError={!!errors.city}
+                      placeholder={t("placeholder_city")}
+                      isClearable
+                    />
+                  )}
+                />
+                {errors.city && (
+                  <div className="invalid-feedback">{errors.city.message}</div>
+                )}
+              </div>
+              <div className="wpo-login-form-group">
+                <label htmlFor="fullname">
+                  {t("label_fullname")} <span className="required-star">*</span>
                 </label>
                 <input
-                  id="owner_name"
+                  id="fullname"
                   type="text"
-                  placeholder={t("placeholder_owner_name")}
-                  {...formRegister("owner_name", {
-                    required: t("error_owner_required"),
-                  })}
+                  placeholder={t("placeholder_fullname")}
+                  {...formRegister("fullname")}
                 />
-                {errors.owner_name && (
+                {errors.fullname && (
                   <div className="invalid-feedback">
-                    {errors.owner_name.message}
+                    {errors.fullname.message}
                   </div>
                 )}
               </div>
@@ -214,9 +308,7 @@ export default function RegisterForm() {
                   id="address"
                   placeholder={t("placeholder_address")}
                   rows={2}
-                  {...formRegister("address", {
-                    required: t("error_address_required"),
-                  })}
+                  {...formRegister("address")}
                 />
                 {errors.address && (
                   <div className="invalid-feedback">
@@ -274,13 +366,11 @@ export default function RegisterForm() {
                   id="phone"
                   type="tel"
                   placeholder={t("placeholder_phone")}
-                  {...formRegister("phone", {
-                    required: t("error_phone_required"),
-                  })}
+                  {...formRegister("phone_number")}
                 />
-                {errors.phone && (
+                {errors.phone_number && (
                   <div className="invalid-feedback">
-                    {errors.phone.message}
+                    {errors.phone_number.message}
                   </div>
                 )}
               </div>
@@ -292,18 +382,10 @@ export default function RegisterForm() {
                   id="email"
                   type="email"
                   placeholder={t("placeholder_email")}
-                  {...formRegister("email", {
-                    required: t("error_email_required"),
-                    pattern: {
-                      value: /\S+@\S+\.\S+/,
-                      message: t("error_email_invalid"),
-                    },
-                  })}
+                  {...formRegister("email")}
                 />
                 {errors.email && (
-                  <div className="invalid-feedback">
-                    {errors.email.message}
-                  </div>
+                  <div className="invalid-feedback">{errors.email.message}</div>
                 )}
               </div>
               <div className="wpo-login-form-group">
@@ -314,10 +396,26 @@ export default function RegisterForm() {
                   id="username"
                   type="text"
                   placeholder={t("placeholder_username")}
-                  {...formRegister("username", {
-                    required: t("error_username_required"),
-                  })}
+                  {...formRegister("username")}
+                  onChange={(e) => {
+                    setWatchUsername(e.target.value);
+                    formRegister("username").onChange(e);
+                  }}
                 />
+                {debouncedUsername.length > 0 && usernameCheck ? (
+                  <span
+                    className="register-feedback"
+                    style={{
+                      color: usernameCheck?.data?.available ? "#2E7D32" : "#C62828",
+                    }}
+                  >
+                    {usernameCheck?.data?.available
+                      ? t("username_available")
+                      : t("username_taken")}
+                  </span>
+                ) : (
+                  <span className="register-feedback" />
+                )}
                 {errors.username && (
                   <div className="invalid-feedback">
                     {errors.username.message}
@@ -333,14 +431,13 @@ export default function RegisterForm() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder={t("placeholder_password")}
-                    {...formRegister("password", {
-                      required: t("error_password_required"),
-                    })}
-                  />{errors.password && (
-                  <div className="invalid-feedback">
-                    {errors.password.message}
-                  </div>
-                )}
+                    {...formRegister("password")}
+                  />
+                  {errors.password && (
+                    <div className="invalid-feedback">
+                      {errors.password.message}
+                    </div>
+                  )}
                   <button
                     type="button"
                     className="wpo-register-password-toggle"
@@ -357,21 +454,21 @@ export default function RegisterForm() {
               </div>
               <div className="wpo-login-form-group">
                 <label htmlFor="confirm_password">
-                  {t("label_confirm_password")} <span className="required-star">*</span>
+                  {t("label_confirm_password")}{" "}
+                  <span className="required-star">*</span>
                 </label>
                 <div className="wpo-register-password-wrap">
                   <input
                     id="confirm_password"
                     type={showConfirm ? "text" : "password"}
                     placeholder={t("placeholder_password")}
-                    {...formRegister("confirm_password", {
-                      required: t("error_confirm_password_required"),
-                    })}
-                  />{errors.confirm_password && (
-                  <div className="invalid-feedback">
-                    {errors.confirm_password.message}
-                  </div>
-                )}
+                    {...formRegister("confirm_password")}
+                  />
+                  {errors.confirm_password && (
+                    <div className="invalid-feedback">
+                      {errors.confirm_password.message}
+                    </div>
+                  )}
                   <button
                     type="button"
                     className="wpo-register-password-toggle"
@@ -396,12 +493,44 @@ export default function RegisterForm() {
               </p>
               <div className="wpo-login-form-group">
                 <label htmlFor="referral">{t("label_referral")}</label>
-                <input
-                  id="referral"
-                  type="text"
-                  placeholder={t("placeholder_referral")}
-                  {...formRegister("referral")}
-                />
+                <div className="wpo-register-referral-row">
+                  <input
+                    id="referral"
+                    type="text"
+                    placeholder={t("placeholder_referral")}
+                    value={referralInput}
+                    onChange={(e) => {
+                      setReferralInput(e.target.value);
+                      setReferralStatus("idle");
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="wpo-register-referral-btn"
+                    onClick={handleApplyReferral}
+                  >
+                    {t("button_apply")}
+                  </button>
+                </div>
+                {referralStatus === "valid" && (
+                  <span
+                    className="register-feedback"
+                    style={{ color: "#2E7D32" }}
+                  >
+                    {t("referral_found")} {referralName}
+                  </span>
+                )}
+                {referralStatus === "invalid" && (
+                  <span
+                    className="register-feedback"
+                    style={{ color: "#F57F17" }}
+                  >
+                    {t("referral_not_found")}
+                  </span>
+                )}
+                {referralStatus === "idle" && (
+                  <span className="register-feedback" />
+                )}
               </div>
             </div>
 
@@ -410,7 +539,11 @@ export default function RegisterForm() {
               className="wpo-login-submit"
               disabled={isPending}
             >
-              {isPending ? "..." : t("button_register")}
+              {isPending ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                t("button_register")
+              )}
             </button>
           </form>
 

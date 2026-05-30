@@ -3,7 +3,21 @@ export const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL;
 export const ENDPOINTS = {
   LOGIN: `${API_URL}/member/login`,
   REGISTER: `${API_URL}/member/register`,
+  FAVOURITE_ALL: `${API_URL}/member/favorites`,
+  TOGGLE_FAVOURITE: (productId: string | number) =>
+    `${API_URL}/member/products/${productId}/favorite`,
+
+  ORDERS: `${API_URL}/member/orders`,
+  ORDERS_DETAIL: (orderId: string | number) =>
+    `${API_URL}/member/orders/${orderId}`,
+  SUBMIT_ORDER: `${API_URL}/member/orders`,
+
+  CHECK_USERNAME: `${API_URL}/member/check-username`,
+  CHECK_REFERRAL_USERNAME: `${API_URL}/member/check-referral`,
+  VOUCHERS: `${API_URL}/member/vouchers`,
+  VOUCHER_VALIDATE: `${API_URL}/member/vouchers/validate`,
   ME: `${API_URL}/member/me`,
+
   SITE_SETTINGS: `${API_URL}/sites/settings`,
   POSITION: `${API_URL}/positions/list`,
   HOME: `${API_URL}/sites/home`,
@@ -18,6 +32,7 @@ export const ENDPOINTS = {
   DOWNLOAD: (id: string | number) => `${API_URL}/media/download/${id}`,
   DOWNLOAD_ALL: (id: string | number) => `${API_URL}/media/bulk-download/${id}`,
   REQUESTS: `${API_URL}/sites/requests`,
+  ORDER_REQUEST: `${API_URL}/order-request`,
   FORMSPREE: `https://formspree.io/f/xnneovpz`,
   FORMSPREE_DONI: `https://formspree.io/f/xwpobnlr`,
   SUB_COLLECTION: `${API_URL}/sites/sub-collections`,

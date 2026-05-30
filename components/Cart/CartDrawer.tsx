@@ -4,13 +4,11 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { X, Minus, Plus, Trash2 } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { useRouter } from "@/i18n/navigation";
 
 export default function CartDrawer() {
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity } =
     useCartStore();
-  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -101,6 +99,25 @@ export default function CartDrawer() {
                         <Plus size={14} />
                       </button>
                     </div>
+                    <div className="cart-drawer-item-price">
+                      {item.promo_price && (
+                        <span className="cart-drawer-item-price-old">
+                          Rp {(item.price || 0).toLocaleString("id-ID")}
+                        </span>
+                      )}
+                      <span className="cart-drawer-item-price-current">
+                        Rp{" "}
+                        {(
+                          item.promo_price || item.price || 0
+                        ).toLocaleString("id-ID")}
+                      </span>
+                      <span className="cart-drawer-item-price-subtotal">
+                        Subtotal: Rp{" "}
+                        {(
+                          (item.promo_price || item.price || 0) * item.quantity
+                        ).toLocaleString("id-ID")}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -111,13 +128,25 @@ export default function CartDrawer() {
         {/* Footer */}
         {cart.length > 0 && (
           <div className="cart-drawer-footer">
+            <div className="cart-drawer-total">
+              <span>Total</span>
+              <span>
+                Rp{" "}
+                {cart
+                  .reduce(
+                    (sum, item) =>
+                      sum +
+                      (item.promo_price || item.price || 0) * item.quantity,
+                    0,
+                  )
+                  .toLocaleString("id-ID")}
+              </span>
+            </div>
             <button
               className="cart-drawer-review-btn"
               onClick={() => {
                 closeCart();
-                if (!isAuthenticated) {
-                  router.push("/login");
-                }
+                router.push("/checkout");
               }}
             >
               Review Selection

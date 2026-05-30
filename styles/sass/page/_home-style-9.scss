@@ -795,12 +795,12 @@
 
     .shop-card-hover-actions {
       position: absolute;
-      left: 50%;
+      right: 12px;
       bottom: 16px;
-      transform: translateX(-50%) translateY(8px);
       display: flex;
-      gap: 8px;
+      gap: 6px;
       opacity: 0;
+      transform: translateY(8px);
       transition: all 0.3s ease-in-out;
       z-index: 2;
     }
@@ -838,12 +838,14 @@
         &.active {
           background: #e53935;
           color: #fff;
+          animation: pop-bounce 0.35s ease;
         }
       }
 
       &--cart.in-cart {
         background: #1a1c1c;
         color: #fff;
+        animation: pop-bounce 0.35s ease;
       }
     }
   }
@@ -902,6 +904,24 @@
       }
     }
 
+    .product-price {
+      margin-top: 6px;
+
+        .product-price-current {
+          font-size: 15px;
+          font-weight: 600;
+          color: #1a1c1c;
+        }
+
+      .product-price-old {
+        font-size: 10px;
+        font-weight: 400;
+        color: #999;
+        text-decoration: line-through;
+        margin-left: 8px;
+      }
+    }
+
     &:hover {
       .image img {
         transform: scale(1.08);
@@ -909,7 +929,7 @@
 
       .image .shop-card-hover-actions {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        transform: translateY(0);
       }
 
       .image {
@@ -985,7 +1005,7 @@
       }
       .shop-card-hover-actions {
         opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        transform: translateY(0);
       }
       &::before {
         -webkit-animation: shine 0.75s;
@@ -1112,5 +1132,21 @@
         }
       }
     }
+  }
+}
+
+/* Shop card action button pop animation */
+@keyframes pop-bounce {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
   }
 }

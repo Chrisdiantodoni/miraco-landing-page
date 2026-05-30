@@ -796,22 +796,22 @@
     }
 
     .price {
-      font-size: 25px;
+      font-size: 18px;
       color: $black;
       margin: 7px 0 20px;
       font-weight: 500;
 
       @include media-query(991px) {
-        font-size: 30px;
+        font-size: 20px;
       }
 
       @include media-query(767px) {
-        font-size: 25px;
+        font-size: 18px;
       }
 
       .old {
-        font-size: 24px;
-        font-size: calc-rem-value(24);
+        font-size: 16px;
+        font-size: calc-rem-value(16);
         font-weight: normal;
         color: lighten($text-color, 20%);
         text-decoration: line-through;
@@ -820,13 +820,13 @@
         font-weight: 500;
 
         @include media-query(991px) {
-          font-size: 20px;
-          font-size: calc-rem-value(20);
+          font-size: 14px;
+          font-size: calc-rem-value(14);
         }
 
         @include media-query(767px) {
-          font-size: 18px;
-          font-size: calc-rem-value(18);
+          font-size: 13px;
+          font-size: calc-rem-value(13);
         }
       }
     }

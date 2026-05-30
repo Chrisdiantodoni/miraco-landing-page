@@ -1,19 +1,22 @@
 export interface Member {
-  id: number;
-  name: string;
-  email: string;
-  username: string;
+  id: string;
+  referred_by_id: null;
+  referral_count: number;
+  fullname: string;
   company_name: string;
-  phone: string;
-  role: string;
-  profile_photo: string | null;
-  address: string;
+  phone_number: string;
   city: string;
   position: string;
+  username: string;
+  email: string;
+  last_seen_at: Date;
+  created_at: Date;
+  updated_at: Date;
+  favourite_ids: string[];
 }
 
 export interface LoginPayload {
-  identifier: string;
+  login: string;
   password: string;
 }
 

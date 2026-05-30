@@ -11,6 +11,7 @@ import {
 import { useRouter } from "@/i18n/navigation";
 import { Member } from "@/lib/types/member";
 import { login as loginApi, me as meApi } from "@/lib/api/queries/member";
+import { useCartStore } from "@/lib/store/cart";
 
 const TOKEN_KEY = "miraco_token";
 const MEMBER_KEY = "miraco_member";
@@ -42,12 +43,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    meApi(storedToken)
+    meApi()
       .then((res) => {
-        if (res?.data) {
-          setToken(storedToken);
-          setMember(res.data);
-          localStorage.setItem(MEMBER_KEY, JSON.stringify(res.data));
+      if (res?.data) {
+        setToken(storedToken);
+        setMember(res.data);
+        useCartStore.getState().setFavourites(
+          res.data.favourite_ids || [],
+        );
+        localStorage.setItem(MEMBER_KEY, JSON.stringify(res.data));
         } else {
           clearStoredAuth();
         }
@@ -68,8 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = useCallback(
-    async (identifier: string, password: string) => {
-      const res = await loginApi({ identifier, password });
+    async (login: string, password: string) => {
+      const res = await loginApi({ login, password });
 
       if (!res?.data?.access_token || !res?.data?.member) {
         throw new Error(res?.message || "Login failed");
@@ -81,10 +85,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(MEMBER_KEY, JSON.stringify(memberData));
       setToken(access_token);
       setMember(memberData);
+      useCartStore.getState().setFavourites(
+        memberData.favourite_ids || [],
+      );
 
       router.push("/dashboard");
     },
-    [router]
+    [router],
   );
 
   const logout = useCallback(() => {

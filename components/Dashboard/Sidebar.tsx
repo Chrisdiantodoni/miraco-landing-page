@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 const navItems = [
   { key: "overview", icon: "ti-dashboard", href: "/dashboard" },
   { key: "orders", icon: "ti-package", href: "/dashboard/orders" },
-  { key: "catalogue", icon: "ti-book", href: "/dashboard/referral" },
+  { key: "favourites", icon: "ti-heart", href: "/dashboard/favourites" },
   { key: "referral", icon: "ti-user", href: "/dashboard/referral" },
   { key: "vouchers", icon: "ti-tag", href: "/dashboard/vouchers" },
   { key: "settings", icon: "ti-settings", href: "/dashboard/settings" },

@@ -1,22 +1,29 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useCartStore } from "@/lib/store/cart";
 
 export default function StatsGrid() {
   const t = useTranslations("dashboard");
+  const favouritesCount = useCartStore((state) => state.favourites.length);
 
   const stats = [
-    { key: "orders", value: 12, icon: "ti-package", colorClass: "icon-orders" },
     {
-      key: "referrals",
-      value: 3,
-      icon: "ti-share",
+      key: "orders",
+      value: 12,
+      icon: "ti-package",
+      colorClass: "icon-orders",
+    },
+    {
+      key: "favourites",
+      value: favouritesCount,
+      icon: "ti-heart",
       colorClass: "icon-referrals",
     },
     {
-      key: "samples",
-      value: 5,
-      icon: "ti-layers",
+      key: "vouchers",
+      value: 2,
+      icon: "ti-tag",
       colorClass: "icon-samples",
     },
   ];

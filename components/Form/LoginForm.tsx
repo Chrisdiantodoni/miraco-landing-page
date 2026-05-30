@@ -8,12 +8,10 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import fallbackLogo from "@/public/images/miraco/logo/logo-miraco.png";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/lib/providers/AuthProvider";
-
-interface LoginFields {
-  identifier: string;
-  password: string;
-}
+import { loginSchema, LoginFormData } from "@/lib/validations/auth";
+import { Loader2 } from "lucide-react";
 
 export default function LoginForm() {
   const t = useTranslations("auth");
@@ -25,15 +23,16 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<LoginFields>({
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       identifier: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: LoginFields) => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data.identifier, data.password);
       toast.success(t("toast_success"));
@@ -72,8 +71,13 @@ export default function LoginForm() {
                 id="identifier"
                 type="text"
                 placeholder={t("placeholder_email")}
-                {...register("identifier", { required: true })}
+                {...register("identifier")}
               />
+              {errors.identifier && (
+                <div className="invalid-feedback">
+                  {errors.identifier.message}
+                </div>
+              )}
             </div>
 
             <div className="wpo-login-form-group">
@@ -83,8 +87,13 @@ export default function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 className="wpo-password-input"
                 placeholder={t("placeholder_password")}
-                {...register("password", { required: true })}
+                {...register("password")}
               />
+              {errors.password && (
+                <div className="invalid-feedback">
+                  {errors.password.message}
+                </div>
+              )}
               <button
                 type="button"
                 className="wpo-password-toggle"
@@ -113,7 +122,15 @@ export default function LoginForm() {
               className="wpo-login-submit"
               disabled={isSubmitting}
             >
-              <span>{isSubmitting ? "..." : t("button_sign_in")}</span>
+              <span>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                  </>
+                ) : (
+                  t("button_sign_in")
+                )}
+              </span>
               <i className="fi ti-arrow-right"></i>
             </button>
           </form>

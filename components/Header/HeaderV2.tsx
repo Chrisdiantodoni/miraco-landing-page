@@ -26,17 +26,14 @@ interface HeaderV2Props {
   collections: Collection[];
 }
 
-export default function HeaderV2({
-  logo,
-  collections,
-}: HeaderV2Props) {
+export default function HeaderV2({ logo, collections }: HeaderV2Props) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("header");
   const settings = useSiteSettings();
   const { member, isAuthenticated, logout } = useAuth();
   const cartCount = useCartStore((state) =>
-    state.cart.reduce((sum, item) => sum + item.quantity, 0)
+    state.cart.reduce((sum, item) => sum + item.quantity, 0),
   );
   const { handle } = createStore((state) => state);
 
@@ -220,7 +217,7 @@ export default function HeaderV2({
               <Image
                 className="wpo-header-v2-profile-avatar"
                 src={member?.profile_photo || fallbackLogo}
-                alt={member?.name || "Profile"}
+                alt={member?.fullname || "Profile"}
                 width={40}
                 height={40}
               />
@@ -229,14 +226,18 @@ export default function HeaderV2({
                   <div className="wpo-header-v2-profile-menu-avatar">
                     <Image
                       src={member?.profile_photo || fallbackLogo}
-                      alt={member?.name || "Profile"}
+                      alt={member?.fullname || "Profile"}
                       width={40}
                       height={40}
                     />
                   </div>
                   <div className="wpo-header-v2-profile-menu-info">
-                    <p className="wpo-header-v2-profile-menu-name">{member?.name}</p>
-                    <p className="wpo-header-v2-profile-menu-role">{member?.role}</p>
+                    <p className="wpo-header-v2-profile-menu-name">
+                      {member?.fullname}
+                    </p>
+                    <p className="wpo-header-v2-profile-menu-role">
+                      {member?.position}
+                    </p>
                   </div>
                 </li>
                 <li className="wpo-header-v2-profile-menu-divider"></li>

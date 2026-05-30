@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { Meta } from "@/lib/types";
 import { Product as ProductDetail } from "@/lib/types/product/product";
 import {
@@ -30,6 +31,8 @@ import { getLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
 import { useEffect } from "react";
 import { useCartStore } from "@/lib/store/cart";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { toggleFavourite as toggleFavouriteApi } from "@/lib/api/queries/favourite";
 
 interface productDetailProps {
   data: {
@@ -83,6 +86,8 @@ const Product = ({ data }: productDetailProps) => {
     slidesToScroll: 1,
   };
   const site_settings = useSiteSettings();
+  const router = useRouter();
+  const { token } = useAuth();
   const { addToCart, removeFromCart, isInCart, toggleFavourite, isFavourite } =
     useCartStore();
   const product = data?.data;
@@ -395,10 +400,22 @@ Terima kasih.`;
           <span className="product-sku">{formattedCode}</span>
           <h2>{activeProduct?.name}</h2>
 
-          {/* <div className="price">
-            <span className="current">{item.price}</span>
-            <span className="old">{item.delPrice}</span>
-          </div> */}
+          <div className="price">
+            {activeProduct.promo_price ? (
+              <>
+                <span className="current">
+                  Rp {activeProduct.promo_price.toLocaleString("id-ID")}
+                </span>
+                <span className="old">
+                  Rp {activeProduct.price.toLocaleString("id-ID")}
+                </span>
+              </>
+            ) : (
+              <span className="current">
+                Rp {activeProduct.price.toLocaleString("id-ID")}
+              </span>
+            )}
+          </div>
 
           <div className="product-specification">
             {/* {activeProduct?.category?.category_name == "CORE" && (
@@ -547,24 +564,25 @@ Terima kasih.`;
             <div className="product-icon-actions">
               {/* Favourite */}
               <button
-                className={`product-icon-btn product-icon-btn--favourite ${isFavourite(activeProduct.id as unknown as number) ? "active" : ""}`}
-                onClick={() =>
-                  toggleFavourite(activeProduct.id as unknown as number)
-                }
+                className={`product-icon-btn product-icon-btn--favourite ${isFavourite(activeProduct.id) ? "active" : ""}`}
+                onClick={async () => {
+                  if (token) {
+                    try {
+                      await toggleFavouriteApi(String(activeProduct.id));
+                    } catch {}
+                  }
+                  toggleFavourite(activeProduct.id);
+                }}
                 title={
-                  isFavourite(activeProduct.id as unknown as number)
+                  isFavourite(activeProduct.id)
                     ? t("button_favourited")
                     : t("button_favourite")
                 }
               >
                 <Heart
                   size={20}
-                  fill={
-                    isFavourite(activeProduct.id as unknown as number)
-                      ? "currentColor"
-                      : "none"
-                  }
-                  className={`product-icon-svg ${isFavourite(activeProduct.id as unknown as number) ? "active" : ""}`}
+                  fill={isFavourite(activeProduct.id) ? "currentColor" : "none"}
+                  className={`product-icon-svg ${isFavourite(activeProduct.id) ? "active" : ""}`}
                 />
               </button>
 
@@ -610,12 +628,10 @@ Terima kasih.`;
 
             {/* Action buttons */}
             <div className="product-row">
-              {isInCart(activeProduct.id as unknown as number) ? (
+              {isInCart(activeProduct.id) ? (
                 <button
                   className="theme-btn2"
-                  onClick={() =>
-                    removeFromCart(activeProduct.id as unknown as number)
-                  }
+                  onClick={() => removeFromCart(activeProduct.id)}
                 >
                   <Check size={16} />
                   {t("button_cart_added")}
@@ -625,7 +641,7 @@ Terima kasih.`;
                   className="theme-btn2"
                   onClick={() =>
                     addToCart({
-                      id: activeProduct.id as unknown as number,
+                      id: activeProduct.id,
                       name: activeProduct.name,
                       code: getProductFormattedCode(activeProduct),
                       image_url:
@@ -637,6 +653,8 @@ Terima kasih.`;
                       thickness: activeProduct?.thickness?.thickness || "",
                       size: activeProduct?.size?.size || "",
                       finishing: activeProduct?.finishing?.finishing_name || "",
+                      price: activeProduct.price,
+                      promo_price: activeProduct.promo_price || undefined,
                     })
                   }
                 >
@@ -646,11 +664,27 @@ Terima kasih.`;
               )}
               <button
                 className="theme-btn ms-2"
-                onClick={() =>
-                  handleWhatsAppClick(
-                    site_settings?.site_settings?.whatsapp ?? "",
-                  )
-                }
+                onClick={() => {
+                  if (!isInCart(activeProduct.id)) {
+                    addToCart({
+                      id: activeProduct.id,
+                      name: activeProduct.name,
+                      code: getProductFormattedCode(activeProduct),
+                      image_url:
+                        activeProduct?.media?.find(
+                          (find) => find.type == "product_thumbnail",
+                        )?.image_url || "",
+                      collection_name:
+                        activeProduct?.collection?.collection_name || "",
+                      thickness: activeProduct?.thickness?.thickness || "",
+                      size: activeProduct?.size?.size || "",
+                      finishing: activeProduct?.finishing?.finishing_name || "",
+                      price: activeProduct.price,
+                      promo_price: activeProduct.promo_price || undefined,
+                    });
+                  }
+                  router.push("/checkout");
+                }}
               >
                 {t("button_order")}
               </button>

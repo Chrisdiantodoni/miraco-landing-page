@@ -16,6 +16,8 @@ export type Product = {
   thickness: Thickness;
   type: Type;
   size: Size;
+  price: number;
+  promo_price: number;
   description: string;
   barcode: string | null;
   product_type_id: string;

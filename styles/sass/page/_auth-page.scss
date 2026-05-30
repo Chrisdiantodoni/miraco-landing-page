@@ -825,4 +825,12 @@ input[type="checkbox"]:checked:disabled + label:before {
     font-size: 13px;
     margin-top: 4px;
   }
+
+  .register-feedback {
+    min-height: 20px;
+    font-size: 13px;
+    margin-top: 4px;
+    line-height: 1.3;
+    display: block;
+  }
 }

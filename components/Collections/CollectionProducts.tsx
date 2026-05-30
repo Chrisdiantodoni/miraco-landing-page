@@ -392,6 +392,8 @@ const CollectionProducts = ({
                                     size: product?.size?.size || "",
                                     finishing:
                                       product?.finishing?.finishing_name || "",
+                                    price: product.price,
+                                    promo_price: product.promo_price || undefined,
                                   });
                                 }}
                               >
@@ -401,32 +403,59 @@ const CollectionProducts = ({
                           </div>
                           <div className="content">
                             {product?.name && (
-                              <div className="product-info-row">
-                                <div className="product-text-group">
-                                  <span
-                                    className="product-code"
-                                    style={{ fontWeight: 500 }}
-                                  >
-                                    {getProductFormattedCode(product)}
-                                  </span>
-                                  <span className="product-name-text">
-                                    {product.name}
-                                  </span>
+                              <>
+                                <div className="product-info-row">
+                                  <div className="product-text-group">
+                                    <span
+                                      className="product-code"
+                                      style={{ fontWeight: 500 }}
+                                    >
+                                      {getProductFormattedCode(product)}
+                                    </span>
+                                    <span className="product-name-text">
+                                      {product.name}
+                                    </span>
+                                  </div>
+                                  {!!product?.miraedge_detail && (
+                                    <Image
+                                      src={miraedge}
+                                      alt="Product Icon"
+                                      width={ICON_SIZE}
+                                      height={ICON_SIZE}
+                                      className="product-icon"
+                                      style={{
+                                        objectFit: "contain",
+                                        flexShrink: 0,
+                                      }}
+                                    />
+                                  )}
                                 </div>
-                                {!!product?.miraedge_detail && (
-                                  <Image
-                                    src={miraedge}
-                                    alt="Product Icon"
-                                    width={ICON_SIZE}
-                                    height={ICON_SIZE}
-                                    className="product-icon"
-                                    style={{
-                                      objectFit: "contain",
-                                      flexShrink: 0,
-                                    }}
-                                  />
+                                {product.price != null && (
+                                  <div className="product-price">
+                                    {product.promo_price ? (
+                                      <>
+                                        <span className="product-price-current">
+                                          Rp{" "}
+                                          {product.promo_price.toLocaleString(
+                                            "id-ID",
+                                          )}
+                                        </span>
+                                        <span className="product-price-old">
+                                          Rp{" "}
+                                          {product.price.toLocaleString(
+                                            "id-ID",
+                                          )}
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <span className="product-price-current">
+                                        Rp{" "}
+                                        {product.price.toLocaleString("id-ID")}
+                                      </span>
+                                    )}
+                                  </div>
                                 )}
-                              </div>
+                              </>
                             )}
                           </div>
                         </div>
