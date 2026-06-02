@@ -1,28 +1,35 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCartStore } from "@/lib/store/cart";
 
-export default function StatsGrid() {
+interface DashboardData {
+  total_approved?: number;
+  order_count?: number;
+  favourite_count?: number;
+  vouchers?: { active: number; pending: number; terminated: number; total: number };
+  referral_count?: number;
+  recent_orders?: any[];
+}
+
+export default function StatsGrid({ dashboard }: { dashboard?: DashboardData }) {
   const t = useTranslations("dashboard");
-  const favouritesCount = useCartStore((state) => state.favourites.length);
 
   const stats = [
     {
       key: "orders",
-      value: 12,
+      value: dashboard?.order_count ?? 0,
       icon: "ti-package",
       colorClass: "icon-orders",
     },
     {
       key: "favourites",
-      value: favouritesCount,
+      value: dashboard?.favourite_count ?? 0,
       icon: "ti-heart",
       colorClass: "icon-referrals",
     },
     {
       key: "vouchers",
-      value: 2,
+      value: dashboard?.vouchers?.total ?? 0,
       icon: "ti-tag",
       colorClass: "icon-samples",
     },

@@ -99,6 +99,7 @@ export default function CartDrawer() {
                         <Plus size={14} />
                       </button>
                     </div>
+                    {/*
                     <div className="cart-drawer-item-price">
                       {item.promo_price && (
                         <span className="cart-drawer-item-price-old">
@@ -118,6 +119,7 @@ export default function CartDrawer() {
                         ).toLocaleString("id-ID")}
                       </span>
                     </div>
+                    */}
                   </div>
                 </div>
               </div>
@@ -128,6 +130,7 @@ export default function CartDrawer() {
         {/* Footer */}
         {cart.length > 0 && (
           <div className="cart-drawer-footer">
+            {/*
             <div className="cart-drawer-total">
               <span>Total</span>
               <span>
@@ -142,6 +145,7 @@ export default function CartDrawer() {
                   .toLocaleString("id-ID")}
               </span>
             </div>
+            */}
             <button
               className="cart-drawer-review-btn"
               onClick={() => {

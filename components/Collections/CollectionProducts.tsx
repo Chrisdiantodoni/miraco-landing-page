@@ -430,6 +430,7 @@ const CollectionProducts = ({
                                     />
                                   )}
                                 </div>
+                                {/*
                                 {product.price != null && (
                                   <div className="product-price">
                                     {product.promo_price ? (
@@ -455,6 +456,7 @@ const CollectionProducts = ({
                                     )}
                                   </div>
                                 )}
+                                */}
                               </>
                             )}
                           </div>

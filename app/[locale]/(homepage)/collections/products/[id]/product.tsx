@@ -18,7 +18,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "react-medium-image-zoom/dist/styles.css";
 import Slider from "react-slick";
 import { getProductFormattedCode } from "@/lib/util";
@@ -29,7 +29,7 @@ import Dropdown from "../../../../../../components/ui/dropdown";
 import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
-import { useEffect } from "react";
+
 import { useCartStore } from "@/lib/store/cart";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { toggleFavourite as toggleFavouriteApi } from "@/lib/api/queries/favourite";
@@ -90,6 +90,14 @@ const Product = ({ data }: productDetailProps) => {
   const { token } = useAuth();
   const { addToCart, removeFromCart, isInCart, toggleFavourite, isFavourite } =
     useCartStore();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const isInCartChecked = mounted ? isInCart : () => false;
+  const isFavouriteChecked = mounted ? isFavourite : () => false;
+
   const product = data?.data;
   const relatedProducts = product?.related_products;
   const currentProduct = product;
@@ -298,11 +306,11 @@ Terima kasih.`;
   const getLink = () => {
     switch (locale) {
       case "en":
-        return activeProduct?.design?.collection?.name_en;
+        return activeProduct?.design?.collection?.name_en.toLowerCase();
       case "zh":
-        return activeProduct?.design?.collection?.name_zh;
+        return activeProduct?.design?.collection?.name_zh.toLowerCase();
       case "id":
-        return activeProduct?.design?.collection?.name_id;
+        return activeProduct?.design?.collection?.name_id.toLowerCase();
 
       default:
         break;
@@ -400,6 +408,7 @@ Terima kasih.`;
           <span className="product-sku">{formattedCode}</span>
           <h2>{activeProduct?.name}</h2>
 
+          {/*
           <div className="price">
             {activeProduct.promo_price ? (
               <>
@@ -416,6 +425,7 @@ Terima kasih.`;
               </span>
             )}
           </div>
+          */}
 
           <div className="product-specification">
             {/* {activeProduct?.category?.category_name == "CORE" && (
@@ -564,7 +574,7 @@ Terima kasih.`;
             <div className="product-icon-actions">
               {/* Favourite */}
               <button
-                className={`product-icon-btn product-icon-btn--favourite ${isFavourite(activeProduct.id) ? "active" : ""}`}
+                className={`product-icon-btn product-icon-btn--favourite ${isFavouriteChecked(activeProduct.id) ? "active" : ""}`}
                 onClick={async () => {
                   if (token) {
                     try {
@@ -574,15 +584,19 @@ Terima kasih.`;
                   toggleFavourite(activeProduct.id);
                 }}
                 title={
-                  isFavourite(activeProduct.id)
+                  isFavouriteChecked(activeProduct.id)
                     ? t("button_favourited")
                     : t("button_favourite")
                 }
               >
                 <Heart
                   size={20}
-                  fill={isFavourite(activeProduct.id) ? "currentColor" : "none"}
-                  className={`product-icon-svg ${isFavourite(activeProduct.id) ? "active" : ""}`}
+                  fill={
+                    isFavouriteChecked(activeProduct.id)
+                      ? "currentColor"
+                      : "none"
+                  }
+                  className={`product-icon-svg ${isFavouriteChecked(activeProduct.id) ? "active" : ""}`}
                 />
               </button>
 
@@ -628,7 +642,7 @@ Terima kasih.`;
 
             {/* Action buttons */}
             <div className="product-row">
-              {isInCart(activeProduct.id) ? (
+              {isInCartChecked(activeProduct.id) ? (
                 <button
                   className="theme-btn2"
                   onClick={() => removeFromCart(activeProduct.id)}
@@ -665,7 +679,7 @@ Terima kasih.`;
               <button
                 className="theme-btn ms-2"
                 onClick={() => {
-                  if (!isInCart(activeProduct.id)) {
+                  if (!isInCartChecked(activeProduct.id)) {
                     addToCart({
                       id: activeProduct.id,
                       name: activeProduct.name,

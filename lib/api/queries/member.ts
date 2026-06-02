@@ -36,7 +36,7 @@ export async function checkReferral(code: string) {
 }
 
 export async function submitOrder(body: Record<string, any>) {
-  return api.post(ENDPOINTS.ORDER_REQUEST, body);
+  return api.post(ENDPOINTS.SUBMIT_ORDER, body);
 }
 
 export async function validateVoucher(body: { voucher_code: string }) {
@@ -58,4 +58,28 @@ export async function getOrders(params?: GetOrdersParams) {
 
 export async function getOrderDetail(orderId: string) {
   return api.get(ENDPOINTS.ORDERS_DETAIL(orderId));
+}
+
+export async function getOrderInvoice(orderId: string) {
+  return api.postBlob(ENDPOINTS.ORDERS_INVOICE(orderId), {});
+}
+
+export async function updateProfile(body: Record<string, any>) {
+  return api.put(ENDPOINTS.ME, body);
+}
+
+export async function changePassword(body: {
+  current_password: string;
+  new_password: string;
+  new_password_confirmation: string;
+}) {
+  return api.post(ENDPOINTS.CHANGE_PASSWORD, body);
+}
+
+export async function getDashboard() {
+  return api.get(ENDPOINTS.DASHBOARD);
+}
+
+export async function getReferrer() {
+  return api.get(ENDPOINTS.REFERRER);
 }

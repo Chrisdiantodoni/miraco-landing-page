@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Search, ChevronDown } from "lucide-react";
+import { Loader2, Search, ChevronDown, MapPin } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
 import { submitOrder } from "@/lib/api/queries/member";
 import { getVouchers, MemberVoucher } from "@/lib/api/queries/voucher";
@@ -17,7 +17,7 @@ import OrderSummary from "./OrderSummary";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
 const checkoutSchema = z.object({
-  fullname: z.string().min(1),
+  name: z.string().min(1),
   email: z.string().min(1).email(),
   phone_number: z.string().optional().or(z.literal("")),
   company_name: z.string().optional().or(z.literal("")),
@@ -26,6 +26,9 @@ const checkoutSchema = z.object({
   city: z.string().optional().or(z.literal("")),
   state_province: z.string().optional().or(z.literal("")),
   postal_code: z.string().optional().or(z.literal("")),
+  link_order_gmaps: z.string().optional().or(z.literal("")),
+  lat_order_gmaps: z.string().optional().or(z.literal("")),
+  long_order_gmaps: z.string().optional().or(z.literal("")),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -40,11 +43,12 @@ export default function CheckoutForm() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      fullname: member?.fullname || "",
+      name: member?.fullname || "",
       email: member?.email || "",
       phone_number: member?.phone_number || "",
       company_name: member?.company_name || "",
@@ -53,6 +57,9 @@ export default function CheckoutForm() {
       city: "",
       state_province: "",
       postal_code: "",
+      link_order_gmaps: "",
+      lat_order_gmaps: "",
+      long_order_gmaps: "",
     },
   });
 
@@ -60,6 +67,32 @@ export default function CheckoutForm() {
   const [voucherSearch, setVoucherSearch] = useState("");
   const [popoverOpen, setPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
+
+  const [isLocating, setIsLocating] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
+
+  const handleLocate = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      setGeoError(t("geo_not_supported"));
+      return;
+    }
+    setIsLocating(true);
+    setGeoError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude.toString();
+        const lng = pos.coords.longitude.toString();
+        setValue("lat_order_gmaps", lat);
+        setValue("long_order_gmaps", lng);
+        setValue("link_order_gmaps", `https://maps.google.com/?q=${lat},${lng}`);
+        setIsLocating(false);
+      },
+      () => {
+        setGeoError(t("geo_permission_denied"));
+        setIsLocating(false);
+      },
+    );
+  };
 
   const debouncedSearch = useDebounce(voucherSearch, 500);
 
@@ -145,8 +178,13 @@ export default function CheckoutForm() {
         .filter(Boolean)
         .join(", ");
 
+      const cartTotal = cart.reduce(
+        (s, item) => s + (item.promo_price || item.price || 0) * item.quantity,
+        0,
+      );
+
       const payload = {
-        name: body.fullname,
+        name: body.name,
         email: body.email,
         phone_number: body.phone_number || undefined,
         company_name: body.company_name || undefined,
@@ -156,7 +194,16 @@ export default function CheckoutForm() {
         state_province: body.state_province || undefined,
         postal_code: body.postal_code || undefined,
         order_address: orderAddress,
+        link_order_gmaps: body.link_order_gmaps || undefined,
+        lat_order_gmaps: body.lat_order_gmaps || undefined,
+        long_order_gmaps: body.long_order_gmaps || undefined,
         voucher_codes: appliedVouchers.map((v) => v.voucher_code),
+        disc_voucher: appliedVouchers.reduce((sum, v) => {
+          if (v.voucher.discount_type === "fixed") {
+            return sum + v.voucher.discount_value;
+          }
+          return sum + Math.floor((v.voucher.discount_value / 100) * cartTotal);
+        }, 0),
         products: cart.map((item) => ({
           product_id: String(item.id),
           quantity: item.quantity,
@@ -191,19 +238,19 @@ export default function CheckoutForm() {
               <h3 className="checkout-card-title">{t("personal_info")}</h3>
               <div className="checkout-form-grid">
                 <div className="checkout-form-group">
-                  <label htmlFor="fullname">
+                  <label htmlFor="name">
                     {t("label_fullname")}{" "}
                     <span style={{ color: "#ba1a1a" }}>*</span>
                   </label>
                   <input
-                    id="fullname"
+                    id="name"
                     type="text"
                     placeholder={t("placeholder_fullname")}
-                    {...register("fullname")}
+                    {...register("name")}
                   />
-                  {errors.fullname && (
+                  {errors.name && (
                     <span className="checkout-feedback">
-                      {errors.fullname.message}
+                      {errors.name.message}
                     </span>
                   )}
                 </div>
@@ -296,6 +343,53 @@ export default function CheckoutForm() {
                     {...register("postal_code")}
                   />
                 </div>
+                <div className="checkout-form-group full" style={{ alignItems: "flex-start" }}>
+                  <button
+                    type="button"
+                    className="checkout-locate-btn"
+                    onClick={handleLocate}
+                    disabled={isLocating}
+                  >
+                    {isLocating ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <MapPin size={16} />
+                    )}
+                    {t("button_locate")}
+                  </button>
+                  {geoError && (
+                    <span className="checkout-feedback">{geoError}</span>
+                  )}
+                </div>
+                <div className="checkout-form-group">
+                  <label htmlFor="lat_order_gmaps">{t("label_lat")}</label>
+                  <input
+                    id="lat_order_gmaps"
+                    type="text"
+                    placeholder="-6.2088"
+                    {...register("lat_order_gmaps")}
+                  />
+                </div>
+                <div className="checkout-form-group">
+                  <label htmlFor="long_order_gmaps">{t("label_long")}</label>
+                  <input
+                    id="long_order_gmaps"
+                    type="text"
+                    placeholder="106.8456"
+                    {...register("long_order_gmaps")}
+                  />
+                </div>
+                <div className="checkout-form-group full">
+                  <label htmlFor="link_order_gmaps">
+                    {t("label_gmaps_link")}
+                  </label>
+                  <input
+                    id="link_order_gmaps"
+                    type="text"
+                    placeholder="https://maps.google.com/?q=..."
+                    {...register("link_order_gmaps")}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -379,7 +473,7 @@ export default function CheckoutForm() {
                                   {v.voucher.discount_type === "fixed"
                                     ? `Rp ${v.voucher.discount_value.toLocaleString()}`
                                     : `${v.voucher.discount_value}%`}
-                                </div>
+                </div>
                               </div>
                               <button
                                 type="button"
@@ -449,7 +543,7 @@ export default function CheckoutForm() {
             </div>
 
             {/* Submit */}
-            <div className="checkout-submit" style={{ padding: "0 32px 24px" }}>
+            <div className="checkout-submit" style={{ padding: "0 0 24px" }}>
               <button type="submit" disabled={isPending || cart.length === 0}>
                 {isPending ? (
                   <Loader2 size={18} className="animate-spin" />

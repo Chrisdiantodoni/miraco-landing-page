@@ -10,6 +10,8 @@ export const ENDPOINTS = {
   ORDERS: `${API_URL}/member/orders`,
   ORDERS_DETAIL: (orderId: string | number) =>
     `${API_URL}/member/orders/${orderId}`,
+  ORDERS_INVOICE: (orderId: string | number) =>
+    `${API_URL}/member/orders/${orderId}/invoice`,
   SUBMIT_ORDER: `${API_URL}/member/orders`,
 
   CHECK_USERNAME: `${API_URL}/member/check-username`,
@@ -17,6 +19,9 @@ export const ENDPOINTS = {
   VOUCHERS: `${API_URL}/member/vouchers`,
   VOUCHER_VALIDATE: `${API_URL}/member/vouchers/validate`,
   ME: `${API_URL}/member/me`,
+  DASHBOARD: `${API_URL}/member/dashboard`,
+  REFERRER: `${API_URL}/member/referrer`,
+  CHANGE_PASSWORD: `${API_URL}/member/change-password`,
 
   SITE_SETTINGS: `${API_URL}/sites/settings`,
   POSITION: `${API_URL}/positions/list`,
@@ -32,7 +37,6 @@ export const ENDPOINTS = {
   DOWNLOAD: (id: string | number) => `${API_URL}/media/download/${id}`,
   DOWNLOAD_ALL: (id: string | number) => `${API_URL}/media/bulk-download/${id}`,
   REQUESTS: `${API_URL}/sites/requests`,
-  ORDER_REQUEST: `${API_URL}/order-request`,
   FORMSPREE: `https://formspree.io/f/xnneovpz`,
   FORMSPREE_DONI: `https://formspree.io/f/xwpobnlr`,
   SUB_COLLECTION: `${API_URL}/sites/sub-collections`,

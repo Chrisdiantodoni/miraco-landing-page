@@ -555,3 +555,30 @@
   font-weight: 600;
   color: #1a1c1c;
 }
+
+.checkout-locate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: $white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1c1c;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #1a1c1c;
+    border-color: #1a1c1c;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

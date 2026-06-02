@@ -35,23 +35,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!token && !!member;
 
+  const clearStoredAuth = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(MEMBER_KEY);
+    setToken(null);
+    setMember(null);
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
 
     if (!storedToken) {
-      setIsLoading(false);
+      Promise.resolve().then(() => setIsLoading(false));
       return;
     }
 
     meApi()
       .then((res) => {
-      if (res?.data) {
-        setToken(storedToken);
-        setMember(res.data);
-        useCartStore.getState().setFavourites(
-          res.data.favourite_ids || [],
-        );
-        localStorage.setItem(MEMBER_KEY, JSON.stringify(res.data));
+        if (res?.data) {
+          setToken(storedToken);
+
+          const newMemberData = {
+            ...res.data,
+            profile_photo: res.data?.media?.find(
+              (find) => find.type === "profile_photo",
+            )?.image_url,
+          };
+
+          setMember(newMemberData);
+          useCartStore.getState().setFavourites(res.data.favourite_ids || []);
+          localStorage.setItem(MEMBER_KEY, JSON.stringify(res.data));
         } else {
           clearStoredAuth();
         }
@@ -64,13 +77,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
   }, []);
 
-  const clearStoredAuth = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(MEMBER_KEY);
-    setToken(null);
-    setMember(null);
-  };
-
   const login = useCallback(
     async (login: string, password: string) => {
       const res = await loginApi({ login, password });
@@ -80,14 +86,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const { access_token, member: memberData } = res.data;
+      const newMemberData = {
+        ...memberData,
+        profile_photo: memberData?.media?.find(
+          (find) => find.type === "profile_photo",
+        )?.image_url,
+      };
 
       localStorage.setItem(TOKEN_KEY, access_token);
-      localStorage.setItem(MEMBER_KEY, JSON.stringify(memberData));
+      localStorage.setItem(MEMBER_KEY, JSON.stringify(newMemberData));
       setToken(access_token);
-      setMember(memberData);
-      useCartStore.getState().setFavourites(
-        memberData.favourite_ids || [],
-      );
+      setMember(newMemberData);
+      useCartStore.getState().setFavourites(memberData.favourite_ids || []);
 
       router.push("/dashboard");
     },

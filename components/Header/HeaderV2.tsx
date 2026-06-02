@@ -236,7 +236,7 @@ export default function HeaderV2({ logo, collections }: HeaderV2Props) {
                       {member?.fullname}
                     </p>
                     <p className="wpo-header-v2-profile-menu-role">
-                      {member?.position}
+                      {member?.position?.position_name}
                     </p>
                   </div>
                 </li>

@@ -2,23 +2,62 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { useQuery } from "@tanstack/react-query";
+import { getReferrer } from "@/lib/api/queries/member";
 
-export default function WelcomeCard() {
+function formatDate(dateStr: string) {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr);
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${day} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatRupiah(amount: number) {
+  return `Rp ${amount.toLocaleString("id-ID")}`;
+}
+
+interface DashboardData {
+  total_approved?: number;
+  order_count?: number;
+  favourite_count?: number;
+  vouchers?: any;
+  referral_count?: number;
+  recent_orders?: any[];
+}
+
+export default function WelcomeCard({
+  dashboard,
+}: {
+  dashboard?: DashboardData;
+}) {
   const t = useTranslations("dashboard");
+  const { member } = useAuth();
+
+  const { data: referrerData } = useQuery({
+    queryKey: ["referrer"],
+    queryFn: () => getReferrer(),
+  });
+
+  const referrer = referrerData?.data;
+  const referralCode = member?.username;
 
   return (
     <>
-      {/* Header */}
       <header className="dash-page-header">
         <div>
-          <p className="dash-page-company">PT. Cipta Arsitektur</p>
-          <h2>{t("welcome", { name: "John Doe" })}</h2>
+          <p className="dash-page-company">
+            {member?.company_name || "-"}
+          </p>
+          <h2>{t("welcome", { name: member?.fullname || "" })}</h2>
         </div>
       </header>
 
-      {/* Bento Grid */}
       <div className="dash-bento">
-        {/* Company Info Card */}
         <div className="dash-card dash-company-card">
           <div className="dash-card-heading">
             <i className="fi flaticon-house"></i>
@@ -27,28 +66,31 @@ export default function WelcomeCard() {
           <div className="dash-company-grid">
             <div>
               <label>{t("settings_company")}</label>
-              <p>PT. Cipta Arsitektur</p>
+              <p>{member?.company_name || "-"}</p>
             </div>
             <div>
               <label>{t("settings_owner")}</label>
-              <p>John Doe</p>
+              <p>{member?.fullname || "-"}</p>
             </div>
             <div className="dash-company-full">
               <label>{t("settings_address")}</label>
-              <p>Jl. Arsitektur No. 1, Jakarta Selatan, 12345</p>
+              <p>
+                {member?.region?.region_name
+                  ? member.region.region_name
+                  : "-"}
+              </p>
             </div>
             <div>
               <label>{t("settings_phone")}</label>
-              <p>+62 812 3456 7890</p>
+              <p>{member?.phone_number || "-"}</p>
             </div>
             <div>
               <label>{t("settings_email")}</label>
-              <p>hello@company.com</p>
+              <p>{member?.email || "-"}</p>
             </div>
           </div>
         </div>
 
-        {/* Referral Widget (dark) */}
         <div className="dash-card dash-referral-widget">
           <div>
             <div className="dash-referral-widget-heading">
@@ -56,23 +98,69 @@ export default function WelcomeCard() {
               <i className="fi ti-crown"></i>
             </div>
             <label>{t("referral_your_code")}</label>
-            <div className="dash-referral-widget-code">johndoe_arch</div>
+            <div className="dash-referral-widget-code">
+              {referralCode || "-"}
+            </div>
           </div>
           <div className="dash-referral-widget-bottom">
             <div>
               <p className="dash-referral-widget-tier-label">
-                {t("partner_tier")}
+                {t("referral_by")}
               </p>
-              <p className="dash-referral-widget-tier-val">Premium Tier</p>
+              <p className="dash-referral-widget-tier-val">
+                {referrer?.referrer?.fullname || "-"}
+              </p>
             </div>
             <div className="dash-referral-widget-refs">
-              <span>12</span>
+              <span>{dashboard?.referral_count ?? 0}</span>
               <p>{t("stat_referrals")}</p>
             </div>
           </div>
         </div>
 
-        {/* Action Cards Section */}
+        {dashboard?.recent_orders && dashboard.recent_orders.length > 0 && (
+          <div className="dash-card" style={{ gridColumn: "1 / -1", marginTop: 8 }}>
+            <div className="dash-card-heading">
+              <i className="fi ti-receipt"></i>
+              <h3>{t("recent_orders")}</h3>
+            </div>
+            <table className="dash-table">
+              <thead>
+                <tr>
+                  <th>{t("table_id")}</th>
+                  <th>{t("table_status")}</th>
+                  <th>{t("table_date")}</th>
+                  <th>{t("table_amount")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dashboard.recent_orders.map((order: any) => (
+                  <tr key={order.id}>
+                    <td>
+                      <Link
+                        href={`/dashboard/orders/${order.id}`}
+                        style={{ color: "#1a1c1c", fontWeight: 500 }}
+                      >
+                        {order.invoice_number ||
+                          `#${order.id?.substring(0, 8)?.toUpperCase()}`}
+                      </Link>
+                    </td>
+                    <td>
+                      <span className={`dash-status ${order.status}`}>
+                        {t(`status_${order.status}`, {
+                          fallback: order.status,
+                        })}
+                      </span>
+                    </td>
+                    <td>{formatDate(order.created_at)}</td>
+                    <td>{formatRupiah(order.total_price || 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         <div className="dash-action-section">
           <h3>{t("action_title")}</h3>
           <div className="dash-action-grid">

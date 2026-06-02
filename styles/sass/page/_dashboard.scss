@@ -134,11 +134,13 @@
 .dash-content {
   flex: 1;
   min-width: 0;
+  padding: 0 24px 24px;
 
   @include media-query(767px) {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
+    padding: 12px 12px 12px;
   }
 }
 
@@ -984,6 +986,170 @@
 }
 
 /* ================================================================
+   ORDER DETAIL — ITEM CARDS
+   ================================================================ */
+.order-item-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba($border-color, 0.5);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.order-item-image {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.order-item-image-placeholder {
+  width: 64px;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+}
+
+.order-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-item-code {
+  display: block;
+  font-size: 11px;
+  color: $text-color;
+  margin-bottom: 2px;
+}
+
+.order-item-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: $black;
+  margin-bottom: 4px;
+}
+
+.order-item-qty {
+  display: block;
+  font-size: 12px;
+  color: $text-color;
+}
+
+.order-item-price {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: $black;
+  text-align: right;
+}
+
+/* ================================================================
+   ORDER DETAIL — VOUCHER CARDS
+   ================================================================ */
+.order-voucher-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.order-voucher-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba($border-color, 0.5);
+  border-radius: 8px;
+}
+
+.order-voucher-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-voucher-code {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: $black;
+  letter-spacing: 0.04em;
+}
+
+.order-voucher-name {
+  display: block;
+  font-size: 13px;
+  color: $text-color;
+  margin-top: 2px;
+}
+
+.order-voucher-detail {
+  display: block;
+  font-size: 11px;
+  color: lighten($text-color, 15%);
+  margin-top: 4px;
+}
+
+.order-voucher-amount {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ba1a1a;
+}
+
+/* ================================================================
+   ORDER DETAIL — PRICE SUMMARY
+   ================================================================ */
+.order-price-summary {
+  margin-top: 32px;
+  border-top: 1px solid $border-color;
+  padding-top: 20px;
+}
+
+.order-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 14px;
+  color: $text-color;
+
+  &--total {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid $border-color;
+    font-size: 16px;
+    font-weight: 600;
+    color: $black;
+  }
+}
+
+/* ================================================================
+   MAPS LINK
+   ================================================================ */
+.dash-maps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1c1c;
+  text-decoration: none;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #1a1c1c;
+    color: #fff;
+  }
+}
+
+/* ================================================================
    REFERRAL PAGE
    ================================================================ */
 .dash-referral-main {
@@ -1141,6 +1307,214 @@
 
   &:hover {
     opacity: 0.85;
+  }
+}
+
+.dash-feedback {
+  display: block;
+  font-size: 11px;
+  color: #ba1a1a;
+  margin-top: 4px;
+}
+
+.dash-register-photo-upload {
+  margin-bottom: 20px;
+}
+
+.dash-register-photo-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border: 1px dashed $border-color;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    border-color: $black;
+  }
+}
+
+.dash-register-photo-input {
+  display: none;
+}
+
+.dash-register-photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  &.has-photo {
+    border-radius: 8px;
+  }
+}
+
+.dash-register-photo-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: $text-color;
+}
+
+.dash-register-photo-remove {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #ba1a1a;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* ================================================================
+   SETTINGS TABS
+   ================================================================ */
+.dash-settings-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 28px;
+}
+
+.dash-settings-tab {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-color;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: $base-font;
+  transition: all 0.2s;
+
+  &:hover {
+    color: $black;
+  }
+
+  &.active {
+    color: $black;
+    font-weight: 600;
+    border-bottom-color: $black;
+  }
+}
+
+/* ================================================================
+   AVATAR UPLOAD
+   ================================================================ */
+.dash-avatar-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 10px;
+}
+
+.dash-avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px dashed $border-color;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: $black;
+
+    .dash-avatar-overlay {
+      opacity: 1;
+    }
+  }
+}
+
+.dash-avatar-input {
+  display: none;
+}
+
+.dash-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dash-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+}
+
+.dash-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.dash-avatar-remove {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #ba1a1a;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* ================================================================
+   PASSWORD TOGGLE
+   ================================================================ */
+.dash-password-wrap {
+  position: relative;
+
+  input {
+    padding-right: 44px;
+  }
+}
+
+.dash-password-toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    color: $black;
   }
 }
 

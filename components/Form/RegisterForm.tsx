@@ -78,8 +78,8 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       company_name: "",
-      city: "",
-      position: "",
+      region_id: "",
+      position_id: "",
       fullname: "",
       address: "",
       phone_number: "",
@@ -158,16 +158,17 @@ export default function RegisterForm() {
   });
 
   const onSubmit = (data: RegisterFormData) => {
-    const positionName =
-      data.position && typeof data.position === "object"
-        ? (data.position as any).label || ""
-        : data.position || "";
+    const positionId =
+      data.position_id && typeof data.position_id === "object"
+        ? (data.position_id as any).value || ""
+        : data.position_id || "";
 
-    const cityName = regionOptions?.find((r) => r?.value == data.city)?.label;
-    // console.log({ cityName });
-    // return;
+    const regionId =
+      data.region_id && typeof data.region_id === "object"
+        ? (data.region_id as any).value || ""
+        : data.region_id || "";
 
-    mutate({ ...data, position: positionName, city: cityName });
+    mutate({ ...data, position_id: positionId, region_id: regionId });
   };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,47 +241,47 @@ export default function RegisterForm() {
                 )}
               </div>
               <div className="wpo-login-form-group">
-                <label htmlFor="position">
+                <label htmlFor="position_id">
                   {t("label_position")} <span className="required-star">*</span>
                 </label>
                 <Controller
-                  name="position"
+                  name="position_id"
                   control={control}
                   render={({ field }) => (
                     <DynamicSearchPosition
                       onChange={field.onChange}
                       value={field.value}
-                      hasError={!!errors.position}
+                      hasError={!!errors.position_id}
                       placeholder={t("placeholder_position")}
                     />
                   )}
                 />
-                {errors.position && (
+                {errors.position_id && (
                   <div className="invalid-feedback">
-                    {errors.position.message}
+                    {errors.position_id.message}
                   </div>
                 )}
               </div>
               <div className="wpo-login-form-group">
-                <label htmlFor="city">
+                <label htmlFor="region_id">
                   {t("label_city")} <span className="required-star">*</span>
                 </label>
                 <Controller
-                  name="city"
+                  name="region_id"
                   control={control}
                   rules={{ required: t("error_city_required") }}
                   render={({ field }) => (
                     <DynamicRegionSelect
                       field={field}
                       options={regionOptions}
-                      hasError={!!errors.city}
+                      hasError={!!errors.region_id}
                       placeholder={t("placeholder_city")}
                       isClearable
                     />
                   )}
                 />
-                {errors.city && (
-                  <div className="invalid-feedback">{errors.city.message}</div>
+                {errors.region_id && (
+                  <div className="invalid-feedback">{errors.region_id.message}</div>
                 )}
               </div>
               <div className="wpo-login-form-group">

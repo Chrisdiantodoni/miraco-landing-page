@@ -51,6 +51,7 @@ export default function OrderSummary() {
                   <div className="summary-qty">
                     {t("qty")}: {item.quantity}
                   </div>
+                  {/*
                   <div className="summary-price">
                     {item.promo_price && (
                       <span className="summary-price-old">
@@ -68,9 +69,11 @@ export default function OrderSummary() {
                       ).toLocaleString("id-ID")}
                     </span>
                   </div>
+                  */}
                 </div>
               </div>
             ))}
+            {/*
             <div className="checkout-summary-total">
               <span>Total</span>
               <span>
@@ -85,6 +88,7 @@ export default function OrderSummary() {
                   .toLocaleString("id-ID")}
               </span>
             </div>
+            */}
           </>
         )}
       </div>
