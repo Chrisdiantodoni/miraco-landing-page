@@ -67,7 +67,7 @@ $border: #e0e0e0;
 }
 
 .location-image-wrapper {
-  width: 240px;
+  width: 300px;
   flex-shrink: 0;
   background: $light-gray;
 
@@ -158,6 +158,8 @@ $border: #e0e0e0;
 
   &:hover {
     opacity: 0.8;
+    color: $white;
+    text-decoration: none;
   }
 }
 

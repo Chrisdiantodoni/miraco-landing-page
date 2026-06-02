@@ -796,22 +796,22 @@
     }
 
     .price {
-      font-size: 25px;
+      font-size: 18px;
       color: $black;
       margin: 7px 0 20px;
       font-weight: 500;
 
       @include media-query(991px) {
-        font-size: 30px;
+        font-size: 20px;
       }
 
       @include media-query(767px) {
-        font-size: 25px;
+        font-size: 18px;
       }
 
       .old {
-        font-size: 24px;
-        font-size: calc-rem-value(24);
+        font-size: 16px;
+        font-size: calc-rem-value(16);
         font-weight: normal;
         color: lighten($text-color, 20%);
         text-decoration: line-through;
@@ -820,13 +820,13 @@
         font-weight: 500;
 
         @include media-query(991px) {
-          font-size: 20px;
-          font-size: calc-rem-value(20);
+          font-size: 14px;
+          font-size: calc-rem-value(14);
         }
 
         @include media-query(767px) {
-          font-size: 18px;
-          font-size: calc-rem-value(18);
+          font-size: 13px;
+          font-size: calc-rem-value(13);
         }
       }
     }
@@ -878,7 +878,48 @@
 
     /*** product option ***/
     .product-option {
-      margin-top: 30px;
+    }
+
+    .product-icon-actions {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 15px;
+    }
+
+    .product-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.2s;
+      flex-shrink: 0;
+
+      .product-icon-svg {
+        transition: fill 0.2s;
+      }
+
+      &--favourite:hover,
+      &--favourite.active {
+        color: #E53935;
+
+        .product-icon-svg {
+          fill: currentColor;
+        }
+      }
+
+      &--chat:hover {
+        color: #25D366;
+      }
+
+      &--download:hover {
+        color: #1a1a1a;
+      }
     }
 
     .tg-btm {
@@ -1228,8 +1269,8 @@
     // }
 
     .related-products-pills {
-      margin-top: 25px;
-      margin-bottom: 25px;
+      margin-top: 15px;
+      margin-bottom: 15px;
 
       h3 {
         font-size: 18px;

@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Sitemap: https://miracohpl.com/sitemap.xml
+
+# Blok untuk development
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/static/
+Disallow: /*.json$
+Disallow: /*.map$
+
+# Blok untuk preview/development
+User-agent: *
+Disallow: /preview/
+Disallow: /draft/

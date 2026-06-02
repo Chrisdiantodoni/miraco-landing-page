@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { Meta } from "@/lib/types";
 import { Product as ProductDetail } from "@/lib/types/product/product";
 import {
@@ -13,9 +14,11 @@ import {
   Loader,
   Loader2,
   Info,
+  Heart,
+  ShoppingCart,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "react-medium-image-zoom/dist/styles.css";
 import Slider from "react-slick";
 import { getProductFormattedCode } from "@/lib/util";
@@ -26,6 +29,10 @@ import Dropdown from "../../../../../../components/ui/dropdown";
 import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
+
+import { useCartStore } from "@/lib/store/cart";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { toggleFavourite as toggleFavouriteApi } from "@/lib/api/queries/favourite";
 
 interface productDetailProps {
   data: {
@@ -79,6 +86,18 @@ const Product = ({ data }: productDetailProps) => {
     slidesToScroll: 1,
   };
   const site_settings = useSiteSettings();
+  const router = useRouter();
+  const { token } = useAuth();
+  const { addToCart, removeFromCart, isInCart, toggleFavourite, isFavourite } =
+    useCartStore();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const isInCartChecked = mounted ? isInCart : () => false;
+  const isFavouriteChecked = mounted ? isFavourite : () => false;
+
   const product = data?.data;
   const relatedProducts = product?.related_products;
   const currentProduct = product;
@@ -91,15 +110,16 @@ const Product = ({ data }: productDetailProps) => {
       allPillProducts.push(rp);
     }
   });
+  console.log({ relatedProducts });
 
   const [activeProductId, setActiveProductId] = useState<string | number>(
-    currentProduct?.id
+    currentProduct?.id,
   );
 
   // 3. Cari objek produk aktif berdasarkan ID (derived state)
   // Ini akan digunakan untuk memperbarui konten detail jika Anda mengimplementasikannya
   const activeProduct = allPillProducts.find(
-    (p) => p.id === activeProductId
+    (p) => p.id === activeProductId,
   ) as ProductDetail;
 
   // 4. Handler klik pada pill
@@ -114,7 +134,7 @@ const Product = ({ data }: productDetailProps) => {
 
   const allMedia = activeProduct?.media || [];
   const productDownload = allMedia.find(
-    (find) => find?.type == "product_to_download"
+    (find) => find?.type == "product_to_download",
   );
   const thumbnail = allMedia.find((find) => find?.type === "product_thumbnail");
   const otherMedia = allMedia.filter(
@@ -122,7 +142,7 @@ const Product = ({ data }: productDetailProps) => {
       find?.type !== "product_to_download" &&
       find?.type !== "product_thumbnail" &&
       find?.image_url &&
-      find.image_url.length > 0
+      find.image_url.length > 0,
   );
 
   const sliderMedia: { image_url: string; alt: string }[] = [];
@@ -175,6 +195,20 @@ const Product = ({ data }: productDetailProps) => {
     setCurrentZoomImage(null);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && lightboxOpen) {
+        closeLightbox();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [lightboxOpen, currentZoomImage]); // Tambahkan dependencies
+
   // const testingDownload = activeProduct?.media?.find(
   //   (find) => find?.type == "additional_image_products"
   // )?.path;
@@ -202,7 +236,7 @@ const Product = ({ data }: productDetailProps) => {
 
         // Match pattern: filename="..." atau filename=...
         const match = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
         );
 
         if (match && match[1]) {
@@ -272,16 +306,18 @@ Terima kasih.`;
   const getLink = () => {
     switch (locale) {
       case "en":
-        return activeProduct?.design?.collection?.name_en;
+        return activeProduct?.design?.collection?.name_en.toLowerCase();
       case "zh":
-        return activeProduct?.design?.collection?.name_zh;
+        return activeProduct?.design?.collection?.name_zh.toLowerCase();
       case "id":
-        return activeProduct?.design?.collection?.name_id;
+        return activeProduct?.design?.collection?.name_id.toLowerCase();
 
       default:
         break;
     }
   };
+
+  console.log({ activeProduct });
   return (
     <div className="row mt-5">
       {lightboxOpen && currentZoomImage && (
@@ -305,6 +341,7 @@ Terima kasih.`;
                 src={currentZoomImage.url}
                 alt={currentZoomImage.alt}
                 sizes="100vw"
+                priority
                 fill
                 style={{
                   objectFit: "contain",
@@ -338,6 +375,7 @@ Terima kasih.`;
                           alt={mediaItem.alt}
                           sizes="(max-width: 991px) 100vw, 40vw"
                           fill
+                          priority
                           style={{ objectFit: "cover" }}
                         />
                         {/* Icon Zoom Overlay */}
@@ -370,10 +408,24 @@ Terima kasih.`;
           <span className="product-sku">{formattedCode}</span>
           <h2>{activeProduct?.name}</h2>
 
-          {/* <div className="price">
-            <span className="current">{item.price}</span>
-            <span className="old">{item.delPrice}</span>
-          </div> */}
+          {/*
+          <div className="price">
+            {activeProduct.promo_price ? (
+              <>
+                <span className="current">
+                  Rp {activeProduct.promo_price.toLocaleString("id-ID")}
+                </span>
+                <span className="old">
+                  Rp {activeProduct.price.toLocaleString("id-ID")}
+                </span>
+              </>
+            ) : (
+              <span className="current">
+                Rp {activeProduct.price.toLocaleString("id-ID")}
+              </span>
+            )}
+          </div>
+          */}
 
           <div className="product-specification">
             {/* {activeProduct?.category?.category_name == "CORE" && (
@@ -459,10 +511,10 @@ Terima kasih.`;
                   // Ambil gambar thumbnail dari produk terkait
                   const pillProductMedia = p?.media || [];
                   const pillThumbnail = pillProductMedia.find(
-                    (media: any) => media?.type === "product_thumbnail"
+                    (media: any) => media?.type === "product_thumbnail",
                   );
                   const pillDownloadImage = pillProductMedia.find(
-                    (media: any) => media?.type === "product_to_download"
+                    (media: any) => media?.type === "product_to_download",
                   );
 
                   // Prioritas: thumbnail dulu, kalau tidak ada gunakan download image
@@ -518,69 +570,138 @@ Terima kasih.`;
             </div>
           )}
           <div className="product-option">
-            <div className="product-row">
+            {/* Icon actions */}
+            <div className="product-icon-actions">
+              {/* Favourite */}
               <button
-                className="theme-btn2"
+                className={`product-icon-btn product-icon-btn--favourite ${isFavouriteChecked(activeProduct.id) ? "active" : ""}`}
+                onClick={async () => {
+                  if (token) {
+                    try {
+                      await toggleFavouriteApi(String(activeProduct.id));
+                    } catch {}
+                  }
+                  toggleFavourite(activeProduct.id);
+                }}
+                title={
+                  isFavouriteChecked(activeProduct.id)
+                    ? t("button_favourited")
+                    : t("button_favourite")
+                }
+              >
+                <Heart
+                  size={20}
+                  fill={
+                    isFavouriteChecked(activeProduct.id)
+                      ? "currentColor"
+                      : "none"
+                  }
+                  className={`product-icon-svg ${isFavouriteChecked(activeProduct.id) ? "active" : ""}`}
+                />
+              </button>
+
+              {/* Chat */}
+              <button
+                className="product-icon-btn product-icon-btn--chat"
                 onClick={() =>
                   handleWhatsAppClick(
-                    site_settings?.site_settings?.whatsapp ?? ""
+                    site_settings?.site_settings?.whatsapp ?? "",
                   )
                 }
+                title={t("button_wa_chat")}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+              </button>
+
+              {/* Download */}
+              {productDownload && (
+                <button
+                  className="product-icon-btn product-icon-btn--download"
+                  onClick={() => mutateAsync()}
+                  title={t("button_download")}
+                >
+                  {isPending ? (
+                    <Loader size={20} className="loadingSpinner" />
+                  ) : (
+                    <LucideDownload size={20} />
+                  )}
+                </button>
+              )}
+            </div>
+
+            {/* Action buttons */}
+            <div className="product-row">
+              {isInCartChecked(activeProduct.id) ? (
+                <button
+                  className="theme-btn2"
+                  onClick={() => removeFromCart(activeProduct.id)}
+                >
+                  <Check size={16} />
+                  {t("button_cart_added")}
+                </button>
+              ) : (
+                <button
+                  className="theme-btn2"
+                  onClick={() =>
+                    addToCart({
+                      id: activeProduct.id,
+                      name: activeProduct.name,
+                      code: getProductFormattedCode(activeProduct),
+                      image_url:
+                        activeProduct?.media?.find(
+                          (find) => find.type == "product_thumbnail",
+                        )?.image_url || "",
+                      collection_name:
+                        activeProduct?.collection?.collection_name || "",
+                      thickness: activeProduct?.thickness?.thickness || "",
+                      size: activeProduct?.size?.size || "",
+                      finishing: activeProduct?.finishing?.finishing_name || "",
+                      price: activeProduct.price,
+                      promo_price: activeProduct.promo_price || undefined,
+                    })
+                  }
+                >
+                  <ShoppingCart size={16} />
+                  {t("button_cart")}
+                </button>
+              )}
+              <button
+                className="theme-btn ms-2"
+                onClick={() => {
+                  if (!isInCartChecked(activeProduct.id)) {
+                    addToCart({
+                      id: activeProduct.id,
+                      name: activeProduct.name,
+                      code: getProductFormattedCode(activeProduct),
+                      image_url:
+                        activeProduct?.media?.find(
+                          (find) => find.type == "product_thumbnail",
+                        )?.image_url || "",
+                      collection_name:
+                        activeProduct?.collection?.collection_name || "",
+                      thickness: activeProduct?.thickness?.thickness || "",
+                      size: activeProduct?.size?.size || "",
+                      finishing: activeProduct?.finishing?.finishing_name || "",
+                      price: activeProduct.price,
+                      promo_price: activeProduct.promo_price || undefined,
+                    });
+                  }
+                  router.push("/checkout");
+                }}
               >
                 {t("button_order")}
               </button>
-              {productDownload && (
-                <button
-                  className="theme-btn ms-2 "
-                  onClick={() => mutateAsync()}
-                >
-                  {isPending ? (
-                    <Loader className="loadingSpinner" />
-                  ) : (
-                    <LucideDownload />
-                  )}
-                  {t("button_download")}
-                </button>
-              )}
-              {/* <Dropdown
-                triggerClassName="theme-btn ms-2"
-                trigger={
-                  <>
-                    <LucideDownload />
-                  </>
-                }
-              >
-                <button
-                  className="theme-btn-dropdown bg-none d-flex w-100"
-                  onClick={() => mutateAsync()}
-                >
-                  {isPending ? (
-                    <Loader className="loadingSpinner" />
-                  ) : (
-                    <LucideDownload />
-                  )}
-                  Download
-                </button>
-                <button
-                  className="theme-btn-dropdown bg-none  d-flex  w-100 "
-                  onClick={() => mutateAsync()}
-                >
-                  {isPending ? (
-                    <Loader className="loadingSpinner" />
-                  ) : (
-                    <LucideDownload />
-                  )}
-                  Download All
-                </button>
-              </Dropdown> */}
-              {/* <button className="theme-btn ms-2 " onClick={() => mutateAsync()}>
-                {isPending ? (
-                  <Loader className="loadingSpinner" />
-                ) : (
-                  <LucideDownload />
-                )}
-                Download
-              </button> */}
             </div>
           </div>
           <div className="product-disclaimer">

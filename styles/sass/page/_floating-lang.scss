@@ -1,0 +1,123 @@
+/*--------------------------------------------------------------
+  FLOATING LANGUAGE SWITCHER
+--------------------------------------------------------------*/
+
+.wpo-floating-lang {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 900;
+    font-family: $base-font;
+
+    @include media-query(767px) {
+        bottom: 16px;
+        right: 16px;
+    }
+}
+
+.wpo-floating-lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 40px;
+    padding: 0 14px;
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: $black;
+    cursor: pointer;
+    font-family: $base-font;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    @include transition-time(0.2s, all);
+
+    &:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-color: darken($border-color, 10%);
+    }
+
+    span {
+        line-height: 1;
+    }
+
+    .fi {
+        font-size: 14px;
+        line-height: 1;
+    }
+}
+
+.wpo-floating-lang-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 6px;
+    z-index: 50;
+    animation: floatLangIn 0.15s ease-out;
+
+    @include media-query(767px) {
+        right: auto;
+        left: 0;
+    }
+}
+
+@keyframes floatLangIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.wpo-floating-lang-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-color;
+    text-decoration: none;
+    @include transition-time(0.12s, all);
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.04);
+        color: $black;
+    }
+
+    &.active {
+        background: rgba(0, 0, 0, 0.05);
+        color: $black;
+        font-weight: 600;
+    }
+}
+
+.wpo-floating-lang-flag {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.wpo-floating-lang-name {
+    flex: 1;
+    line-height: 1;
+}
+
+.wpo-floating-lang-code {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: lighten($text-color, 20%);
+    line-height: 1;
+}

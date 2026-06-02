@@ -232,16 +232,20 @@ const ClientSelect: React.FC<ClientSelectProps> = ({
   id,
 }) => {
   // Find selected value dari options
-  const selectedValue =
-    options.find((option) => option.value === field.value) || null;
+  const selectedValue = field.value
+    ? options.find(
+        (option) =>
+          option.value === field.value?.value ||
+          option.value === field.value,
+      ) || null
+    : null;
 
   return (
     <Select
       {...field}
       value={selectedValue}
       onChange={(option) => {
-        // Kirim value ke form, bukan object
-        field.onChange(option ? option.value : "");
+        field.onChange(option);
       }}
       onBlur={field.onBlur}
       menuPortalTarget={document.body}

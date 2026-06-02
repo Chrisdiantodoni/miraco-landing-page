@@ -52,9 +52,13 @@ export default function LocationSection({ data }: locationSectionProps | any) {
             </div>
 
             {/* Google Maps Button */}
-            {location.link_google_maps && (location?.lat || location?.long) && (
+            {(location?.link_google_maps ||
+              (location?.lat && location?.long)) && (
               <a
-                href={location.link_google_maps}
+                href={
+                  location.link_google_maps ||
+                  `https://www.google.com/maps?q=${location.lat},${location.long}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="location-button"

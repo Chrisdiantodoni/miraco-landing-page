@@ -1,3 +1,31 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+# =====================
+# Builder
+# =====================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --legacy-peer-deps
+
+COPY . .
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+RUN npm run build
+
+# =====================
+# Runner
+# =====================
+FROM node:20-alpine AS runner
+
+=======
+>>>>>>> e955c11b81feaba5ab5e953e8a32d3908ee268ed
 # 1. Base Image
 FROM node:18-alpine AS base
 
@@ -30,8 +58,23 @@ RUN npm run build
 
 # 4. Runner Stage (Produksi)
 FROM base AS runner
+<<<<<<< HEAD
 WORKDIR /app
 
+=======
+>>>>>>> 929abeb (update docker file)
+WORKDIR /app
+ENV NODE_ENV=production
+
+<<<<<<< HEAD
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+EXPOSE 3000
+CMD ["node", "server.js"]
+=======
+>>>>>>> e955c11b81feaba5ab5e953e8a32d3908ee268ed
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -54,4 +97,9 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 # Jalankan server.js hasil standalone
+<<<<<<< HEAD
 CMD ["node", "server.js"]
+=======
+CMD ["node", "server.js"]
+>>>>>>> 929abeb (update docker file)
+>>>>>>> e955c11b81feaba5ab5e953e8a32d3908ee268ed

@@ -118,28 +118,25 @@
   /* ========================================================= */
 
   .wpo-contact-form-area form {
-    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 30px;
 
     /* Aturan layout dua kolom diterapkan ke FormGroup */
     .form-group {
-      width: calc(50% - 30px);
-      float: left;
-      margin: 0 15px 25px;
-
-      /* Override Reactstrap default margin-bottom */
+      width: calc(50% - 15px);
+      float: none;
       margin-bottom: 25px !important;
 
       @include media-query(600px) {
-        width: calc(100% - 25px);
-        float: none;
+        width: 100%;
       }
     }
 
     /* Aturan fullwidth diterapkan ke FormGroup.fullwidth */
     .form-group.fullwidth {
-      width: calc(100% - 25px);
+      width: 100%;
       float: none;
-      clear: both;
     }
   }
 
