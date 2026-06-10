@@ -112,7 +112,7 @@ export default function LoginForm() {
                 <span className="wpo-login-checkbox"></span>
                 <span>{t("remember_me")}</span>
               </label>
-              <Link href="#" className="wpo-login-forgot">
+              <Link href="/forgot-password" className="wpo-login-forgot">
                 {t("forgot_password")}
               </Link>
             </div>

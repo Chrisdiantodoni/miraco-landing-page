@@ -53,7 +53,7 @@ export default function WelcomeCard({
           <p className="dash-page-company">
             {member?.company_name || "-"}
           </p>
-          <h2>{t("welcome", { name: member?.fullname || "" })}</h2>
+          <h2>{t("welcome", { name: member?.fullname ?? "" })}</h2>
         </div>
       </header>
 
@@ -142,7 +142,7 @@ export default function WelcomeCard({
                         style={{ color: "#1a1c1c", fontWeight: 500 }}
                       >
                         {order.invoice_number ||
-                          `#${order.id?.substring(0, 8)?.toUpperCase()}`}
+                          `#${String(order.id ?? "").substring(0, 8).toUpperCase()}`}
                       </Link>
                     </td>
                     <td>
@@ -153,7 +153,7 @@ export default function WelcomeCard({
                       </span>
                     </td>
                     <td>{formatDate(order.created_at)}</td>
-                    <td>{formatRupiah(order.total_price || 0)}</td>
+                    <td>{formatRupiah(order.total_price ?? 0)}</td>
                   </tr>
                 ))}
               </tbody>

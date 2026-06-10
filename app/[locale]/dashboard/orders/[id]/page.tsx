@@ -6,8 +6,13 @@ import { useTranslations } from "next-intl";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { Link } from "@/i18n/navigation";
-import { getOrderDetail, getOrderInvoice } from "@/lib/api/queries/member";
-import { Loader2, Download } from "lucide-react";
+import {
+  getOrderDetail,
+  getOrderInvoicePreview,
+  getOrderInvoiceDownload,
+} from "@/lib/api/queries/member";
+import { Loader2, Download, Eye } from "lucide-react";
+import { toast } from "react-toastify";
 import Loading from "@/components/Loader/loading";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
 
@@ -36,7 +41,12 @@ function formatRupiah(amount: number) {
   return `Rp ${amount.toLocaleString("id-ID")}`;
 }
 
-const APPROVED_STATUSES = ["processing", "shipped", "completed"];
+const APPROVED_STATUSES = [
+  "approve",
+  "processing",
+  "shipped",
+  "completed",
+];
 
 export default function OrderDetailPage({
   params,
@@ -57,7 +67,7 @@ export default function OrderDetailPage({
   const isApproved = order?.status && APPROVED_STATUSES.includes(order.status);
 
   const invoiceMutation = useMutation({
-    mutationFn: () => getOrderInvoice(id),
+    mutationFn: () => getOrderInvoiceDownload(id),
     onSuccess: (result: any) => {
       const url = window.URL.createObjectURL(result.blob);
       const a = document.createElement("a");
@@ -69,6 +79,20 @@ export default function OrderDetailPage({
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+    },
+    onError: () => {
+      toast.error(t("orders_error"));
+    },
+  });
+
+  const previewMutation = useMutation({
+    mutationFn: () => getOrderInvoicePreview(id),
+    onSuccess: (result: any) => {
+      const url = window.URL.createObjectURL(result.blob);
+      window.open(url, "_blank");
+    },
+    onError: () => {
+      toast.error(t("orders_error"));
     },
   });
 
@@ -99,7 +123,7 @@ export default function OrderDetailPage({
             <div>
               <h2>
                 {order.invoice_number ||
-                  `#${order.id?.substring(0, 8)?.toUpperCase()}` ||
+                  `#${String(order.id ?? "").substring(0, 8).toUpperCase()}` ||
                   "-"}
               </h2>
               <p className="dash-page-company">
@@ -112,11 +136,13 @@ export default function OrderDetailPage({
           </div>
 
           {isApproved && (
-            <div style={{ marginBottom: 24 }}>
+            <div style={{ marginBottom: 24, display: "flex", gap: 12 }}>
               <button
                 className="dash-order-view-btn"
                 onClick={() => invoiceMutation.mutate()}
-                disabled={invoiceMutation.isPending}
+                disabled={
+                  invoiceMutation.isPending || previewMutation.isPending
+                }
                 style={{ gap: 8 }}
               >
                 {invoiceMutation.isPending ? (
@@ -126,6 +152,21 @@ export default function OrderDetailPage({
                 )}
                 {t("order_download_invoice")}
               </button>
+              <button
+                className="dash-order-view-btn"
+                onClick={() => previewMutation.mutate()}
+                disabled={
+                  invoiceMutation.isPending || previewMutation.isPending
+                }
+                style={{ gap: 8 }}
+              >
+                {previewMutation.isPending ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Eye size={14} />
+                )}
+                {t("order_preview_invoice")}
+              </button>
             </div>
           )}
 
@@ -133,6 +174,10 @@ export default function OrderDetailPage({
             <div>
               <label>{t("order_customer")}</label>
               <p>{order.name || "-"}</p>
+            </div>
+            <div>
+              <label>{t("order_receiver_name")}</label>
+              <p>{order.receiver_name || "-"}</p>
             </div>
             <div>
               <label>{t("order_email")}</label>
@@ -175,8 +220,9 @@ export default function OrderDetailPage({
             const thumbnail = item.product?.media?.find(
               (m: any) => m.type === "product_thumbnail",
             );
-            const itemPrice =
-              item.product?.promo_price || item.product?.price || 0;
+            const unitPrice = item.price ?? 0;
+            const qty = item.quantity ?? 0;
+            const subtotal = unitPrice * qty;
 
             return (
               <div key={item.order_list_id} className="order-item-card">
@@ -195,18 +241,26 @@ export default function OrderDetailPage({
                 </div>
                 <div className="order-item-info">
                   <span className="order-item-code">
+                    {item.product?.category?.code || "-"}{" "}
                     {item.product?.code || "-"}
                   </span>
                   <span className="order-item-name">
                     {item.product?.name || "-"}
                   </span>
                   <span className="order-item-qty">
-                    {t("order_qty")}: {item.quantity}
+                    {t("order_qty")}: {qty}
                   </span>
                 </div>
-                <div className="order-item-price">
-                  {isApproved ? formatRupiah(itemPrice) : "-"}
-                </div>
+                {isApproved && (
+                  <div className="order-item-price">
+                    <span className="order-item-unit">
+                      {formatRupiah(unitPrice)}
+                    </span>
+                    <span className="order-item-subtotal">
+                      {formatRupiah(subtotal)}
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -239,7 +293,7 @@ export default function OrderDetailPage({
                         {alloc.voucher_allocation?.voucher?.min_transaction !=
                         null
                           ? formatRupiah(
-                              alloc.voucher_allocation.voucher.min_transaction,
+                              alloc.voucher_allocation?.voucher?.min_transaction ?? 0,
                             )
                           : "-"}
                         {" | "}
@@ -250,7 +304,7 @@ export default function OrderDetailPage({
                         {alloc.voucher_allocation?.voucher?.discount_type ===
                         "fixed"
                           ? formatRupiah(
-                              alloc.voucher_allocation.voucher.discount_value,
+                              alloc.voucher_allocation?.voucher?.discount_value ?? 0,
                             )
                           : `${alloc.voucher_allocation?.voucher?.discount_value}%`}
                       </span>
@@ -261,12 +315,11 @@ export default function OrderDetailPage({
                         {formatRupiah(
                           alloc.voucher_allocation?.voucher?.discount_type ===
                             "fixed"
-                            ? alloc.voucher_allocation.voucher.discount_value
+                            ? (alloc.voucher_allocation?.voucher?.discount_value ?? 0)
                             : Math.floor(
-                                (alloc.voucher_allocation.voucher
-                                  .discount_value /
+                                ((alloc.voucher_allocation?.voucher?.discount_value ?? 0) /
                                   100) *
-                                  (order.subtotal || 0),
+                                  (order.subtotal ?? 0),
                               ),
                         )}
                       </div>
@@ -280,12 +333,21 @@ export default function OrderDetailPage({
             <div className="order-price-summary">
               <div className="order-price-row">
                 <span>{t("order_subtotal_label")}</span>
-                <span>{formatRupiah(order.subtotal || 0)}</span>
+                <span>{formatRupiah(order.subtotal ?? 0)}</span>
               </div>
               {order.disc_design_fee > 0 && (
                 <div className="order-price-row">
-                  <span>{t("order_disc_design")}</span>
-                  <span>-{formatRupiah(order.disc_design_fee)}</span>
+                  <span>
+                    {t("order_disc_design")} ({order.disc_design_fee}%)
+                  </span>
+                  <span>
+                    -
+                    {formatRupiah(
+                      Math.floor(
+                        (order.disc_design_fee / 100) * (order.subtotal || 0),
+                      ),
+                    )}
+                  </span>
                 </div>
               )}
               {order.disc_cash > 0 && (
@@ -308,7 +370,7 @@ export default function OrderDetailPage({
               )}
               <div className="order-price-row order-price-row--total">
                 <span>{t("order_total_label")}</span>
-                <span>{formatRupiah(order.total_price || 0)}</span>
+                <span>{formatRupiah(order.total_price ?? 0)}</span>
               </div>
             </div>
           )}

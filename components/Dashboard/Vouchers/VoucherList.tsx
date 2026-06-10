@@ -16,7 +16,7 @@ export default function VoucherList() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(12);
   const [selectedVoucher, setSelectedVoucher] = useState<MemberVoucher | null>(
     null,
   );
@@ -87,7 +87,15 @@ export default function VoucherList() {
         <>
           <div className="dash-vouchers-grid">
             {vouchers.map((v) => (
-              <div key={v.id || v.voucher_code} className="dash-voucher-card">
+              <div
+                key={v.id || v.voucher_code}
+                className={`dash-voucher-card${v.is_terminated === 1 ? " terminated" : ""}`}
+              >
+                {v.is_terminated === 1 && (
+                  <span className="dash-voucher-terminated-badge">
+                    {t("voucher_detail_terminated")}
+                  </span>
+                )}
                 <span className="dash-voucher-code">{v.voucher_code}</span>
                 <div className="dash-voucher-discount">
                   {v.voucher?.name || "-"}
@@ -95,11 +103,12 @@ export default function VoucherList() {
                 <div className="dash-voucher-expiry">
                   {v.voucher?.discount_type === "percentage"
                     ? `${v.voucher?.discount_value}%`
-                    : v.voucher?.discount_value
+                    : v.voucher?.discount_value != null
                       ? `Rp ${v.voucher?.discount_value.toLocaleString("id-ID")}`
                       : "-"}
                 </div>
                 <button
+                  type="button"
                   className="dash-voucher-btn"
                   onClick={() => setSelectedVoucher(v)}
                 >
@@ -118,19 +127,15 @@ export default function VoucherList() {
           className="dash-modal-overlay"
           onClick={() => setSelectedVoucher(null)}
         >
-          <div
-            className="dash-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="dash-modal" onClick={(e) => e.stopPropagation()}>
             <button
+              type="button"
               className="dash-modal-close"
               onClick={() => setSelectedVoucher(null)}
             >
               &times;
             </button>
-            <h3 className="dash-modal-title">
-              {selectedVoucher.voucher_code}
-            </h3>
+            <h3 className="dash-modal-title">{selectedVoucher.voucher_code}</h3>
 
             <div className="dash-modal-body">
               <div className="dash-modal-row">
@@ -163,9 +168,7 @@ export default function VoucherList() {
                 <span className="dash-modal-label">
                   {t("voucher_detail_description")}
                 </span>
-                <span>
-                  {selectedVoucher.voucher?.description || "-"}
-                </span>
+                <span>{selectedVoucher.voucher?.description || "-"}</span>
               </div>
 
               {(selectedVoucher.voucher?.min_transaction > 0 ||
@@ -205,9 +208,9 @@ export default function VoucherList() {
                   {t("voucher_detail_status")}
                 </span>
                 <span>
-                  {selectedVoucher.is_terminated
+                  {selectedVoucher.is_terminated === 1
                     ? t("voucher_detail_terminated")
-                    : selectedVoucher.is_pending
+                    : selectedVoucher.is_pending === 1
                       ? t("voucher_detail_pending")
                       : selectedVoucher.voucher?.is_active
                         ? t("voucher_detail_active")

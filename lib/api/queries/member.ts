@@ -60,8 +60,12 @@ export async function getOrderDetail(orderId: string) {
   return api.get(ENDPOINTS.ORDERS_DETAIL(orderId));
 }
 
-export async function getOrderInvoice(orderId: string) {
-  return api.postBlob(ENDPOINTS.ORDERS_INVOICE(orderId), {});
+export async function getOrderInvoicePreview(orderId: string) {
+  return api.getBlob(ENDPOINTS.ORDERS_INVOICE_PREVIEW(orderId));
+}
+
+export async function getOrderInvoiceDownload(orderId: string) {
+  return api.getBlob(ENDPOINTS.ORDERS_INVOICE_DOWNLOAD(orderId));
 }
 
 export async function updateProfile(body: Record<string, any>) {
@@ -82,4 +86,24 @@ export async function getDashboard() {
 
 export async function getReferrer() {
   return api.get(ENDPOINTS.REFERRER);
+}
+
+export async function forgotPassword(login: string) {
+  return api.post(ENDPOINTS.FORGOT_PASSWORD, { login });
+}
+
+export async function verifyOtp(login: string, otp: string) {
+  return api.post(ENDPOINTS.VERIFY_OTP, { login, otp });
+}
+
+export async function resetPassword(
+  reset_token: string,
+  password: string,
+  password_confirmation: string,
+) {
+  return api.post(ENDPOINTS.RESET_PASSWORD, {
+    reset_token,
+    password,
+    password_confirmation,
+  });
 }

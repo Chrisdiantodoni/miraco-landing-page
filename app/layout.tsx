@@ -5,6 +5,7 @@ import "@/styles/flaticon.css";
 import "@/styles/font-awesome.min.css";
 import "@/styles/themify-icons.css";
 import "@/styles/sass/style.scss";
+import "@/app/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AnalyticsTracker from "@/components/AnalyticTracker";
 
