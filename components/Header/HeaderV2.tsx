@@ -142,7 +142,6 @@ export default function HeaderV2({ logo, collections }: HeaderV2Props) {
         {/* Desktop Nav */}
         <ul className="wpo-header-v2-nav">
           {menuData
-            .filter((m) => m.title !== "Locate Us")
             .map((item, i) => {
               const isCollections = item.link === "#";
 
@@ -342,7 +341,6 @@ export default function HeaderV2({ logo, collections }: HeaderV2Props) {
 
         <ul className="wpo-header-v2-mobile-nav">
           {menuData
-            .filter((m) => m.title !== "Locate Us")
             .map((item, i) => {
               const isCollections = item.link === "#";
 

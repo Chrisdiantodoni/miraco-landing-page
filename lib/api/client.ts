@@ -88,18 +88,11 @@ async function baseFetch<T>(url: string, options?: ApiOptions): Promise<any> {
 
       const blob = await res.blob();
 
-      // ✅ FIX: Ambil header pakai .get() method
       const contentDisposition = res.headers.get("content-disposition");
-      console.log(res);
-      // ✅ Debug - lihat semua headers yang ada
-      console.log("All headers:");
-      res.headers.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-      });
 
       return {
         blob,
-        contentDisposition, // ✅ Langsung return string-nya
+        contentDisposition,
       };
     }
     // Parse response
@@ -160,6 +153,9 @@ export const api = {
   },
   postBlob: (url: string, body: any, token?: string) =>
     baseFetch(url, { method: "POST", body, token, responseType: "blob" }),
+
+  getBlob: (url: string, opts?: { params?: any; token?: string }) =>
+    baseFetch(url, { method: "GET", ...opts, responseType: "blob" }),
   put: <T>(url: string, body: any, token?: string) =>
     baseFetch<T>(url, { method: "PUT", body, token }),
 

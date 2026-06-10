@@ -571,13 +571,31 @@
   background: $white;
   border: 1px solid $border-color;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @include media-query(767px) {
+    margin: 0 -12px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
 }
 
 .dash-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+
+  @include media-query(767px) {
+    width: auto;
+    min-width: 100%;
+
+    thead th,
+    tbody td {
+      white-space: nowrap;
+    }
+  }
 
   thead {
     border-bottom: 1px solid $border-color;
@@ -699,6 +717,16 @@
 
     &::before {
       background: #283593;
+    }
+  }
+
+  &.approved,
+  &.approve {
+    background: #e8f5e9;
+    color: #1b5e20;
+
+    &::before {
+      background: #1b5e20;
     }
   }
 }
@@ -1042,10 +1070,23 @@
 
 .order-item-price {
   flex-shrink: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: $black;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
   text-align: right;
+
+  .order-item-unit {
+    font-weight: 400;
+    font-size: 12px;
+    color: lighten($text-color, 20%);
+  }
+
+  .order-item-subtotal {
+    font-weight: 600;
+    font-size: 15px;
+    color: $black;
+  }
 }
 
 /* ================================================================
@@ -1069,6 +1110,7 @@
 .order-voucher-info {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .order-voucher-code {
@@ -1091,6 +1133,9 @@
   font-size: 11px;
   color: lighten($text-color, 15%);
   margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .order-voucher-amount {
@@ -1534,6 +1579,26 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
+  position: relative;
+
+  &.terminated {
+    opacity: 0.5;
+    background: #f5f5f5;
+  }
+}
+
+.dash-voucher-terminated-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #c62828;
+  color: $white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .dash-voucher-code {

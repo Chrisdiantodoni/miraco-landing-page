@@ -31,11 +31,19 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 1280px;
+    max-width: 1320px;
     margin: 0 auto;
     height: 72px;
-    padding: 0 12px;
+    padding: 0 32px;
     position: relative;
+
+    @include widther(1025px) {
+        padding: 0 24px;
+    }
+
+    @include widther(1200px) {
+        padding: 0 12px;
+    }
 }
 
 /*--------------------------------------------------------------
@@ -53,7 +61,7 @@ body {
         width: 100px;
         @include transition-time(0.2s, width);
 
-        @include widther(992px) {
+        @include widther(1025px) {
             width: 140px;
         }
     }
@@ -65,16 +73,20 @@ body {
 .wpo-header-v2-nav {
     display: none;
 
-    @include widther(992px) {
+    @include widther(1025px) {
         display: flex;
         align-items: center;
-        gap: 40px;
+        gap: 24px;
         list-style: none;
         margin: 0;
         padding: 0;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    @include widther(1200px) {
+        gap: 36px;
     }
 }
 
@@ -87,8 +99,9 @@ body {
     font-size: 13px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.1em;
     line-height: 1;
+    white-space: nowrap;
     color: $text-color;
     text-decoration: none;
     padding: 6px 0;
@@ -186,7 +199,7 @@ body {
 .wpo-header-v2-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 14px;
     flex-shrink: 0;
 }
 
@@ -344,7 +357,7 @@ body {
 .wpo-header-v2-login {
     display: none;
 
-    @include widther(992px) {
+    @include widther(1025px) {
         display: inline-flex;
     }
 
@@ -522,7 +535,7 @@ body {
     cursor: pointer;
     padding: 0;
 
-    @include widther(992px) {
+    @include widther(1025px) {
         display: none;
     }
 

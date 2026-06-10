@@ -23,6 +23,8 @@ import { useTranslations } from "next-intl";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
 import { useCartStore } from "@/lib/store/cart";
 import { Heart, ShoppingCart } from "lucide-react";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { toggleFavourite as toggleFavouriteApi } from "@/lib/api/queries/favourite";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
@@ -58,7 +60,8 @@ const CollectionProducts = ({
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const { addToCart, isInCart, toggleFavourite, isFavourite } = useCartStore();
+  const { addToCart, isInCart, isFavourite } = useCartStore();
+  const { token } = useAuth();
 
   const ClickHandler = () => {
     window.scrollTo(10, 0);
@@ -360,10 +363,16 @@ const CollectionProducts = ({
                             >
                               <button
                                 className={`shop-card-action-btn shop-card-action-btn--favourite ${isFavourite(product.id as unknown as number) ? "active" : ""}`}
-                                onClick={(e) => {
+                                onClick={async (e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  toggleFavourite(product.id as unknown as number);
+                                  if (!token) {
+                                    router.push("/login");
+                                    return;
+                                  }
+                                  try {
+                                    await toggleFavouriteApi(String(product.id));
+                                  } catch {}
                                 }}
                               >
                                 <Heart

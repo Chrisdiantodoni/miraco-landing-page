@@ -94,6 +94,7 @@ export default function OrderTable() {
           <option value="">{t("order_status_all")}</option>
           <option value="pending">{t("status_pending")}</option>
           <option value="request">{t("status_request")}</option>
+          <option value="approved">{t("status_approved")}</option>
           <option value="processing">{t("status_processing")}</option>
           <option value="shipped">{t("status_shipped")}</option>
           <option value="completed">{t("status_completed")}</option>
@@ -158,10 +159,13 @@ export default function OrderTable() {
         </div>
       ) : (
         <>
+          <div className="dash-table-wrap">
           <table className="dash-table">
             <thead>
               <tr>
                 <th>{t("table_id")}</th>
+                <th>{t("table_name")}</th>
+                <th>{t("order_receiver_name")}</th>
                 <th>{t("table_product")}</th>
                 <th>{t("table_date")}</th>
                 <th>{t("table_status")}</th>
@@ -173,7 +177,7 @@ export default function OrderTable() {
               {orders.map((order: any) => {
                 const orderId =
                   order.invoice_number ||
-                  `#${order.id?.substring(0, 8)?.toUpperCase()}` ||
+                  `#${String(order.id ?? "").substring(0, 8).toUpperCase()}` ||
                   "-";
                 const productName = order.order_list?.[0]?.product?.name || "-";
                 const date = formatDate(order.created_at);
@@ -185,6 +189,8 @@ export default function OrderTable() {
                 return (
                   <tr key={order.id}>
                     <td>{orderId}</td>
+                    <td>{order.name || "-"}</td>
+                    <td>{order.receiver_name || "-"}</td>
                     <td>{productName}</td>
                     <td>{date}</td>
                     <td>
@@ -208,6 +214,7 @@ export default function OrderTable() {
               })}
             </tbody>
           </table>
+          </div>
 
           <Pagination meta={meta} onPageChange={setPage} />
         </>

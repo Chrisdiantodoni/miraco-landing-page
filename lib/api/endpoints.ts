@@ -1,8 +1,11 @@
-export const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL;
+export const API_URL = process.env.NEXT_PUBLIC_LARAVEL_API_URL || "";
 
 export const ENDPOINTS = {
   LOGIN: `${API_URL}/member/login`,
   REGISTER: `${API_URL}/member/register`,
+  FORGOT_PASSWORD: `${API_URL}/member/forgot-password`,
+  VERIFY_OTP: `${API_URL}/member/verify-otp`,
+  RESET_PASSWORD: `${API_URL}/member/reset-password`,
   FAVOURITE_ALL: `${API_URL}/member/favorites`,
   TOGGLE_FAVOURITE: (productId: string | number) =>
     `${API_URL}/member/products/${productId}/favorite`,
@@ -10,6 +13,10 @@ export const ENDPOINTS = {
   ORDERS: `${API_URL}/member/orders`,
   ORDERS_DETAIL: (orderId: string | number) =>
     `${API_URL}/member/orders/${orderId}`,
+  ORDERS_INVOICE_PREVIEW: (orderId: string | number) =>
+    `${API_URL}/member/orders/${orderId}/invoice/preview`,
+  ORDERS_INVOICE_DOWNLOAD: (orderId: string | number) =>
+    `${API_URL}/member/orders/${orderId}/invoice/download`,
   ORDERS_INVOICE: (orderId: string | number) =>
     `${API_URL}/member/orders/${orderId}/invoice`,
   SUBMIT_ORDER: `${API_URL}/member/orders`,

@@ -31,6 +31,7 @@ export default function CartDrawer() {
         <div className="cart-drawer-header">
           <h2 className="cart-drawer-title">Your Selection</h2>
           <button
+            type="button"
             className="cart-drawer-close"
             onClick={closeCart}
             aria-label="Close"
@@ -69,6 +70,7 @@ export default function CartDrawer() {
                     <div className="cart-drawer-item-top">
                       <h3 className="cart-drawer-item-name">{item.name}</h3>
                       <button
+                        type="button"
                         className="cart-drawer-item-remove"
                         onClick={() => removeFromCart(item.id)}
                         aria-label="Remove"
@@ -82,6 +84,7 @@ export default function CartDrawer() {
                     </p>
                     <div className="cart-drawer-qty">
                       <button
+                        type="button"
                         onClick={() =>
                           updateQuantity(item.id, item.quantity - 1)
                         }
@@ -91,6 +94,7 @@ export default function CartDrawer() {
                       </button>
                       <span>QTY: {item.quantity}</span>
                       <button
+                        type="button"
                         onClick={() =>
                           updateQuantity(item.id, item.quantity + 1)
                         }

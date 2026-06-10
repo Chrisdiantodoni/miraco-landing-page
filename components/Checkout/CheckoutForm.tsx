@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { toast } from "react-toastify";
@@ -16,29 +16,37 @@ import { useAuth } from "@/lib/providers/AuthProvider";
 import OrderSummary from "./OrderSummary";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 
-const checkoutSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().min(1).email(),
-  phone_number: z.string().optional().or(z.literal("")),
-  company_name: z.string().optional().or(z.literal("")),
-  street_address: z.string().optional().or(z.literal("")),
-  district: z.string().optional().or(z.literal("")),
-  city: z.string().optional().or(z.literal("")),
-  state_province: z.string().optional().or(z.literal("")),
-  postal_code: z.string().optional().or(z.literal("")),
-  link_order_gmaps: z.string().optional().or(z.literal("")),
-  lat_order_gmaps: z.string().optional().or(z.literal("")),
-  long_order_gmaps: z.string().optional().or(z.literal("")),
-});
-
-type CheckoutFormData = z.infer<typeof checkoutSchema>;
-
 export default function CheckoutForm() {
   const t = useTranslations("checkout");
   const router = useRouter();
   const { member, isAuthenticated } = useAuth();
   const cart = useCartStore((state) => state.cart);
   const clearCart = useCartStore((state) => state.clearCart);
+
+  const checkoutSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(1, t("error_fullname_required")),
+        receiver_name: z.string().min(1, t("error_receiver_name_required")),
+        email: z
+          .string()
+          .min(1, t("error_email_required"))
+          .email(t("error_email_invalid")),
+        phone_number: z.string().optional().or(z.literal("")),
+        company_name: z.string().optional().or(z.literal("")),
+        street_address: z.string().min(1, t("error_street_address_required")),
+        district: z.string().min(1, t("error_district_required")),
+        city: z.string().min(1, t("error_city_required")),
+        state_province: z.string().min(1, t("error_state_province_required")),
+        postal_code: z.string().min(1, t("error_postal_code_required")),
+        link_order_gmaps: z.string().optional().or(z.literal("")),
+        lat_order_gmaps: z.string().optional().or(z.literal("")),
+        long_order_gmaps: z.string().optional().or(z.literal("")),
+      }),
+    [t],
+  );
+
+  type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
   const {
     register,
@@ -47,11 +55,13 @@ export default function CheckoutForm() {
     formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
+    shouldFocusError: true,
     defaultValues: {
-      name: member?.fullname || "",
-      email: member?.email || "",
-      phone_number: member?.phone_number || "",
-      company_name: member?.company_name || "",
+      name: member?.fullname ?? "",
+      receiver_name: member?.fullname ?? "",
+      email: member?.email ?? "",
+      phone_number: member?.phone_number ?? "",
+      company_name: member?.company_name ?? "",
       street_address: "",
       district: "",
       city: "",
@@ -84,7 +94,10 @@ export default function CheckoutForm() {
         const lng = pos.coords.longitude.toString();
         setValue("lat_order_gmaps", lat);
         setValue("long_order_gmaps", lng);
-        setValue("link_order_gmaps", `https://maps.google.com/?q=${lat},${lng}`);
+        setValue(
+          "link_order_gmaps",
+          `https://maps.google.com/?q=${lat},${lng}`,
+        );
         setIsLocating(false);
       },
       () => {
@@ -97,7 +110,7 @@ export default function CheckoutForm() {
   const debouncedSearch = useDebounce(voucherSearch, 500);
 
   const { data: voucherData, isLoading: vouchersLoading } = useQuery({
-    queryKey: ["memberVouchers", { search: debouncedSearch }],
+    queryKey: ["memberVouchers", { search: debouncedSearch || undefined }],
     queryFn: () =>
       getVouchers({
         search: debouncedSearch || undefined,
@@ -113,26 +126,39 @@ export default function CheckoutForm() {
   const getDisabledReason = (v: MemberVoucher): string | null => {
     const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalAmount = cart.reduce(
-      (sum, item) => sum + item.quantity * (item.promo_price || item.price || 0),
+      (sum, item) =>
+        sum + item.quantity * (item.promo_price ?? item.price ?? 0),
       0,
     );
-    if (v.voucher.min_product && totalQty < v.voucher.min_product) {
+    // console.log(cart);
+    if (v.voucher?.min_product && totalQty < v.voucher.min_product) {
       return t("voucher_need_products", {
         min: v.voucher.min_product,
         current: totalQty,
         need: v.voucher.min_product - totalQty,
       });
     }
-    if (v.voucher.min_transaction && totalAmount < v.voucher.min_transaction) {
+    if (v.voucher?.min_transaction && totalAmount < v.voucher.min_transaction) {
       return t("voucher_need_transaction", {
         min: v.voucher.min_transaction.toLocaleString("id-ID"),
-        current: totalAmount.toLocaleString("id-ID"),
       });
     }
     return null;
   };
 
-  const filteredVouchers = availableVouchers;
+  const filteredVouchers = availableVouchers.filter(
+    (v) => !v.is_terminated && !v.is_pending,
+  );
+
+  const cartTotalAmount = useMemo(
+    () =>
+      cart.reduce(
+        (sum, item) =>
+          sum + item.quantity * (item.promo_price ?? item.price ?? 0),
+        0,
+      ),
+    [cart],
+  );
 
   const isVoucherApplied = (code: string) =>
     appliedVouchers.some((v) => v.voucher_code === code);
@@ -178,14 +204,10 @@ export default function CheckoutForm() {
         .filter(Boolean)
         .join(", ");
 
-      const cartTotal = cart.reduce(
-        (s, item) => s + (item.promo_price || item.price || 0) * item.quantity,
-        0,
-      );
-
       const payload = {
         name: body.name,
         email: body.email,
+        receiver_name: body.receiver_name,
         phone_number: body.phone_number || undefined,
         company_name: body.company_name || undefined,
         street_address: body.street_address || undefined,
@@ -198,12 +220,6 @@ export default function CheckoutForm() {
         lat_order_gmaps: body.lat_order_gmaps || undefined,
         long_order_gmaps: body.long_order_gmaps || undefined,
         voucher_codes: appliedVouchers.map((v) => v.voucher_code),
-        disc_voucher: appliedVouchers.reduce((sum, v) => {
-          if (v.voucher.discount_type === "fixed") {
-            return sum + v.voucher.discount_value;
-          }
-          return sum + Math.floor((v.voucher.discount_value / 100) * cartTotal);
-        }, 0),
         products: cart.map((item) => ({
           product_id: String(item.id),
           quantity: item.quantity,
@@ -255,6 +271,23 @@ export default function CheckoutForm() {
                   )}
                 </div>
                 <div className="checkout-form-group">
+                  <label htmlFor="receiver_name">
+                    {t("label_receiver_name")}{" "}
+                    <span style={{ color: "#ba1a1a" }}>*</span>
+                  </label>
+                  <input
+                    id="receiver_name"
+                    type="text"
+                    placeholder={t("placeholder_receiver_name")}
+                    {...register("receiver_name")}
+                  />
+                  {errors.receiver_name && (
+                    <span className="checkout-feedback">
+                      {errors.receiver_name.message}
+                    </span>
+                  )}
+                </div>
+                <div className="checkout-form-group">
                   <label htmlFor="email">
                     {t("label_email")}{" "}
                     <span style={{ color: "#ba1a1a" }}>*</span>
@@ -299,51 +332,94 @@ export default function CheckoutForm() {
               <h3 className="checkout-card-title">{t("shipping_address")}</h3>
               <div className="checkout-form-grid">
                 <div className="checkout-form-group full">
-                  <label htmlFor="street_address">{t("label_street")}</label>
+                  <label htmlFor="street_address">
+                    {t("label_street")}{" "}
+                    <span style={{ color: "#ba1a1a" }}>*</span>
+                  </label>
                   <input
                     id="street_address"
                     type="text"
                     placeholder={t("placeholder_street")}
                     {...register("street_address")}
                   />
+                  {errors.street_address && (
+                    <span className="checkout-feedback">
+                      {errors.street_address.message}
+                    </span>
+                  )}
                 </div>
                 <div className="checkout-form-group">
-                  <label htmlFor="district">{t("label_district")}</label>
+                  <label htmlFor="district">
+                    {t("label_district")}{" "}
+                    <span style={{ color: "#ba1a1a" }}>*</span>
+                  </label>
                   <input
                     id="district"
                     type="text"
                     placeholder={t("placeholder_district")}
                     {...register("district")}
                   />
+                  {errors.district && (
+                    <span className="checkout-feedback">
+                      {errors.district.message}
+                    </span>
+                  )}
                 </div>
                 <div className="checkout-form-group">
-                  <label htmlFor="city">{t("label_city")}</label>
+                  <label htmlFor="city">
+                    {t("label_city")}{" "}
+                    <span style={{ color: "#ba1a1a" }}>*</span>
+                  </label>
                   <input
                     id="city"
                     type="text"
                     placeholder={t("placeholder_city")}
                     {...register("city")}
                   />
+                  {errors.city && (
+                    <span className="checkout-feedback">
+                      {errors.city.message}
+                    </span>
+                  )}
                 </div>
                 <div className="checkout-form-group">
-                  <label htmlFor="state_province">{t("label_state")}</label>
+                  <label htmlFor="state_province">
+                    {t("label_state")}{" "}
+                    <span style={{ color: "#ba1a1a" }}>*</span>
+                  </label>
                   <input
                     id="state_province"
                     type="text"
                     placeholder={t("placeholder_state")}
                     {...register("state_province")}
                   />
+                  {errors.state_province && (
+                    <span className="checkout-feedback">
+                      {errors.state_province.message}
+                    </span>
+                  )}
                 </div>
                 <div className="checkout-form-group">
-                  <label htmlFor="postal_code">{t("label_postal")}</label>
+                  <label htmlFor="postal_code">
+                    {t("label_postal")}{" "}
+                    <span style={{ color: "#ba1a1a" }}>*</span>
+                  </label>
                   <input
                     id="postal_code"
                     type="text"
                     placeholder={t("placeholder_postal")}
                     {...register("postal_code")}
                   />
+                  {errors.postal_code && (
+                    <span className="checkout-feedback">
+                      {errors.postal_code.message}
+                    </span>
+                  )}
                 </div>
-                <div className="checkout-form-group full" style={{ alignItems: "flex-start" }}>
+                <div
+                  className="checkout-form-group full"
+                  style={{ alignItems: "flex-start" }}
+                >
                   <button
                     type="button"
                     className="checkout-locate-btn"
@@ -415,7 +491,7 @@ export default function CheckoutForm() {
                   >
                     <span>
                       {appliedVouchers.length > 0
-                        ? `${appliedVouchers.length} voucher applied`
+                        ? t("voucher_applied_count", { count: appliedVouchers.length })
                         : t("voucher_trigger")}
                     </span>
                     <ChevronDown
@@ -451,7 +527,7 @@ export default function CheckoutForm() {
                         ) : (
                           filteredVouchers.map((v) => (
                             <div
-                              key={v.voucher_code}
+                              key={v.id || v.voucher_code}
                               className="checkout-voucher-item"
                             >
                               <div className="checkout-voucher-item-info">
@@ -473,7 +549,21 @@ export default function CheckoutForm() {
                                   {v.voucher.discount_type === "fixed"
                                     ? `Rp ${v.voucher.discount_value.toLocaleString()}`
                                     : `${v.voucher.discount_value}%`}
-                </div>
+                                </div>
+                                {!isVoucherApplied(v.voucher_code) &&
+                                  getDisabledReason(v) && (
+                                    <div className="checkout-voucher-reason">
+                                      {getDisabledReason(v)}
+                                    </div>
+                                  )}
+                                {!isVoucherApplied(v.voucher_code) &&
+                                  v.voucher.min_transaction > 0 &&
+                                  cartTotalAmount < v.voucher.min_transaction && (
+                                    <div className="checkout-voucher-cart-total">
+                                      Cart total: Rp{" "}
+                                      {cartTotalAmount.toLocaleString("id-ID")}
+                                    </div>
+                                  )}
                               </div>
                               <button
                                 type="button"
@@ -492,12 +582,6 @@ export default function CheckoutForm() {
                                   ? t("voucher_applied")
                                   : t("voucher_select")}
                               </button>
-                              {!isVoucherApplied(v.voucher_code) &&
-                                getDisabledReason(v) && (
-                                  <div className="checkout-voucher-reason">
-                                    {getDisabledReason(v)}
-                                  </div>
-                                )}
                             </div>
                           ))
                         )}
