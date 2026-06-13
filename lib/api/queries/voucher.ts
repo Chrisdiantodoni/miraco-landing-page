@@ -39,6 +39,10 @@ export async function getVouchers(params?: GetVouchersParams) {
   return api.get<MemberVoucher[]>(ENDPOINTS.VOUCHERS, { params });
 }
 
+export async function getVoucherActive(params?: GetVouchersParams) {
+  return api.get<MemberVoucher[]>(ENDPOINTS.VOUCHERS_ACTIVE, { params });
+}
+
 export async function validateVoucher(body: { voucher_code: string }) {
   return api.post(ENDPOINTS.VOUCHER_VALIDATE, body);
 }

@@ -24,6 +24,7 @@ export const ENDPOINTS = {
   CHECK_USERNAME: `${API_URL}/member/check-username`,
   CHECK_REFERRAL_USERNAME: `${API_URL}/member/check-referral`,
   VOUCHERS: `${API_URL}/member/vouchers`,
+  VOUCHERS_ACTIVE: `${API_URL}/member/vouchers/active`,
   VOUCHER_VALIDATE: `${API_URL}/member/vouchers/validate`,
   ME: `${API_URL}/member/me`,
   DASHBOARD: `${API_URL}/member/dashboard`,

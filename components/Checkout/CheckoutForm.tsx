@@ -10,7 +10,7 @@ import { z } from "zod";
 import { Loader2, Search, ChevronDown, MapPin } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
 import { submitOrder } from "@/lib/api/queries/member";
-import { getVouchers, MemberVoucher } from "@/lib/api/queries/voucher";
+import { getVoucherActive, MemberVoucher } from "@/lib/api/queries/voucher";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import OrderSummary from "./OrderSummary";
@@ -112,7 +112,7 @@ export default function CheckoutForm() {
   const { data: voucherData, isLoading: vouchersLoading } = useQuery({
     queryKey: ["memberVouchers", { search: debouncedSearch || undefined }],
     queryFn: () =>
-      getVouchers({
+      getVoucherActive({
         search: debouncedSearch || undefined,
         per_page: 100,
       }),
@@ -491,7 +491,9 @@ export default function CheckoutForm() {
                   >
                     <span>
                       {appliedVouchers.length > 0
-                        ? t("voucher_applied_count", { count: appliedVouchers.length })
+                        ? t("voucher_applied_count", {
+                            count: appliedVouchers.length,
+                          })
                         : t("voucher_trigger")}
                     </span>
                     <ChevronDown
@@ -558,7 +560,8 @@ export default function CheckoutForm() {
                                   )}
                                 {!isVoucherApplied(v.voucher_code) &&
                                   v.voucher.min_transaction > 0 &&
-                                  cartTotalAmount < v.voucher.min_transaction && (
+                                  cartTotalAmount <
+                                    v.voucher.min_transaction && (
                                     <div className="checkout-voucher-cart-total">
                                       Cart total: Rp{" "}
                                       {cartTotalAmount.toLocaleString("id-ID")}

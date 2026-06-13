@@ -41,12 +41,7 @@ function formatRupiah(amount: number) {
   return `Rp ${amount.toLocaleString("id-ID")}`;
 }
 
-const APPROVED_STATUSES = [
-  "approve",
-  "processing",
-  "shipped",
-  "completed",
-];
+const APPROVED_STATUSES = ["approve", "processing", "shipped", "completed"];
 
 export default function OrderDetailPage({
   params,
@@ -123,7 +118,9 @@ export default function OrderDetailPage({
             <div>
               <h2>
                 {order.invoice_number ||
-                  `#${String(order.id ?? "").substring(0, 8).toUpperCase()}` ||
+                  `#${String(order.id ?? "")
+                    .substring(0, 8)
+                    .toUpperCase()}` ||
                   "-"}
               </h2>
               <p className="dash-page-company">
@@ -293,7 +290,8 @@ export default function OrderDetailPage({
                         {alloc.voucher_allocation?.voucher?.min_transaction !=
                         null
                           ? formatRupiah(
-                              alloc.voucher_allocation?.voucher?.min_transaction ?? 0,
+                              alloc.voucher_allocation?.voucher
+                                ?.min_transaction ?? 0,
                             )
                           : "-"}
                         {" | "}
@@ -304,7 +302,8 @@ export default function OrderDetailPage({
                         {alloc.voucher_allocation?.voucher?.discount_type ===
                         "fixed"
                           ? formatRupiah(
-                              alloc.voucher_allocation?.voucher?.discount_value ?? 0,
+                              alloc.voucher_allocation?.voucher
+                                ?.discount_value ?? 0,
                             )
                           : `${alloc.voucher_allocation?.voucher?.discount_value}%`}
                       </span>
@@ -315,9 +314,11 @@ export default function OrderDetailPage({
                         {formatRupiah(
                           alloc.voucher_allocation?.voucher?.discount_type ===
                             "fixed"
-                            ? (alloc.voucher_allocation?.voucher?.discount_value ?? 0)
+                            ? (alloc.voucher_allocation?.voucher
+                                ?.discount_value ?? 0)
                             : Math.floor(
-                                ((alloc.voucher_allocation?.voucher?.discount_value ?? 0) /
+                                ((alloc.voucher_allocation?.voucher
+                                  ?.discount_value ?? 0) /
                                   100) *
                                   (order.subtotal ?? 0),
                               ),
@@ -335,6 +336,19 @@ export default function OrderDetailPage({
                 <span>{t("order_subtotal_label")}</span>
                 <span>{formatRupiah(order.subtotal ?? 0)}</span>
               </div>
+
+              {order.disc_cash > 0 && (
+                <div className="order-price-row">
+                  <span>{t("order_disc_cash")}</span>
+                  <span>-{formatRupiah(order.disc_cash)}</span>
+                </div>
+              )}
+              {order.disc_voucher > 0 && (
+                <div className="order-price-row">
+                  <span>{t("order_disc_voucher")}</span>
+                  <span>-{formatRupiah(order.disc_voucher)}</span>
+                </div>
+              )}
               {order.disc_design_fee > 0 && (
                 <div className="order-price-row">
                   <span>
@@ -350,22 +364,21 @@ export default function OrderDetailPage({
                   </span>
                 </div>
               )}
-              {order.disc_cash > 0 && (
-                <div className="order-price-row">
-                  <span>{t("order_disc_cash")}</span>
-                  <span>-{formatRupiah(order.disc_cash)}</span>
-                </div>
-              )}
-              {order.disc_voucher > 0 && (
-                <div className="order-price-row">
-                  <span>{t("order_disc_voucher")}</span>
-                  <span>-{formatRupiah(order.disc_voucher)}</span>
-                </div>
-              )}
               {order.disc_showroom_or_gallery > 0 && (
                 <div className="order-price-row">
-                  <span>{t("order_disc_showroom")}</span>
-                  <span>-{formatRupiah(order.disc_showroom_or_gallery)}</span>
+                  <span>
+                    {t("order_disc_showroom")} ({order.disc_showroom_or_gallery}
+                    %)
+                  </span>
+                  <span>
+                    -
+                    {formatRupiah(
+                      Math.floor(
+                        (order.disc_showroom_or_gallery / 100) *
+                          (order.subtotal || 0),
+                      ),
+                    )}
+                  </span>
                 </div>
               )}
               <div className="order-price-row order-price-row--total">
