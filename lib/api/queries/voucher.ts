@@ -25,6 +25,7 @@ export interface MemberVoucher {
     min_product: number;
     created_at: string;
     updated_at: string;
+    deadline_at: string | null;
   };
 }
 

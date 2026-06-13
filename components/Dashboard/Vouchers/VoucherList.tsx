@@ -8,6 +8,7 @@ import { getVouchers, MemberVoucher } from "@/lib/api/queries/voucher";
 import Pagination from "@/components/Dashboard/Pagination";
 import Loading from "@/components/Loader/loading";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
+import { format } from "date-fns";
 
 export default function VoucherList() {
   const t = useTranslations("dashboard");
@@ -169,6 +170,19 @@ export default function VoucherList() {
                   {t("voucher_detail_description")}
                 </span>
                 <span>{selectedVoucher.voucher?.description || "-"}</span>
+              </div>
+              <div className="dash-modal-row">
+                <span className="dash-modal-label">
+                  {t("voucher_detail_deadline")}
+                </span>
+                <span>
+                  {selectedVoucher.voucher?.deadline_at
+                    ? format(
+                        new Date(selectedVoucher.voucher.deadline_at),
+                        "dd MMM yyyy",
+                      )
+                    : "-"}
+                </span>
               </div>
 
               {(selectedVoucher.voucher?.min_transaction > 0 ||
