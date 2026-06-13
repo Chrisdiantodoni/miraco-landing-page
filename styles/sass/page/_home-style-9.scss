@@ -840,8 +840,13 @@
           color: #fff;
           animation: pop-bounce 0.35s ease;
         }
+        &.inactive {
+          animation: pop-bounce 0.35s ease;
+        }
       }
-
+      /* &--cart {
+        animation: pop-bounce 0.35s ease;
+      } */
       &--cart.in-cart {
         background: #1a1c1c;
         color: #fff;
@@ -907,11 +912,11 @@
     .product-price {
       margin-top: 6px;
 
-        .product-price-current {
-          font-size: 15px;
-          font-weight: 600;
-          color: #1a1c1c;
-        }
+      .product-price-current {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1a1c1c;
+      }
 
       .product-price-old {
         font-size: 10px;

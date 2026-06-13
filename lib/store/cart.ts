@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { toggleFavourite } from "../api/queries/favourite";
 
 export interface CartItem {
   id: string;
@@ -70,15 +71,27 @@ export const useCartStore = create<CartState>()(
         return get().cart.some((item) => item.id === id);
       },
 
-      toggleFavourite: (id: string) => {
-        set((state) => {
-          const exists = state.favourites.includes(id);
-          return {
-            favourites: exists
-              ? state.favourites.filter((fid) => fid !== id)
-              : [...state.favourites, id],
-          };
-        });
+      toggleFavourite: async (id: string) => {
+        const wasActive = get().favourites.includes(id);
+
+        // optimistic update dulu
+        set((state) => ({
+          favourites: wasActive
+            ? state.favourites.filter((fid) => fid !== id)
+            : [...state.favourites, id],
+        }));
+
+        try {
+          await toggleFavourite(String(id));
+        } catch (err) {
+          // rollback kalau gagal
+          set((state) => ({
+            favourites: wasActive
+              ? [...state.favourites, id]
+              : state.favourites.filter((fid) => fid !== id),
+          }));
+          throw err;
+        }
       },
 
       isFavourite: (id: string) => {

@@ -59,8 +59,7 @@ const CollectionProducts = ({
   const currentPage = searchParams.get("page");
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  const { addToCart, isInCart, isFavourite } = useCartStore();
+  const { addToCart, isInCart, isFavourite, toggleFavourite } = useCartStore();
   const { token } = useAuth();
 
   const ClickHandler = () => {
@@ -186,7 +185,7 @@ const CollectionProducts = ({
       thicknesses: parseArrayParam(searchParams.get("thicknesses")),
       is_soft_touch: parseBooleanParam(searchParams.get("is_soft_touch")),
       is_anti_fingerprint: parseBooleanParam(
-        searchParams.get("is_anti_fingerprint")
+        searchParams.get("is_anti_fingerprint"),
       ),
       is_miraedge: parseBooleanParam(searchParams.get("is_miraedge")),
       sort_by: (searchParams.get("sort_by") || "") as "new" | "",
@@ -240,7 +239,7 @@ const CollectionProducts = ({
 
       router.push(`?${params.toString()}`, { scroll: false });
     },
-    [searchParams, router]
+    [searchParams, router],
   );
 
   const ICON_SIZE = 16;
@@ -315,7 +314,7 @@ const CollectionProducts = ({
               ) : products.length > 0 ? (
                 products.map((product, index) => {
                   const productImage = product?.media?.find(
-                    (find) => find?.type == "product_thumbnail"
+                    (find) => find?.type == "product_thumbnail",
                   )?.image_url;
 
                   return (
@@ -362,7 +361,8 @@ const CollectionProducts = ({
                               onClick={(e) => e.preventDefault()}
                             >
                               <button
-                                className={`shop-card-action-btn shop-card-action-btn--favourite ${isFavourite(product.id as unknown as number) ? "active" : ""}`}
+                                key={`fav-${product.id}-${isFavourite(product.id)}`}
+                                className={`shop-card-action-btn shop-card-action-btn--favourite ${isFavourite(product.id) ? "active" : "inactive"}`}
                                 onClick={async (e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -370,39 +370,39 @@ const CollectionProducts = ({
                                     router.push("/login");
                                     return;
                                   }
-                                  try {
-                                    await toggleFavouriteApi(String(product.id));
-                                  } catch {}
+                                  await toggleFavourite(String(product.id));
                                 }}
                               >
                                 <Heart
                                   size={16}
                                   fill={
-                                    isFavourite(product.id as unknown as number)
+                                    isFavourite(product.id)
                                       ? "currentColor"
                                       : "none"
                                   }
                                 />
                               </button>
                               <button
-                                className={`shop-card-action-btn shop-card-action-btn--cart ${isInCart(product.id as unknown as number) ? "in-cart" : ""}`}
+                                className={`shop-card-action-btn shop-card-action-btn--cart ${isInCart(product.id) ? "in-cart" : ""}`}
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
-                                  if (isInCart(product.id as unknown as number)) return;
+                                  if (isInCart(product.id)) return;
                                   addToCart({
-                                    id: product.id as unknown as number,
+                                    id: product.id,
                                     name: product.name,
                                     code: getProductFormattedCode(product),
                                     image_url: productImage || "",
                                     collection_name:
-                                      product?.collection?.collection_name || "",
+                                      product?.collection?.collection_name ||
+                                      "",
                                     thickness: product?.thickness?.size || "",
                                     size: product?.size?.size || "",
                                     finishing:
                                       product?.finishing?.finishing_name || "",
                                     price: product.price,
-                                    promo_price: product.promo_price || undefined,
+                                    promo_price:
+                                      product.promo_price || undefined,
                                   });
                                 }}
                               >
