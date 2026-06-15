@@ -331,6 +331,7 @@
     "voucher_detail_pending": "Tertunda",
     "voucher_detail_percentage": "Persentase",
     "voucher_detail_fixed": "Nominal",
+    "voucher_detail_deadline": "Masa Berlaku s/d",
     "voucher_detail_requirements": "Persyaratan",
     "voucher_need_products": "Min {min} item (keranjang: {current}, butuh {need} lagi)",
     "voucher_need_transaction": "Min transaksi Rp {min}",

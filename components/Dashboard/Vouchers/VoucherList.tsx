@@ -10,6 +10,22 @@ import Loading from "@/components/Loader/loading";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
 import { format } from "date-fns";
 
+function getVoucherStatusBadge(
+  v: MemberVoucher,
+  t: ReturnType<typeof useTranslations>,
+) {
+  if (v.is_terminated === 1) {
+    return { text: t("voucher_detail_terminated"), className: "terminated" };
+  }
+  if (v.is_pending === 1) {
+    return { text: t("voucher_detail_pending"), className: "pending" };
+  }
+  if (!v.voucher?.is_active) {
+    return { text: t("voucher_detail_inactive"), className: "inactive" };
+  }
+  return null;
+}
+
 export default function VoucherList() {
   const t = useTranslations("dashboard");
   const { isAuthenticated } = useAuth();
@@ -92,16 +108,24 @@ export default function VoucherList() {
                 key={v.id || v.voucher_code}
                 className={`dash-voucher-card${v.is_terminated === 1 ? " terminated" : ""}`}
               >
-                {v.is_terminated === 1 && (
-                  <span className="dash-voucher-terminated-badge">
-                    {t("voucher_detail_terminated")}
-                  </span>
-                )}
-                <span className="dash-voucher-code">{v.voucher_code}</span>
+                {(() => {
+                  const badge = getVoucherStatusBadge(v, t);
+                  return badge ? (
+                    <span
+                      className={`dash-voucher-status-badge ${badge.className}`}
+                    >
+                      {badge.text}
+                    </span>
+                  ) : null;
+                })()}
+
+                <div className="dash-voucher-card-header">
+                  <span className="dash-voucher-code">{v.voucher_code}</span>
+                </div>
                 <div className="dash-voucher-discount">
                   {v.voucher?.name || "-"}
                 </div>
-                <div className="dash-voucher-expiry">
+                <div className="dash-voucher-expiry mb-2">
                   {v.voucher?.discount_type === "percentage"
                     ? `${v.voucher?.discount_value}%`
                     : v.voucher?.discount_value != null

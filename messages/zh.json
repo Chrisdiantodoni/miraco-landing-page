@@ -331,6 +331,7 @@
     "voucher_detail_terminated": "已终止",
     "voucher_detail_pending": "待处理",
     "voucher_detail_percentage": "百分比",
+    "voucher_detail_deadline": "有效期",
     "voucher_detail_fixed": "固定金额",
     "voucher_detail_requirements": "要求",
     "voucher_need_products": "最低{min}件（购物车：{current}件，还需{need}件）",

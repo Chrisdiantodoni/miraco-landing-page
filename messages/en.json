@@ -323,6 +323,7 @@
     "voucher_detail_percentage": "Percentage",
     "voucher_detail_fixed": "Fixed",
     "voucher_detail_requirements": "Requirements",
+    "voucher_detail_deadline": "Deadline",
     "voucher_need_products": "Min {min} items (cart: {current}, need {need} more)",
     "voucher_need_transaction": "Min transaction Rp {min}",
     "order_page": "Page",

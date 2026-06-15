@@ -1571,7 +1571,6 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
-
 .dash-voucher-card {
   background: $white;
   border: 1px solid $border-color;
@@ -1580,47 +1579,67 @@
   display: flex;
   flex-direction: column;
   position: relative;
-
   &.terminated {
     opacity: 0.5;
     background: #f5f5f5;
   }
 }
-
-.dash-voucher-terminated-badge {
+.dash-voucher-status-badge {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #c62828;
-  color: $white;
   font-size: 10px;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  color: $white;
+  &.terminated {
+    background: #c62828;
+  }
+  &.pending {
+    background: #f9a825;
+  }
+  &.inactive {
+    background: #757575;
+  }
 }
-
+.dash-voucher-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
 .dash-voucher-code {
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: $black;
-  margin-bottom: 8px;
 }
-
 .dash-voucher-discount {
   font-size: 14px;
   color: $text-color;
   margin-bottom: 4px;
 }
-
 .dash-voucher-expiry {
   font-size: 12px;
   color: lighten($text-color, 15%);
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
+.dash-voucher-deadline {
+  font-size: 12px;
+  color: lighten($text-color, 15%);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 
+  &.expiring {
+    color: #c62828;
+    font-weight: 600;
+  }
+}
 .dash-voucher-btn {
   margin-top: auto;
   width: 100%;
@@ -1634,7 +1653,6 @@
   cursor: pointer;
   font-family: $base-font;
   @include transition-time(0.2s, opacity);
-
   &:hover {
     opacity: 0.85;
   }
