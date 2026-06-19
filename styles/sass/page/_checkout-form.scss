@@ -341,7 +341,7 @@
 }
 
 .checkout-feedback {
-  color: #C62828;
+  color: #c62828;
   font-size: 13px;
   min-height: 20px;
   line-height: 1.3;
@@ -394,8 +394,32 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  z-index: 50;
+  z-index: 9999;
   overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .checkout-voucher-popover {
+    top: auto; /* Reset nilai top bawaan desktop */
+    bottom: 100%; /* Pindahkan dasar popover ke bagian atas elemen induk */
+    margin-top: 0; /* Reset margin atas */
+    margin-bottom: 4px; /* Berikan jarak antara popover dengan elemen induk di bawahnya */
+  }
+}
+
+/* .checkout-voucher-popover {
+  // hapus: position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  // z-index di-handle via inline style di portal
+} */
+
+.checkout-voucher-list {
+  max-height: 280px;
+  overflow-y: auto; // ← ini sudah benar, scroll harusnya jalan sekarang
 }
 
 .checkout-voucher-search {
@@ -424,10 +448,11 @@
   }
 }
 
-.checkout-voucher-list {
+/* .checkout-voucher-list {
   max-height: 280px;
   overflow-y: auto;
-}
+  z-index: 9999;
+} */
 
 .checkout-voucher-item {
   display: flex;

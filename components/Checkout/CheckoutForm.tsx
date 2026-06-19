@@ -81,6 +81,15 @@ export default function CheckoutForm() {
   const [isLocating, setIsLocating] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
 
+  const [popoverRect, setPopoverRect] = useState(null);
+
+  const handleTriggerClick = () => {
+    if (!popoverOpen && popoverRef.current) {
+      const rect = popoverRef.current.getBoundingClientRect();
+      setPopoverRect(rect);
+    }
+    setPopoverOpen(!popoverOpen);
+  };
   const handleLocate = () => {
     if (typeof window === "undefined" || !navigator.geolocation) {
       setGeoError(t("geo_not_supported"));
@@ -125,12 +134,8 @@ export default function CheckoutForm() {
 
   const getDisabledReason = (v: MemberVoucher): string | null => {
     const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalAmount = cart.reduce(
-      (sum, item) =>
-        sum + item.quantity * (item.promo_price ?? item.price ?? 0),
-      0,
-    );
-    // console.log(cart);
+    const totalAmount = cartTotalAmount;
+
     if (v.voucher?.min_product && totalQty < v.voucher.min_product) {
       return t("voucher_need_products", {
         min: v.voucher.min_product,
@@ -138,11 +143,24 @@ export default function CheckoutForm() {
         need: v.voucher.min_product - totalQty,
       });
     }
-    if (v.voucher?.min_transaction && totalAmount < v.voucher.min_transaction) {
-      return t("voucher_need_transaction", {
-        min: v.voucher.min_transaction.toLocaleString("id-ID"),
-      });
+
+    if (v.voucher?.min_transaction && v.voucher.min_transaction > 0) {
+      // Hitung berapa voucher dengan min_transaction yang sama sudah diapply
+      const alreadyAppliedCount = appliedVouchers.filter(
+        (a) => (a.voucher?.min_transaction ?? 0) === v.voucher.min_transaction,
+      ).length;
+
+      // Voucher ini akan menjadi slot ke-(alreadyAppliedCount + 1)
+      const requiredAmount =
+        v.voucher.min_transaction * (alreadyAppliedCount + 1);
+
+      if (totalAmount < requiredAmount) {
+        return t("voucher_need_transaction", {
+          min: requiredAmount.toLocaleString("id-ID"),
+        });
+      }
     }
+
     return null;
   };
 
