@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { getReferrer } from "@/lib/api/queries/member";
@@ -10,8 +10,18 @@ function formatDate(dateStr: string) {
   if (!dateStr) return "-";
   const d = new Date(dateStr);
   const months = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
   const day = String(d.getDate()).padStart(2, "0");
   return `${day} ${months[d.getMonth()]} ${d.getFullYear()}`;
@@ -38,6 +48,8 @@ export default function WelcomeCard({
   const t = useTranslations("dashboard");
   const { member } = useAuth();
 
+  const router = useRouter();
+
   const { data: referrerData } = useQuery({
     queryKey: ["referrer"],
     queryFn: () => getReferrer(),
@@ -50,9 +62,7 @@ export default function WelcomeCard({
     <>
       <header className="dash-page-header">
         <div>
-          <p className="dash-page-company">
-            {member?.company_name || "-"}
-          </p>
+          <p className="dash-page-company">{member?.company_name || "-"}</p>
           <h2>{t("welcome", { name: member?.fullname ?? "" })}</h2>
         </div>
       </header>
@@ -75,9 +85,7 @@ export default function WelcomeCard({
             <div className="dash-company-full">
               <label>{t("settings_address")}</label>
               <p>
-                {member?.region?.region_name
-                  ? member.region.region_name
-                  : "-"}
+                {member?.region?.region_name ? member.region.region_name : "-"}
               </p>
             </div>
             <div>
@@ -119,7 +127,10 @@ export default function WelcomeCard({
         </div>
 
         {dashboard?.recent_orders && dashboard.recent_orders.length > 0 && (
-          <div className="dash-card" style={{ gridColumn: "1 / -1", marginTop: 8 }}>
+          <div
+            className="dash-card"
+            style={{ gridColumn: "1 / -1", marginTop: 8 }}
+          >
             <div className="dash-card-heading">
               <i className="fi ti-receipt"></i>
               <h3>{t("recent_orders")}</h3>
@@ -135,15 +146,21 @@ export default function WelcomeCard({
               </thead>
               <tbody>
                 {dashboard.recent_orders.map((order: any) => (
-                  <tr key={order.id}>
+                  <tr
+                    key={order.id}
+                    className="cursor-pointer"
+                    style={{
+                      cursor: "pointer",
+                      color: "#1a1c1c",
+                      fontWeight: 500,
+                    }}
+                    onClick={() => router.push(`/dashboard/orders/${order.id}`)}
+                  >
                     <td>
-                      <Link
-                        href={`/dashboard/orders/${order.id}`}
-                        style={{ color: "#1a1c1c", fontWeight: 500 }}
-                      >
-                        {order.invoice_number ||
-                          `#${String(order.id ?? "").substring(0, 8).toUpperCase()}`}
-                      </Link>
+                      {order.invoice_number ||
+                        `#${String(order.id ?? "")
+                          .substring(0, 8)
+                          .toUpperCase()}`}
                     </td>
                     <td>
                       <span className={`dash-status ${order.status}`}>

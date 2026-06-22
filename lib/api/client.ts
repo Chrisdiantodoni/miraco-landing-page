@@ -101,9 +101,8 @@ async function baseFetch<T>(url: string, options?: ApiOptions): Promise<any> {
     // Check if response is OK
     if (!res.ok) {
       // Laravel error response
-      const errorMessage =
-        responseData.message || responseData.error || `API Error ${res.status}`;
-      console.log(responseData);
+      const errorMessage = responseData.data;
+      responseData.message || responseData.error || `API Error ${res.status}`;
       throw new Error(errorMessage);
     }
     // Return full Laravel response

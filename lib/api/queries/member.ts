@@ -6,7 +6,12 @@ import { LoginPayload, LoginResponse, Member } from "@/lib/types/member";
 export async function login(
   body: LoginPayload,
 ): Promise<LaravelResponse<LoginResponse>> {
-  return api.post<LoginResponse>(ENDPOINTS.LOGIN, body);
+  try {
+    const response = await api.post<LoginResponse>(ENDPOINTS.LOGIN, body);
+    return response;
+  } catch (err) {
+    throw err;
+  }
 }
 
 export async function register(

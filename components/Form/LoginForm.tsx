@@ -36,11 +36,14 @@ export default function LoginForm() {
     try {
       await login(data.identifier, data.password);
       toast.success(t("toast_success"));
-    } catch {
-      toast.error(t("toast_error"));
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message); // "Member not approved"
+      } else {
+        toast.error(t("toast_error"));
+      }
     }
   };
-
   return (
     <div className="wpo-login-wrapper">
       <div

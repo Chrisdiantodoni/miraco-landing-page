@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await loginApi({ login, password });
 
       if (!res?.data?.access_token || !res?.data?.member) {
-        throw new Error(res?.message || "Login failed");
+        throw new Error(res || res?.message || "Login failed");
       }
 
       const { access_token, member: memberData } = res.data;
