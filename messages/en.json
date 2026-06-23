@@ -238,7 +238,13 @@
     "toast_success": "Registration successful!",
     "toast_error": "Registration failed. Please try again.",
     "login_text": "Already have an account?",
-    "login_link": "Log In"
+    "login_link": "Log In",
+    "pending_approval_title": "Registration submitted!",
+    "pending_approval_subtitle": "Your account is under review. Our team will verify your details shortly.",
+    "pending_approval_timer": "Max. 24 hours approval time",
+    "pending_approval_email": "We'll notify you at {email} once your account is approved.",
+    "pending_approval_email_fallback": "We'll send a notification once your account is approved.",
+    "pending_approval_cta": "Got it, I'll wait"
   },
   "dashboard": {
     "logout": "Sign Out",

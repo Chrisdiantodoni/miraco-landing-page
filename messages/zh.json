@@ -248,7 +248,13 @@
     "toast_success": "注册成功！",
     "toast_error": "注册失败。请重试。",
     "login_text": "已有账户？",
-    "login_link": "登录"
+    "login_link": "登录",
+    "pending_approval_title": "注册已提交！",
+    "pending_approval_subtitle": "您的账户正在审核中，我们的团队将尽快验证您的信息。",
+    "pending_approval_timer": "最长审核时间 24 小时",
+    "pending_approval_email": "账户通过审核后，我们将通知发送至 {email}。",
+    "pending_approval_email_fallback": "账户通过审核后，我们将向您发送通知。",
+    "pending_approval_cta": "知道了，我会等待"
   },
   "dashboard": {
     "logout": "退出登录",

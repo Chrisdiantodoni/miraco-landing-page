@@ -247,7 +247,13 @@
     "toast_success": "Pendaftaran berhasil!",
     "toast_error": "Pendaftaran gagal. Silakan coba lagi.",
     "login_text": "Sudah punya akun?",
-    "login_link": "Masuk"
+    "login_link": "Masuk",
+    "pending_approval_title": "Pendaftaran berhasil dikirim!",
+    "pending_approval_subtitle": "Akun kamu sedang dalam proses review. Tim kami akan memverifikasi data kamu segera.",
+    "pending_approval_timer": "Maks. 24 jam waktu persetujuan",
+    "pending_approval_email": "Kami akan mengirim notifikasi ke {email} setelah akun kamu disetujui.",
+    "pending_approval_email_fallback": "Kami akan mengirim notifikasi setelah akun kamu disetujui.",
+    "pending_approval_cta": "Mengerti, saya akan menunggu"
   },
   "dashboard": {
     "logout": "Keluar",

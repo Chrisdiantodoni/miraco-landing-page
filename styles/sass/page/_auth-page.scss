@@ -527,7 +527,7 @@ input[type="checkbox"]:checked:disabled + label:before {
     width: 16px;
     height: 16px;
     border: 1px solid $border-color;
-  border-radius: 8px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -832,5 +832,241 @@ input[type="checkbox"]:checked:disabled + label:before {
     margin-top: 4px;
     line-height: 1.3;
     display: block;
+  }
+}
+
+.wpo-pending-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  animation: wpoPendingOverlayFadeIn 0.2s ease;
+}
+
+@keyframes wpoPendingOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ─── Modal Card ───────────────────────────────────────────────────────────────
+
+.wpo-pending-modal {
+  background: $white;
+  border-radius: 10px;
+  box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
+  padding: 50px;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  animation: wpoPendingModalSlideUp 0.25s ease;
+
+  @include media-query(767px) {
+    padding: 40px 24px;
+  }
+}
+
+@keyframes wpoPendingModalSlideUp {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// ─── Icon ─────────────────────────────────────────────────────────────────────
+
+.wpo-pending-iconWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+
+  svg {
+    width: 26px;
+    height: 26px;
+    stroke: $black;
+  }
+}
+
+// ─── Text ─────────────────────────────────────────────────────────────────────
+
+.wpo-pending-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: $dark-gray;
+  margin: 0 0 8px;
+  font-family: $base-font;
+}
+
+.wpo-pending-description {
+  font-size: 16px;
+  color: $text-color;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  font-family: $base-font;
+}
+
+// ─── Timer Badge ──────────────────────────────────────────────────────────────
+
+.wpo-pending-timerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  padding: 6px 16px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: $dark-gray;
+  font-family: $base-font;
+  letter-spacing: 0.02em;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: $dark-gray;
+    flex-shrink: 0;
+  }
+}
+
+// ─── Email Notice ─────────────────────────────────────────────────────────────
+
+.wpo-pending-emailNotice {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 32px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: $text-color;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  p {
+    font-size: 13px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    line-height: 1.5;
+    font-family: $base-font;
+
+    strong {
+      font-weight: 600;
+      color: $dark-gray;
+    }
+  }
+}
+
+// ─── Skeleton (loading state) ─────────────────────────────────────────────────
+
+.wpo-pending-skeleton {
+  height: 13px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: wpoPendingShimmer 1.4s infinite;
+
+  &.wpo-pending-skeletonShort {
+    width: 55%;
+    margin-top: 6px;
+  }
+}
+
+@keyframes wpoPendingShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// ─── CTA Button ───────────────────────────────────────────────────────────────
+
+.wpo-pending-ctaButton {
+  width: 100%;
+  height: 44px;
+  background: $black;
+  color: $white;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: $base-font;
+  @include transition-time(0.3s);
+
+  &:hover {
+    opacity: 0.85;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $black;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    animation: none;
+  }
+}
+
+// ─── Divider (opsional, seperti .or di login) ────────────────────────────────
+
+.divider {
+  border-top: 1px dashed $border-color;
+  margin: 0 0 24px;
+}
+
+// ─── Footer text (seperti .wpo-login-footer-text) ────────────────────────────
+
+.footerText {
+  text-align: center;
+  padding-top: 24px;
+  margin-top: 24px;
+  border-top: 1px solid $border-color;
+
+  p {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    font-family: $base-font;
   }
 }

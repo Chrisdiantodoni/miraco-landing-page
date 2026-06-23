@@ -19,6 +19,7 @@ import { registerSchema, RegisterFormData } from "@/lib/validations/auth";
 import { Loader2 } from "lucide-react";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import dynamic from "next/dynamic";
+import PendingApprovalModal from "../ui/pending-approval-modal";
 
 const DynamicSearchPosition = dynamic(() => import("../Input/SearchPosition"), {
   ssr: false,
@@ -49,7 +50,7 @@ export default function RegisterForm() {
   const router = useRouter();
   const settings = useSiteSettings();
   const logo = settings?.site_settings?.logo_dark_url || fallbackLogo;
-
+  const [openModal, setOpenModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -74,6 +75,7 @@ export default function RegisterForm() {
     control,
     formState: { errors },
     reset,
+    getValues,
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -104,26 +106,30 @@ export default function RegisterForm() {
   const [referralInput, setReferralInput] = useState("");
   const [checkReferralCode, setCheckReferralCode] = useState("");
   const [referralName, setReferralName] = useState("");
-  const [referralStatus, setReferralStatus] = useState<"idle" | "valid" | "invalid">("idle");
+  const [referralStatus, setReferralStatus] = useState<
+    "idle" | "valid" | "invalid"
+  >("idle");
 
   const handleApplyReferral = () => {
     const code = referralInput.trim();
     if (!code) return;
 
     setCheckReferralCode(code);
-    checkReferral(code).then((res: any) => {
-      if (res?.data?.valid) {
-        setReferralName(res.data.name || "");
-        setReferralStatus("valid");
-        setValue("referral_code", code);
-      } else {
+    checkReferral(code)
+      .then((res: any) => {
+        if (res?.data?.valid) {
+          setReferralName(res.data.name || "");
+          setReferralStatus("valid");
+          setValue("referral_code", code);
+        } else {
+          setReferralStatus("invalid");
+          setReferralName("");
+        }
+      })
+      .catch(() => {
         setReferralStatus("invalid");
         setReferralName("");
-      }
-    }).catch(() => {
-      setReferralStatus("invalid");
-      setReferralName("");
-    });
+      });
   };
 
   const { isPending, mutate } = useMutation({
@@ -148,7 +154,7 @@ export default function RegisterForm() {
     onSuccess: async ({ response }) => {
       if (response?.meta?.code == 200) {
         toast.success(t("toast_success"));
-        router.push("/login");
+        setOpenModal(true);
       }
     },
     onError: (res: any) => {
@@ -202,6 +208,16 @@ export default function RegisterForm() {
       ></div>
 
       <div className="wpo-login-form-area">
+        {openModal && (
+          <PendingApprovalModal
+            email={getValues("email")}
+            onClose={() => {
+              setOpenModal(false);
+              router.replace("/login");
+            }}
+          />
+        )}
+
         <div className="wpo-register-form">
           <div className="wpo-login-header">
             <div className="wpo-login-header-logo">
@@ -281,7 +297,9 @@ export default function RegisterForm() {
                   )}
                 />
                 {errors.region_id && (
-                  <div className="invalid-feedback">{errors.region_id.message}</div>
+                  <div className="invalid-feedback">
+                    {errors.region_id.message}
+                  </div>
                 )}
               </div>
               <div className="wpo-login-form-group">
@@ -407,7 +425,9 @@ export default function RegisterForm() {
                   <span
                     className="register-feedback"
                     style={{
-                      color: usernameCheck?.data?.available ? "#2E7D32" : "#C62828",
+                      color: usernameCheck?.data?.available
+                        ? "#2E7D32"
+                        : "#C62828",
                     }}
                   >
                     {usernameCheck?.data?.available
