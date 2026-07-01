@@ -63,7 +63,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
   });
 
   const productRequests = useWatch({ control, name: "product_requests" });
-  const isSampleProduct = productRequests === "Sample Product";
+  const isSampleProduct = productRequests.value === "Sample Product";
 
   const productOptions = data?.data?.product_requests.map((item) => ({
     label: item?.name,
@@ -92,26 +92,28 @@ const Contactpage = ({ data }: ContactPageProps) => {
       }
     },
     onError: (res: any) => {
-      console.log(res);
+      toast.error("Failed to submit form");
     },
   });
 
   const onSubmit = async (data: RequestFormFields) => {
+    const { region_id, ...restOfData } = data;
     const regionLabel = regionOptions?.find(
-      (r) => r?.value == data.region_id,
+      (find) => find?.value == region_id,
     )?.label;
-
     const joinedProducts = Array.isArray(data.products)
       ? data.products.map((p) => p.label).join(", ")
       : "";
-
-    mutate({
-      ...data,
+    console.log(region_id);
+    const dataFormSpree = {
+      ...restOfData,
+      region_id: region_id.value,
       region: regionLabel,
       products: joinedProducts,
-    });
+      product_requests: data.product_requests.value,
+    };
+    mutate(dataFormSpree);
   };
-
   const requiredDot = <span className="required-star">*</span>;
 
   const inputClass = (name: keyof RequestFormFields) =>
