@@ -185,39 +185,7 @@
 }
 
 .cart-drawer-qty {
-  display: flex;
-  align-items: center;
-  gap: 16px;
   margin-top: 8px;
-
-  button {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    cursor: pointer;
-    color: #1a1c1c;
-    transition: background 0.15s;
-    font-family: inherit;
-    font-size: 16px;
-    line-height: 1;
-    padding: 0;
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.04);
-    }
-  }
-
-  span {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #1a1c1c;
-  }
 }
 
 .cart-drawer-footer {

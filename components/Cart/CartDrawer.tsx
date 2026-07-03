@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import { X, Minus, Plus, Trash2 } from "lucide-react";
+import { X, Trash2 } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
 import { useRouter } from "@/i18n/navigation";
+import QuantityInput from "@/components/ui/QuantityInput";
 
 export default function CartDrawer() {
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity } =
@@ -83,25 +84,11 @@ export default function CartDrawer() {
                       {item.size} &middot; {item.finishing}
                     </p>
                     <div className="cart-drawer-qty">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
-                        }
-                        aria-label="Decrease"
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <span>QTY: {item.quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
-                        }
-                        aria-label="Increase"
-                      >
-                        <Plus size={14} />
-                      </button>
+                      <QuantityInput
+                        value={item.quantity}
+                        onChange={(qty) => updateQuantity(item.id, qty)}
+                        size="md"
+                      />
                     </div>
                     {/*
                     <div className="cart-drawer-item-price">

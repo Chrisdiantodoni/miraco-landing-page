@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Minus, Plus } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
+import QuantityInput from "@/components/ui/QuantityInput";
 
 export default function OrderSummary() {
   const t = useTranslations("checkout");
@@ -51,23 +51,11 @@ export default function OrderSummary() {
                     {item.size} &middot; {item.finishing}
                   </div>
                   <div className="summary-qty">
-                    <button
-                      type="button"
-                      className="summary-qty-btn"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      aria-label="Decrease"
-                    >
-                      <Minus size={12} />
-                    </button>
-                    <span>{item.quantity}</span>
-                    <button
-                      type="button"
-                      className="summary-qty-btn"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      aria-label="Increase"
-                    >
-                      <Plus size={12} />
-                    </button>
+                    <QuantityInput
+                      value={item.quantity}
+                      onChange={(qty) => updateQuantity(item.id, qty)}
+                      size="sm"
+                    />
                   </div>
                   {/*
                   <div className="summary-price">
