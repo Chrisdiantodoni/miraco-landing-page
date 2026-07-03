@@ -68,7 +68,7 @@ export default function WelcomeCard({
       </header>
 
       <div className="dash-bento">
-        <div className="dash-card dash-company-card">
+        <div className="dash-card ">
           <div className="dash-card-heading">
             <i className="fi flaticon-house"></i>
             <h3>{t("company_info")}</h3>
@@ -135,46 +135,50 @@ export default function WelcomeCard({
               <i className="fi ti-receipt"></i>
               <h3>{t("recent_orders")}</h3>
             </div>
-            <table className="dash-table">
-              <thead>
-                <tr>
-                  <th>{t("table_id")}</th>
-                  <th>{t("table_status")}</th>
-                  <th>{t("table_date")}</th>
-                  <th>{t("table_amount")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboard.recent_orders.map((order: any) => (
-                  <tr
-                    key={order.id}
-                    className="cursor-pointer"
-                    style={{
-                      cursor: "pointer",
-                      color: "#1a1c1c",
-                      fontWeight: 500,
-                    }}
-                    onClick={() => router.push(`/dashboard/orders/${order.id}`)}
-                  >
-                    <td>
-                      {order.invoice_number ||
-                        `#${String(order.id ?? "")
-                          .substring(0, 8)
-                          .toUpperCase()}`}
-                    </td>
-                    <td>
-                      <span className={`dash-status ${order.status}`}>
-                        {t(`status_${order.status}`, {
-                          fallback: order.status,
-                        })}
-                      </span>
-                    </td>
-                    <td>{formatDate(order.created_at)}</td>
-                    <td>{formatRupiah(order.total_price ?? 0)}</td>
+            <div className="dash-table-wrapper">
+              <table className="dash-table">
+                <thead>
+                  <tr>
+                    <th>{t("table_id")}</th>
+                    <th>{t("table_status")}</th>
+                    <th>{t("table_date")}</th>
+                    <th>{t("table_amount")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {dashboard.recent_orders.map((order: any) => (
+                    <tr
+                      key={order.id}
+                      className="cursor-pointer"
+                      style={{
+                        cursor: "pointer",
+                        color: "#1a1c1c",
+                        fontWeight: 500,
+                      }}
+                      onClick={() =>
+                        router.push(`/dashboard/orders/${order.id}`)
+                      }
+                    >
+                      <td>
+                        {order.invoice_number ||
+                          `#${String(order.id ?? "")
+                            .substring(0, 8)
+                            .toUpperCase()}`}
+                      </td>
+                      <td>
+                        <span className={`dash-status ${order.status}`}>
+                          {t(`status_${order.status}`, {
+                            fallback: order.status,
+                          })}
+                        </span>
+                      </td>
+                      <td>{formatDate(order.created_at)}</td>
+                      <td>{formatRupiah(order.total_price ?? 0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -197,14 +201,6 @@ export default function WelcomeCard({
               <p>{t("action_orders_desc")}</p>
               <i className="fi ti-arrow-right dash-action-arrow"></i>
             </Link>
-            <a href="#" className="dash-action-card">
-              <div className="dash-action-icon">
-                <i className="fi ti-download"></i>
-              </div>
-              <h4>{t("action_download")}</h4>
-              <p>{t("action_download_desc")}</p>
-              <i className="fi ti-arrow-right dash-action-arrow"></i>
-            </a>
           </div>
         </div>
       </div>

@@ -200,11 +200,12 @@
 --------------------------------------------------------------*/
 .dash-bento {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 8fr 4fr;
+
   gap: 28px;
 
-  @include widther(1024px) {
-    grid-template-columns: 8fr 4fr;
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -217,8 +218,13 @@
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  box-sizing: border-box; // ⬅️ tambahkan ini
+  overflow: hidden; // ⬅️ jaga-jaga, biar isi tidak bisa dorong keluar card
+  @include media-query(767px) {
+    padding: 12px;
+  }
 }
-
 .dash-card-heading {
   display: flex;
   align-items: center;
@@ -236,6 +242,10 @@
     color: $black;
     margin: 0;
   }
+
+  @include media-query(767px) {
+    margin-bottom: 20px;
+  }
 }
 
 .dash-company-grid {
@@ -246,6 +256,10 @@
   @include media-query(767px) {
     grid-template-columns: 1fr;
   }
+}
+
+.dash-company-grid > div {
+  min-width: 0; // ⬅️ ini kuncinya, biar grid item bisa menyusut < min-content
 }
 
 .dash-company-grid label {
@@ -263,6 +277,8 @@
   font-weight: 400;
   color: $dark-gray;
   margin: 0;
+  overflow-wrap: anywhere; // ⬅️ biar teks panjang (email, dll) ikut wrap
+  word-break: break-word;
 }
 
 .dash-company-full {
@@ -386,7 +402,7 @@
   gap: 24px;
 
   @include widther(768px) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -401,6 +417,10 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   @include transition-time(0.2s, all);
+
+  @include media-query(767px) {
+    padding: 16px;
+  }
 
   &:hover {
     border-color: #1a1c1c;
@@ -567,39 +587,26 @@
 /* ================================================================
    ORDERS TABLE
    ================================================================ */
-.dash-table-wrap {
-  background: $white;
-  border: 1px solid $border-color;
-  border-radius: 8px;
+.dash-table-wrapper {
+  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-
-  @include media-query(767px) {
-    margin: 0 -12px;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
 }
 
 .dash-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
-
   @include media-query(767px) {
     width: auto;
-    min-width: 100%;
-
+    min-width: 600px;
     thead th,
     tbody td {
       white-space: nowrap;
     }
   }
-
   thead {
     border-bottom: 1px solid $border-color;
-
     th {
       padding: 14px 20px;
       text-align: left;
@@ -610,29 +617,23 @@
       color: $text-color;
     }
   }
-
   tbody {
     tr {
       border-bottom: 1px solid rgba($border-color, 0.5);
-
       &:last-child {
         border-bottom: none;
       }
-
       &:hover {
         background: rgba($black, 0.02);
       }
     }
-
     td {
       padding: 16px 20px;
       color: $black;
     }
   }
-
   tfoot {
     border-top: 2px solid $border-color;
-
     td {
       padding: 16px 20px;
       color: $black;
@@ -1209,6 +1210,10 @@
   text-align: center;
   border-bottom: 1px solid $border-color;
 
+  @include media-query(767px) {
+    padding: 20px 16px;
+  }
+
   .fi {
     font-size: 36px;
     color: $black;
@@ -1280,6 +1285,20 @@
     &:first-child {
       border-right: 1px solid $border-color;
     }
+  }
+
+  @include media-query(767px) {
+    > div {
+      padding: 16px;
+    }
+  }
+}
+
+.dash-referral-list {
+  padding: 0 32px 32px;
+
+  @include media-query(767px) {
+    padding: 0 16px 16px;
   }
 }
 

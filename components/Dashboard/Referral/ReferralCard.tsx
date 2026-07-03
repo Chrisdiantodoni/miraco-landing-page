@@ -86,10 +86,11 @@ export default function ReferralCard() {
       </div>
 
       {referrals.length > 0 && (
-        <div style={{ padding: "0 32px 32px" }}>
+        <div className="dash-referral-list">
           <h4 style={{ fontSize: 14, fontWeight: 600, marginBottom: 12 }}>
             {t("referral_list")}
           </h4>
+          <div className="dash-table-wrap">
           <table className="dash-table">
             <thead>
               <tr>
@@ -110,6 +111,7 @@ export default function ReferralCard() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
