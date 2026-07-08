@@ -59,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const productsResponse = await getProductsAll({
       page: 1,
-      per_page: 1000,
+      limit: 1000,
     });
     const products = productsResponse?.data?.data || [];
 
@@ -79,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch {}
 
   try {
-    const projectsResponse = await getProjects({ page: 1, per_page: 500 });
+    const projectsResponse = await getProjects({ page: 1, limit: 500 });
     const projects = projectsResponse?.data?.data || [];
 
     for (const project of projects) {
