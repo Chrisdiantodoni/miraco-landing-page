@@ -6,6 +6,8 @@ import { getSiteData } from "@/lib/api/queries/settings";
 const SITE_URL = "https://miracohpl.com";
 const LOCALES = ["en", "id", "zh"];
 
+export const dynamic = "force-dynamic";
+
 function localize(path: string, locale: string) {
   return `${SITE_URL}/${locale}${path}`;
 }
