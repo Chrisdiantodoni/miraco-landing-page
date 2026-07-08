@@ -1,13 +1,354 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
+import { RequestResponse } from "@/lib/types/request/request";
+import { useForm, Controller, useWatch } from "react-hook-form";
+import { Form } from "reactstrap";
+import dynamic from "next/dynamic";
+import { useMutation } from "@tanstack/react-query";
+import { sendFormSpree, storeRequest } from "@/lib/api/queries/request";
+import { toast } from "react-toastify";
+import { useTranslations } from "next-intl";
+import SearchProduct from "../Input/SearchProduct";
+
+const DynamicClientSelect = dynamic(() => import("../Input/ClientSelect"), {
+  ssr: false,
+  loading: () => (
+    <input
+      type="text"
+      className="form-control"
+      disabled
+      defaultValue="Loading options..."
+    />
+  ),
+});
+
+interface ContactPageProps {
+  data: RequestResponse;
+}
+
+interface RequestFormFields {
+  name: string;
+  email: string;
+  region_id: string;
+  phone_number: string;
+  instagram: string;
+  company_name: string;
+  address: string;
+  product_requests: string;
+  products: { label: string; value: string }[];
+}
+
+const Contactpage = ({ data }: ContactPageProps) => {
+  const t = useTranslations("request");
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<RequestFormFields>({
+    defaultValues: {
+      name: "",
+      email: "",
+      region_id: "",
+      phone_number: "",
+      instagram: "",
+      company_name: "",
+      address: "",
+      product_requests: "",
+      products: [],
+    },
+  });
+
+  const productRequests = useWatch({ control, name: "product_requests" });
+  const isSampleProduct = productRequests.value === "Sample Product";
+
+  const productOptions = data?.data?.product_requests.map((item) => ({
+    label: item?.name,
+    value: item?.name,
+  }));
+
+  const regionOptions = data?.data?.regions.map((item) => ({
+    label: item?.region_name,
+    value: item?.id,
+  }));
+
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (body: any) => {
+      const response = await storeRequest(body);
+      return { response, body };
+    },
+    onSuccess: async ({ response, body }) => {
+      if (response?.meta?.code == 200) {
+        reset();
+        toast.success(t("toast_success"));
+        const { region_id, ...payload } = body;
+        sendFormSpree(payload).catch((err) => {
+          toast.error(t("toast_error"));
+          console.error("Formspree failed:", err);
+        });
+      }
+    },
+    onError: (res: any) => {
+      toast.error("Failed to submit form");
+    },
+  });
+
+  const onSubmit = async (data: RequestFormFields) => {
+    const { region_id, ...restOfData } = data;
+    const regionLabel = regionOptions?.find(
+      (find) => find?.value == region_id,
+    )?.label;
+    const joinedProducts = Array.isArray(data.products)
+      ? data.products.map((p) => p.label).join(", ")
+      : "";
+    console.log(region_id);
+    const dataFormSpree = {
+      ...restOfData,
+      region_id: region_id.value,
+      region: regionLabel,
+      products: joinedProducts,
+      product_requests: data.product_requests.value,
+    };
+    mutate(dataFormSpree);
+  };
+  const requiredDot = <span className="required-star">*</span>;
+
+  const inputClass = (name: keyof RequestFormFields) =>
+    `form-control${errors[name] ? " is-invalid" : ""}`;
+
+  return (
+    <section className="wpo-contact-pg-section section-padding pt-10">
+      <div className="container">
+        <div className="row">
+          <div className="col col-lg-10 offset-lg-1">
+            <div className="wpo-contact-form-area">
+              <Form
+                onSubmit={handleSubmit(onSubmit)}
+                className="contact-validation-active"
+              >
+                {/* ---- Name ---- */}
+                <div className="form-group">
+                  <label htmlFor="name">
+                    {t("label_name")} {requiredDot}
+                  </label>
+                  <input
+                    {...register("name", {
+                      required: t("error_name_required"),
+                    })}
+                    type="text"
+                    className={inputClass("name")}
+                    placeholder={t("placeholder_name")}
+                    id="name"
+                  />
+                  {errors.name && (
+                    <div className="invalid-feedback">
+                      {errors.name.message}
+                    </div>
+                  )}
+                </div>
+
+                {/* ---- Email ---- */}
+                <div className="form-group">
+                  <label htmlFor="email">
+                    {t("label_email")} {requiredDot}
+                  </label>
+                  <input
+                    {...register("email", {
+                      required: t("error_email_required"),
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: t("error_email_invalid"),
+                      },
+                    })}
+                    type="email"
+                    className={inputClass("email")}
+                    placeholder={t("placeholder_email")}
+                    id="email"
+                  />
+                  {errors.email && (
+                    <div className="invalid-feedback">
+                      {errors.email.message}
+                    </div>
+                  )}
+                </div>
+
+                {/* ---- Region ---- */}
+                <div className="form-group">
+                  <label htmlFor="region_id">
+                    {t("label_region")} {requiredDot}
+                  </label>
+                  <Controller
+                    name="region_id"
+                    control={control}
+                    rules={{ required: t("error_region_required") }}
+                    render={({ field }) => (
+                      <DynamicClientSelect
+                        field={field}
+                        options={regionOptions}
+                        hasError={!!errors.region_id}
+                        placeholder={t("placeholder_region")}
+                        isClearable
+                      />
+                    )}
+                  />
+                  {errors.region_id && (
+                    <div className="invalid-feedback">
+                      {errors.region_id.message}
+                    </div>
+                  )}
+                </div>
+
+                {/* ---- Phone ---- */}
+                <div className="form-group">
+                  <label htmlFor="phone_number">
+                    {t("label_phone")} {requiredDot}
+                  </label>
+                  <input
+                    {...register("phone_number", {
+                      required: t("error_phone_required"),
+                    })}
+                    type="text"
+                    className={inputClass("phone_number")}
+                    placeholder={t("placeholder_phone")}
+                    id="phone_number"
+                  />
+                  {errors.phone_number && (
+                    <div className="invalid-feedback">
+                      {errors.phone_number.message}
+                    </div>
+                  )}
+                </div>
+
+                {/* ---- Instagram ---- */}
+                <div className="form-group">
+                  <label htmlFor="instagram">{t("label_instagram")}</label>
+                  <input
+                    {...register("instagram")}
+                    type="text"
+                    className={inputClass("instagram")}
+                    placeholder={t("placeholder_instagram")}
+                    id="instagram"
+                  />
+                </div>
+
+                {/* ---- Company ---- */}
+                <div className="form-group">
+                  <label htmlFor="company_name">{t("label_company")}</label>
+                  <input
+                    {...register("company_name")}
+                    type="text"
+                    className={inputClass("company_name")}
+                    placeholder={t("placeholder_company")}
+                    id="company_name"
+                  />
+                </div>
+
+                {/* ---- Address ---- */}
+                <div className="form-group fullwidth">
+                  <label htmlFor="address">{t("label_address")}</label>
+                  <textarea
+                    {...register("address")}
+                    className={inputClass("address")}
+                    placeholder={t("placeholder_address")}
+                    id="address"
+                  />
+                </div>
+
+                {/* ---- Product Request ---- */}
+                <div className="form-group fullwidth">
+                  <label htmlFor="product_requests">
+                    {t("label_product_request")} {requiredDot}
+                  </label>
+                  <Controller
+                    name="product_requests"
+                    control={control}
+                    rules={{ required: t("error_product_required") }}
+                    render={({ field }) => (
+                      <DynamicClientSelect
+                        field={field}
+                        options={productOptions}
+                        hasError={!!errors.product_requests}
+                        placeholder={t("placeholder_product_request")}
+                        isClearable
+                      />
+                    )}
+                  />
+                  {errors.product_requests && (
+                    <div className="invalid-feedback">
+                      {errors.product_requests.message}
+                    </div>
+                  )}
+                </div>
+
+                {/* ---- Products (conditional: Sample Product only) ---- */}
+                {isSampleProduct && (
+                  <div className="form-group fullwidth">
+                    <label htmlFor="products">
+                      {t("label_select_product")} {requiredDot}
+                    </label>
+                    <Controller
+                      name="products"
+                      control={control}
+                      rules={{ required: t("error_products_required") }}
+                      render={({ field }) => (
+                        <SearchProduct
+                          {...field}
+                          options={productOptions}
+                          hasError={!!errors.products}
+                          placeholder={t("placeholder_select_product")}
+                          isClearable
+                        />
+                      )}
+                    />
+                    {errors.products && (
+                      <div className="invalid-feedback">
+                        {errors.products.message}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ---- Submit ---- */}
+                <div className="submit-area">
+                  <button
+                    type="submit"
+                    className="theme-btn-s2"
+                    style={{ border: "1px solid #000" }}
+                    disabled={isPending}
+                  >
+                    {isPending ? t("status_sending") : t("button_get_in_touch")}
+                  </button>
+                  <div id="loader">
+                    <i className="ti-reload"></i>
+                  </div>
+                </div>
+              </Form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Contactpage;
+
+/* ================================================================
+   OLD IMPLEMENTATION (kept for reference)
+   ================================================================
+
+"use client";
 import { RequestResponse } from "@/lib/types/request/request";
 import React, { useState } from "react";
 import { useForm, Controller, FieldValues, useWatch } from "react-hook-form";
 import {
   Form,
-  FormFeedback, // Digunakan untuk pesan error
-  FormGroup, // Digunakan untuk membungkus label, input, dan feedback
-  Input, // Komponen input dari Reactstrap
+  FormFeedback,
+  FormGroup,
+  Input,
   Label,
 } from "reactstrap";
 
@@ -32,9 +373,9 @@ const DynamicClientSelect = dynamic(() => import("../Input/ClientSelect"), {
     <Input type="select" className="form-control" disabled defaultValue="">
       <option>Loading options...</option>
     </Input>
-  ), // Opsional: Tampilkan loading state
+  ),
 });
-// Definisikan tipe input yang baru
+
 interface RequestFormFields extends FieldValues {
   name: string;
   email: string;
@@ -61,8 +402,8 @@ const Contactpage = ({ data }: ContactPageProps) => {
       region_id: {
         label: "",
         value: "",
-      }, // Required
-      phone_number: "", // Required
+      },
+      phone_number: "",
       instagram: "",
       address: "",
       company_name: "",
@@ -86,7 +427,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
     value: item?.id,
   }));
 
-  // Fields yang wajib diisi (untuk helper label)
   const requiredFields = [
     "name",
     "email",
@@ -97,29 +437,22 @@ const Contactpage = ({ data }: ContactPageProps) => {
   ];
 
   const onSubmit = async (data: RequestFormFields) => {
-    // 1. Destructure 'data' untuk memisahkan region_id
-    const { region_id, ...restOfData } = data; // region_id akan diisolasi, sisanya masuk ke restOfData
-
-    // 2. Cari label Region berdasarkan region_id yang sudah diisolasi
+    const { region_id, ...restOfData } = data;
     const regionLabel = regionOptions?.find(
       (find) => find?.value == region_id
     )?.label;
     const joinedProducts = Array.isArray(data.products)
       ? data.products.map((p) => p.label).join(", ")
       : "";
-
-    // 3. Gabungkan sisa data (restOfData) dengan properti region yang baru
     const dataFormSpree = {
-      ...restOfData, // Semua data kecuali region_id
+      ...restOfData,
       region_id,
-      region: regionLabel, // Tambahkan properti 'region' dengan label yang benar
+      region: regionLabel,
       products: joinedProducts,
     };
-
     mutate(dataFormSpree);
   };
 
-  // Helper untuk label dengan bintang merah
   const getLabel = (fieldName: string, labelText: string) => (
     <Label htmlFor={fieldName}>
       {t(labelText)}
@@ -131,8 +464,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (body: any) => {
-      // console.log({ body });
-      // return;
       const response = await storeRequest(body);
       return { response, body };
     },
@@ -140,9 +471,7 @@ const Contactpage = ({ data }: ContactPageProps) => {
       if (response?.meta?.code == 200) {
         reset();
         toast.success(t("toast_success"));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { region_id, ...payload } = body;
-        // TIDAK menggunakan await, agar tugas ini berjalan di latar belakang
         sendFormSpree(payload).catch((err) => {
           toast.error(t("toast_error"));
           console.error("Formspree failed:", err);
@@ -160,12 +489,10 @@ const Contactpage = ({ data }: ContactPageProps) => {
         <div className="row">
           <div className="col col-lg-10 offset-lg-1">
             <div className="wpo-contact-form-area">
-              {/* Menggunakan Form dari Reactstrap dan RHF handleSubmit */}
               <Form
                 onSubmit={handleSubmit(onSubmit)}
                 className="contact-validation-active"
               >
-                {/* 1. Name (required|string) */}
                 <FormGroup>
                   {getLabel("name", "label_name")}
                   <Controller
@@ -179,14 +506,13 @@ const Contactpage = ({ data }: ContactPageProps) => {
                         className="form-control"
                         placeholder={t("placeholder_name")}
                         id="name"
-                        invalid={!!errors.name} // Set invalid jika ada error
+                        invalid={!!errors.name}
                       />
                     )}
                   />
                   <FormFeedback>{errors.name?.message}</FormFeedback>
                 </FormGroup>
 
-                {/* 2. Email (required|email) */}
                 <FormGroup>
                   {getLabel("email", "label_email")}
                   <Controller
@@ -213,7 +539,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
                   <FormFeedback>{errors.email?.message}</FormFeedback>
                 </FormGroup>
 
-                {/* 3. Region ID (required|string - SELECT) */}
                 <FormGroup>
                   {getLabel("region_id", "label_region")}
                   <Controller
@@ -237,7 +562,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
                   )}
                 </FormGroup>
 
-                {/* 4. Phone Number (required) */}
                 <FormGroup>
                   {getLabel("phone_number", "label_phone")}
                   <Controller
@@ -258,13 +582,11 @@ const Contactpage = ({ data }: ContactPageProps) => {
                   <FormFeedback>{errors.phone_number?.message}</FormFeedback>
                 </FormGroup>
 
-                {/* 5. Instagram (nullable) */}
                 <FormGroup>
                   {getLabel("instagram", "label_instagram")}
                   <Controller
                     name="instagram"
                     control={control}
-                    // Tidak ada rules required
                     render={({ field }) => (
                       <Input
                         {...field}
@@ -276,10 +598,8 @@ const Contactpage = ({ data }: ContactPageProps) => {
                       />
                     )}
                   />
-                  {/* <FormFeedback>{errors.instagram?.message}</FormFeedback> */}
                 </FormGroup>
 
-                {/* 6. Company Name (nullable) */}
                 <FormGroup>
                   {getLabel("company_name", "label_company")}
                   <Controller
@@ -296,10 +616,8 @@ const Contactpage = ({ data }: ContactPageProps) => {
                       />
                     )}
                   />
-                  {/* <FormFeedback>{errors.company_name?.message}</FormFeedback> */}
                 </FormGroup>
 
-                {/* 7. Address (nullable - Full Width) */}
                 <FormGroup className="fullwidth">
                   {getLabel("address", "label_address")}
                   <Controller
@@ -316,10 +634,8 @@ const Contactpage = ({ data }: ContactPageProps) => {
                       />
                     )}
                   />
-                  {/* <FormFeedback>{errors.address?.message}</FormFeedback> */}
                 </FormGroup>
 
-                {/* 8. Product Requests (nullable - SELECT) */}
                 <FormGroup>
                   {getLabel("product_requests", "label_product_request")}
                   <Controller
@@ -367,7 +683,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
                   </FormGroup>
                 )}
 
-                {/* Submit Area & Status Messages */}
                 <div className="submit-area">
                   <button
                     type="submit"
@@ -393,3 +708,6 @@ const Contactpage = ({ data }: ContactPageProps) => {
 };
 
 export default Contactpage;
+
+   ================================================================
+*/

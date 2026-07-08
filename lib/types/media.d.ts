@@ -13,7 +13,9 @@ export type Media = {
     | "additional_image_products"
     | "project_thumbnail"
     | "additional_image_projects"
-    | "content_image";
+    | "content_image"
+    | "profile_photo";
+
   order: number | null;
   meta: any | null;
   created_at: string;

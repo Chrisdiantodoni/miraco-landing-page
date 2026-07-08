@@ -1,0 +1,42 @@
+/*--------------------------------------------------------------
+  FLOATING WHATSAPP BUTTON
+--------------------------------------------------------------*/
+
+.wpo-floating-wa {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 900;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25D366;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+    @include transition-time(0.2s, all);
+
+    &:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 28px rgba(37, 211, 102, 0.45);
+        color: #fff;
+    }
+
+    .fa {
+        font-size: 28px;
+        line-height: 1;
+    }
+
+    @include media-query(767px) {
+        bottom: 16px;
+        right: 16px;
+        width: 52px;
+        height: 52px;
+
+        .fa {
+            font-size: 26px;
+        }
+    }
+}

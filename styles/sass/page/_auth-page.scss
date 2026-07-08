@@ -1,358 +1,1072 @@
 /* 27. login-design */
 
-
 .wpo-login-area {
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    min-height: 100vh;
-    padding: 100px 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  padding: 100px 0;
 }
 
 .wpo-accountWrapper {
-    width: 1170px;
-    display: flex;
-    flex-wrap: wrap;
-    background: #fff;
-    margin: auto;
-    box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
-    border-radius: 10px;
-    overflow: hidden;
+  width: 1170px;
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  margin: auto;
+  box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .wpo-accountInfo {
-    width: 50%;
-    background: $black;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 600px;
-    text-align: center;
-    padding: 50px;
+  width: 50%;
+  background: $black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 600px;
+  text-align: center;
+  padding: 50px;
 }
 
 .wpo-accountForm {
-    width: 50%;
-    padding: 70px 85px;
-    min-height: 600px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  width: 50%;
+  padding: 70px 85px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .wpo-accountInfoHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .wpo-accountInfoHeader h2 a {
-    display: block;
-    line-height: 50px;
-    font-size: 35px;
-    font-weight: 600;
-    color: #fff;
+  display: block;
+  line-height: 50px;
+  font-size: 35px;
+  font-weight: 600;
+  color: #fff;
 }
 
 .wpo-accountInfo .wpo-accountBtn {
-    height: 40px;
-    background: #fff;
-    padding: 0px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: capitalize;
-    font-size: 14px;
-    color: $black;
-    border: 2px solid #fff;
-    transition: all .4s ease-in-out 0s;
+  height: 40px;
+  background: #fff;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: capitalize;
+  font-size: 14px;
+  color: $black;
+  border: 2px solid #fff;
+  transition: all 0.4s ease-in-out 0s;
 }
 
 .wpo-accountInfo .wpo-accountBtn:hover {
-    background: transparent;
-    color: #fff;
+  background: transparent;
+  color: #fff;
 }
 
 .wpo-accountInfo p {
-    color: #fff;
-    font-size: 18px;
-    margin-top: 20px;
+  color: #fff;
+  font-size: 18px;
+  margin-top: 20px;
 }
 
 .fromTitle h2 {
-    font-size: 30px;
-    margin-bottom: 10px;
+  font-size: 30px;
+  margin-bottom: 10px;
 }
 
 .fromTitle p {
-    font-size: 15px;
-    margin-bottom: 40px;
+  font-size: 15px;
+  margin-bottom: 40px;
 }
 
 .form-style input {
-    width: 100%;
-    margin-bottom: 15px;
-    padding-left: 20px;
-    height: 60px;
-    border: 1px solid #e5e5e5 !important;
-    border-radius: 2px;
-    border: none;
+  width: 100%;
+  margin-bottom: 15px;
+  padding-left: 20px;
+  height: 60px;
+  border: 1px solid #e5e5e5 !important;
+  border-radius: 2px;
+  border: none;
 }
 
 .form-style input:focus {
-    outline: none;
-    border: 1px solid #e5e5e5 !important;
+  outline: none;
+  border: 1px solid #e5e5e5 !important;
 }
 
-
-
-
-input[type=checkbox]+label {
-    display: block;
-    margin: 0.2em;
-    cursor: pointer;
-    padding: 0.2em;
-    position: relative;
+input[type="checkbox"] + label {
+  display: block;
+  margin: 0.2em;
+  cursor: pointer;
+  padding: 0.2em;
+  position: relative;
 }
 
-input[type=checkbox] {
-    display: none;
+input[type="checkbox"] {
+  display: none;
 }
 
-input[type=checkbox]+label:before {
-    content: "\2714";
-    border: 1px solid #e5e5e5;
-    border-radius: 0.2em;
-    display: inline-block;
-    width: 1.2em;
-    height: 1.2em;
-    padding-left: 0.2em;
-    padding-bottom: 0.3em;
-    margin-right: 0.2em;
-    vertical-align: bottom;
-    color: transparent;
-    transition: .2s;
-    line-height: 1.2em;
-    position: absolute;
-    left: 0;
+input[type="checkbox"] + label:before {
+  content: "\2714";
+  border: 1px solid #e5e5e5;
+  border-radius: 0.2em;
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  padding-left: 0.2em;
+  padding-bottom: 0.3em;
+  margin-right: 0.2em;
+  vertical-align: bottom;
+  color: transparent;
+  transition: 0.2s;
+  line-height: 1.2em;
+  position: absolute;
+  left: 0;
 }
 
-input[type=checkbox]+label:active:before {
-    transform: scale(0);
+input[type="checkbox"] + label:active:before {
+  transform: scale(0);
 }
 
-input[type=checkbox]:checked+label:before {
-    background-color: $black;
-    border-color: $black;
-    color: #fff;
+input[type="checkbox"]:checked + label:before {
+  background-color: $black;
+  border-color: $black;
+  color: #fff;
 }
 
-input[type=checkbox]:disabled+label:before {
-    transform: scale(1);
-    border-color: #aaa;
+input[type="checkbox"]:disabled + label:before {
+  transform: scale(1);
+  border-color: #aaa;
 }
 
-input[type=checkbox]:checked:disabled+label:before {
-    transform: scale(1);
-    background-color: #bfb;
-    border-color: #bfb;
+input[type="checkbox"]:checked:disabled + label:before {
+  transform: scale(1);
+  background-color: #bfb;
+  border-color: #bfb;
 }
-
 
 .check-box-wrap {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .forget-btn a {
-    display: inline-block;
-    font-size: 14px;
-    color: $black;
+  display: inline-block;
+  font-size: 14px;
+  color: $black;
 }
 
 .input-box label {
-    color: #676B79;
-    font-weight: 500;
-    font-size: 16px;
-    padding-left: 20px !important;
+  color: #676b79;
+  font-weight: 500;
+  font-size: 16px;
+  padding-left: 20px !important;
 }
 
 .wpo-accountForm .wpo-accountBtn {
-    font-size: 16px;
-    padding: 10px 20px;
-    border: 2px solid $black;
-    width: 100%;
-    background: $black;
-    color: #fff;
-    transition: all .4s ease-in-out 0s;
-    margin-top: 30px;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: 2px solid $black;
+  width: 100%;
+  background: $black;
+  color: #fff;
+  transition: all 0.4s ease-in-out 0s;
+  margin-top: 30px;
 }
 
 .wpo-accountForm .wpo-accountBtn:hover {
-    background: transparent;
-    color: #333;
+  background: transparent;
+  color: #333;
 }
 
 .or {
-    border-top: 1px dashed #e5e5e5;
-    margin-top: 45px;
-    text-align: center;
-    font-weight: 500;
-    margin-bottom: 20px;
+  border-top: 1px dashed #e5e5e5;
+  margin-top: 45px;
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 20px;
 }
 
 .or span {
-    font-size: 16px;
-    text-transform: uppercase;
-    display: inline-block;
-    padding: 0 25px;
-    background: #fff;
-    position: relative;
-    top: -14px;
-    color: $black;
+  font-size: 16px;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 0 25px;
+  background: #fff;
+  position: relative;
+  top: -14px;
+  color: $black;
 }
 
 .wpo-socialLoginBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  list-style: none;
 }
 
 .wpo-socialLoginBtn li button {
-    height: 40px;
-    width: 50px;
-    min-width: 50px;
-    font-size: 15px;
-    border-radius: 3px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    border: none;
-    text-transform: capitalize;
-    font-weight: 400;
-    color: #fff;
+  height: 40px;
+  width: 50px;
+  min-width: 50px;
+  font-size: 15px;
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  text-transform: capitalize;
+  font-weight: 400;
+  color: #fff;
 }
 
 .wpo-socialLoginBtn li button.facebook {
-    background: $black;
+  background: $black;
 }
 
 .wpo-socialLoginBtn li button.linkedin {
-    background: $black;
+  background: $black;
 }
 
 .wpo-socialLoginBtn li button.twitter {
-    background: $black;
+  background: $black;
 }
 
 .wpo-socialLoginBtn li {
-    margin: 0px 5px 5px;
+  margin: 0px 5px 5px;
 }
 
 .subText {
-    text-align: center;
+  text-align: center;
 }
 
 .subText a {
-    display: inline-block;
-    font-size: 14px;
-    color: $black;
+  display: inline-block;
+  font-size: 14px;
+  color: $black;
 }
 
-
 .form-group {
-    position: relative;
+  position: relative;
 }
 
 .input-group-btn {
-    position: absolute;
-    right: 10px;
-    top: 37px;
+  position: absolute;
+  right: 10px;
+  top: 37px;
 }
 
 .input-group-btn button {
-    background: transparent !important;
-    border: none;
-    outline: none;
-    background: none;
-    box-shadow: none !important;
+  background: transparent !important;
+  border: none;
+  outline: none;
+  background: none;
+  box-shadow: none !important;
 }
 
 .input-group-btn button:hover {
-    background: transparent;
+  background: transparent;
 }
 
 .input-group-btn button:focus,
 .input-group-btn button.active {
-    background: none !important;
-    border: none !important;
-    outline: none !important;
+  background: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 .btn-default.active,
 .btn-default.active,
-.open>.dropdown-toggle.btn-default {
-    background: none !important;
-    border: none;
-    outline: none;
+.open > .dropdown-toggle.btn-default {
+  background: none !important;
+  border: none;
+  outline: none;
 }
 
-@media(max-width: 1200px) {
-    .wpo-accountWrapper {
-        width: 900px;
-    }
+@media (max-width: 1200px) {
+  .wpo-accountWrapper {
+    width: 900px;
+  }
 
-    .wpo-accountForm {
-        padding: 70px 35px;
-    }
+  .wpo-accountForm {
+    padding: 70px 35px;
+  }
 }
 
-@media(max-width: 1024px) {
-    .wpo-accountWrapper {
-        width: 100%;
-        max-width: 100%;
-    }
+@media (max-width: 1024px) {
+  .wpo-accountWrapper {
+    width: 100%;
+    max-width: 100%;
+  }
 
-    .wpo-accountForm {
-        padding: 70px 35px;
-    }
+  .wpo-accountForm {
+    padding: 70px 35px;
+  }
 
-    .image img {
-        width: 100%;
-    }
+  .image img {
+    width: 100%;
+  }
 }
 
-@media(max-width: 992px) {
-    .wpo-accountInfo {
-        width: 100%;
-    }
+@media (max-width: 992px) {
+  .wpo-accountInfo {
+    width: 100%;
+  }
 
-    .wpo-accountForm {
-        width: 100%;
-    }
+  .wpo-accountForm {
+    width: 100%;
+  }
 
-    .accountArea {
-        padding: 0px 16px;
-    }
+  .accountArea {
+    padding: 0px 16px;
+  }
 }
 
-@media(max-width: 767px) {
-    .wpo-accountInfo {
-        width: 100%;
-    }
+@media (max-width: 767px) {
+  .wpo-accountInfo {
+    width: 100%;
+  }
 
-    .wpo-accountForm {
-        width: 100%;
-    }
+  .wpo-accountForm {
+    width: 100%;
+  }
 }
 
 .back-home {
-    max-width: 150px;
+  max-width: 150px;
+}
+
+/* 27b. login-split-image */
+
+.wpo-login-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  overflow: hidden;
+}
+
+.wpo-login-image {
+  position: relative;
+  width: 50%;
+  min-height: 600px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @include media-query(991px) {
+    width: 40%;
+  }
+
+  @include media-query(767px) {
+    display: none;
+  }
+}
+
+.wpo-login-form-area {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 60px;
+  background: $white;
+
+  @include media-query(991px) {
+    width: 60%;
+    padding: 40px;
+  }
+
+  @include media-query(767px) {
+    width: 100%;
+    padding: 30px 24px;
+    min-height: calc(100vh - 80px);
+  }
+}
+
+.wpo-login-form {
+  width: 100%;
+  max-width: 440px;
+}
+
+.wpo-login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.wpo-login-header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  img {
+    display: block;
+    height: auto;
+    width: 120px;
+
+    @include widther(992px) {
+      width: 150px;
+    }
+  }
+}
+
+.wpo-login-header h2 {
+  font-size: 24px;
+  font-weight: 500;
+  color: $dark-gray;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.wpo-login-header p {
+  font-size: 16px;
+  color: $text-color;
+  text-align: center;
+  margin: 0;
+}
+
+.wpo-login-form-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.wpo-login-form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: $dark-gray;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.wpo-login-form-group input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  font-size: 14px;
+  color: $dark-gray;
+  font-family: $base-font;
+  outline: none;
+  @include transition-time(0.2s);
+
+  &::placeholder {
+    color: lighten($text-color, 25%);
+  }
+
+  &:focus {
+    border-color: $black;
+    // box-shadow: 0 0 0 1px $black;
+  }
+}
+
+.wpo-login-form-group input.wpo-password-input {
+  padding-right: 44px;
+}
+
+.wpo-password-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $text-color;
+  @include transition-time(0.2s);
+
+  &:hover {
+    color: $black;
+  }
+
+  .fa {
+    font-size: 16px;
+  }
+}
+
+.wpo-login-extras {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.wpo-login-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  .wpo-login-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include transition-time(0.2s);
+  }
+
+  input[type="checkbox"]:checked + .wpo-login-checkbox {
+    background: $black;
+    border-color: $black;
+
+    &::after {
+      content: "\2714";
+      color: $white;
+      font-size: 11px;
+      line-height: 1;
+    }
+  }
+
+  span {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-color;
+  }
+}
+
+.wpo-login-forgot {
+  font-size: 12px;
+  font-weight: 600;
+  color: $text-color;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  @include transition-time(0.2s);
+
+  &:hover {
+    color: $black;
+  }
+}
+
+.wpo-login-submit {
+  width: 100%;
+  height: 44px;
+  background: $black;
+  color: $white;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: $base-font;
+  @include transition-time(0.3s);
+
+  &:hover {
+    opacity: 0.85;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  .fi {
+    font-size: 16px;
+  }
+}
+
+.wpo-login-footer-text {
+  text-align: center;
+  padding-top: 24px;
+  margin-top: 32px;
+  border-top: 1px solid $border-color;
+
+  p {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+  }
+
+  a {
+    color: $black;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    margin-left: 4px;
+    @include transition-time(0.2s);
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+/* 27c. register-form (split-screen, same as login) */
+
+.wpo-register-form {
+  width: 100%;
+  max-width: 480px;
+}
+
+.wpo-register-section {
+  margin-bottom: 28px;
+
+  &-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: $dark-gray;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+}
+
+.wpo-register-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px 14px;
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  font-size: 14px;
+  color: $dark-gray;
+  font-family: $base-font;
+  outline: none;
+  resize: none;
+  @include transition-time(0.2s);
+
+  &::placeholder {
+    color: lighten($text-color, 25%);
+  }
+
+  &:focus {
+    border-color: $black;
+    box-shadow: 0 0 0 1px $black;
+  }
+}
+
+.wpo-register-password-wrap {
+  position: relative;
+
+  input {
+    padding-right: 44px !important;
+  }
+}
+
+.wpo-register-password-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $text-color;
+  @include transition-time(0.15s, color);
+
+  &:hover {
+    color: $black;
+  }
+
+  .fa {
+    font-size: 14px;
+  }
+}
+
+.wpo-register-referral-desc {
+  font-size: 14px;
+  color: $text-color;
+  margin-bottom: 16px;
+}
+
+.wpo-register-referral-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+
+  input {
+    flex: 1;
+  }
+}
+
+.wpo-register-referral-btn {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $dark-gray;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: $base-font;
+  white-space: nowrap;
+  @include transition-time(0.15s, all);
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: darken($border-color, 10%);
+  }
+}
+
+/* 27d. register-photo-upload */
+
+.wpo-register-photo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  min-height: 126px;
+  justify-content: center;
+}
+
+.wpo-register-photo-preview {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px dashed $border-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  background: rgba(0, 0, 0, 0.02);
+  flex-shrink: 0;
+  @include transition-time(0.2s);
+
+  &:hover {
+    border-color: $black;
+    background: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.wpo-register-photo-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: $text-color;
+
+  .fi {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  span {
+    font-size: 11px;
+    font-weight: 500;
+  }
+}
+
+.wpo-register-photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  &.has-photo {
+    border-radius: 50%;
+  }
+}
+
+.wpo-register-photo-input {
+  display: none;
+}
+
+.wpo-register-photo-remove {
+  font-size: 11px;
+  font-weight: 500;
+  color: #dc3545;
+  cursor: pointer;
+  margin-top: 6px;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  @include transition-time(0.15s);
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+/* 27e. validation-helpers (shared by register form) */
+.wpo-register-form {
+  .required-star {
+    color: #ff0000;
+    margin-left: 4px;
+    font-size: 14px;
+  }
+
+  .invalid-feedback {
+    color: #ff0000;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .register-feedback {
+    min-height: 20px;
+    font-size: 13px;
+    margin-top: 4px;
+    line-height: 1.3;
+    display: block;
+  }
+}
+
+.wpo-pending-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  animation: wpoPendingOverlayFadeIn 0.2s ease;
+}
+
+@keyframes wpoPendingOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ─── Modal Card ───────────────────────────────────────────────────────────────
+
+.wpo-pending-modal {
+  background: $white;
+  border-radius: 10px;
+  box-shadow: 0px 14px 60px rgba(0, 0, 0, 0.06);
+  padding: 50px;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  animation: wpoPendingModalSlideUp 0.25s ease;
+
+  @include media-query(767px) {
+    padding: 40px 24px;
+  }
+}
+
+@keyframes wpoPendingModalSlideUp {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// ─── Icon ─────────────────────────────────────────────────────────────────────
+
+.wpo-pending-iconWrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+
+  svg {
+    width: 26px;
+    height: 26px;
+    stroke: $black;
+  }
+}
+
+// ─── Text ─────────────────────────────────────────────────────────────────────
+
+.wpo-pending-title {
+  font-size: 24px;
+  font-weight: 500;
+  color: $dark-gray;
+  margin: 0 0 8px;
+  font-family: $base-font;
+}
+
+.wpo-pending-description {
+  font-size: 16px;
+  color: $text-color;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  font-family: $base-font;
+}
+
+// ─── Timer Badge ──────────────────────────────────────────────────────────────
+
+.wpo-pending-timerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  padding: 6px 16px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: $dark-gray;
+  font-family: $base-font;
+  letter-spacing: 0.02em;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: $dark-gray;
+    flex-shrink: 0;
+  }
+}
+
+// ─── Email Notice ─────────────────────────────────────────────────────────────
+
+.wpo-pending-emailNotice {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid $border-color;
+  border-radius: 2px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 32px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: $text-color;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  p {
+    font-size: 13px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    line-height: 1.5;
+    font-family: $base-font;
+
+    strong {
+      font-weight: 600;
+      color: $dark-gray;
+    }
+  }
+}
+
+// ─── Skeleton (loading state) ─────────────────────────────────────────────────
+
+.wpo-pending-skeleton {
+  height: 13px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: wpoPendingShimmer 1.4s infinite;
+
+  &.wpo-pending-skeletonShort {
+    width: 55%;
+    margin-top: 6px;
+  }
+}
+
+@keyframes wpoPendingShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// ─── CTA Button ───────────────────────────────────────────────────────────────
+
+.wpo-pending-ctaButton {
+  width: 100%;
+  height: 44px;
+  background: $black;
+  color: $white;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: $base-font;
+  @include transition-time(0.3s);
+
+  &:hover {
+    opacity: 0.85;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $black;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    animation: none;
+  }
+}
+
+// ─── Divider (opsional, seperti .or di login) ────────────────────────────────
+
+.divider {
+  border-top: 1px dashed $border-color;
+  margin: 0 0 24px;
+}
+
+// ─── Footer text (seperti .wpo-login-footer-text) ────────────────────────────
+
+.footerText {
+  text-align: center;
+  padding-top: 24px;
+  margin-top: 24px;
+  border-top: 1px solid $border-color;
+
+  p {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    font-family: $base-font;
+  }
 }

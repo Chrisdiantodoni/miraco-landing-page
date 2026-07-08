@@ -21,6 +21,10 @@ import MobileSidebar from "../MobileMenu/filter-menu";
 import { normalizeQueryParams } from "../../lib/util";
 import { useTranslations } from "next-intl";
 import image from "@/public/images/miraco/logo/logo-miraco.png";
+import { useCartStore } from "@/lib/store/cart";
+import { Heart, ShoppingCart } from "lucide-react";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { toggleFavourite as toggleFavouriteApi } from "@/lib/api/queries/favourite";
 
 interface CollectionProductProps {
   initialData: ProductListResponse;
@@ -55,6 +59,8 @@ const CollectionProducts = ({
   const currentPage = searchParams.get("page");
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const { addToCart, isInCart, isFavourite, toggleFavourite } = useCartStore();
+  const { token } = useAuth();
 
   const ClickHandler = () => {
     window.scrollTo(10, 0);
@@ -179,7 +185,7 @@ const CollectionProducts = ({
       thicknesses: parseArrayParam(searchParams.get("thicknesses")),
       is_soft_touch: parseBooleanParam(searchParams.get("is_soft_touch")),
       is_anti_fingerprint: parseBooleanParam(
-        searchParams.get("is_anti_fingerprint")
+        searchParams.get("is_anti_fingerprint"),
       ),
       is_miraedge: parseBooleanParam(searchParams.get("is_miraedge")),
       sort_by: (searchParams.get("sort_by") || "") as "new" | "",
@@ -233,7 +239,7 @@ const CollectionProducts = ({
 
       router.push(`?${params.toString()}`, { scroll: false });
     },
-    [searchParams, router]
+    [searchParams, router],
   );
 
   const ICON_SIZE = 16;
@@ -308,7 +314,7 @@ const CollectionProducts = ({
               ) : products.length > 0 ? (
                 products.map((product, index) => {
                   const productImage = product?.media?.find(
-                    (find) => find?.type == "product_thumbnail"
+                    (find) => find?.type == "product_thumbnail",
                   )?.image_url;
 
                   return (
@@ -349,35 +355,118 @@ const CollectionProducts = ({
                                 No Image Available
                               </div>
                             )}
+
+                            <div
+                              className="shop-card-hover-actions"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              <button
+                                key={`fav-${product.id}-${isFavourite(product.id)}`}
+                                className={`shop-card-action-btn shop-card-action-btn--favourite ${isFavourite(product.id) ? "active" : "inactive"}`}
+                                onClick={async (e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  if (!token) {
+                                    router.push("/login");
+                                    return;
+                                  }
+                                  await toggleFavourite(String(product.id));
+                                }}
+                              >
+                                <Heart
+                                  size={16}
+                                  fill={
+                                    isFavourite(product.id)
+                                      ? "currentColor"
+                                      : "none"
+                                  }
+                                />
+                              </button>
+                              <button
+                                className={`shop-card-action-btn shop-card-action-btn--cart ${isInCart(product.id) ? "in-cart" : ""}`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  if (isInCart(product.id)) return;
+                                  addToCart({
+                                    id: product.id,
+                                    name: product.name,
+                                    code: getProductFormattedCode(product),
+                                    image_url: productImage || "",
+                                    collection_name:
+                                      product?.collection?.collection_name ||
+                                      "",
+                                    thickness: product?.thickness?.size || "",
+                                    size: product?.size?.size || "",
+                                    finishing:
+                                      product?.finishing?.finishing_name || "",
+                                    price: product.price,
+                                    promo_price:
+                                      product.promo_price || undefined,
+                                  });
+                                }}
+                              >
+                                <ShoppingCart size={16} />
+                              </button>
+                            </div>
                           </div>
                           <div className="content">
                             {product?.name && (
-                              <div className="product-info-row">
-                                <div className="product-text-group">
-                                  <span
-                                    className="product-code"
-                                    style={{ fontWeight: 500 }}
-                                  >
-                                    {getProductFormattedCode(product)}
-                                  </span>
-                                  <span className="product-name-text">
-                                    {product.name}
-                                  </span>
+                              <>
+                                <div className="product-info-row">
+                                  <div className="product-text-group">
+                                    <span
+                                      className="product-code"
+                                      style={{ fontWeight: 500 }}
+                                    >
+                                      {getProductFormattedCode(product)}
+                                    </span>
+                                    <span className="product-name-text">
+                                      {product.name}
+                                    </span>
+                                  </div>
+                                  {!!product?.miraedge_detail && (
+                                    <Image
+                                      src={miraedge}
+                                      alt="Product Icon"
+                                      width={ICON_SIZE}
+                                      height={ICON_SIZE}
+                                      className="product-icon"
+                                      style={{
+                                        objectFit: "contain",
+                                        flexShrink: 0,
+                                      }}
+                                    />
+                                  )}
                                 </div>
-                                {!!product?.miraedge_detail && (
-                                  <Image
-                                    src={miraedge}
-                                    alt="Product Icon"
-                                    width={ICON_SIZE}
-                                    height={ICON_SIZE}
-                                    className="product-icon"
-                                    style={{
-                                      objectFit: "contain",
-                                      flexShrink: 0,
-                                    }}
-                                  />
+                                {/*
+                                {product.price != null && (
+                                  <div className="product-price">
+                                    {product.promo_price ? (
+                                      <>
+                                        <span className="product-price-current">
+                                          Rp{" "}
+                                          {product.promo_price.toLocaleString(
+                                            "id-ID",
+                                          )}
+                                        </span>
+                                        <span className="product-price-old">
+                                          Rp{" "}
+                                          {product.price.toLocaleString(
+                                            "id-ID",
+                                          )}
+                                        </span>
+                                      </>
+                                    ) : (
+                                      <span className="product-price-current">
+                                        Rp{" "}
+                                        {product.price.toLocaleString("id-ID")}
+                                      </span>
+                                    )}
+                                  </div>
                                 )}
-                              </div>
+                                */}
+                              </>
                             )}
                           </div>
                         </div>

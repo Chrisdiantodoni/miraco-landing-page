@@ -1,0 +1,67 @@
+.qty-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-input-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: $white;
+  color: #5f5e5e;
+  cursor: pointer;
+  padding: 0;
+  font-family: $base-font;
+  line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: #f0f0f0;
+    border-color: #b0b0b0;
+  }
+
+  .qty-input--sm & {
+    width: 24px;
+    height: 24px;
+  }
+
+  .qty-input--md & {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.qty-input-field {
+  text-align: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-family: $base-font;
+  font-weight: 500;
+  outline: none;
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &:focus {
+    border-color: #1a1c1c;
+  }
+
+  .qty-input--sm & {
+    width: 36px;
+    height: 24px;
+    font-size: 13px;
+  }
+
+  .qty-input--md & {
+    width: 48px;
+    height: 32px;
+    font-size: 13px;
+  }
+}
